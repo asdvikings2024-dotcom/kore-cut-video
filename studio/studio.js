@@ -1,6 +1,6 @@
 import {uniqueVisibleCaptions} from './caption-visibility.js?v=nav-22';
 import {installPreviewLayout} from './preview-layout.js?v=layout-20';
-import {installTouchEditor} from './touch-editor.js?v=overlay-2';
+import {installTouchEditor} from './touch-editor.js?v=overlay-3';
 import {detectSilences} from './touch-transform.js?v=smart-20';
 import {normalizeAsrTiming,findPauses,snapWordsToSpeech} from './asr-timing.js?v=word-1';
 import {addCaptionPreview} from './caption-preview.js?v=preview-16';

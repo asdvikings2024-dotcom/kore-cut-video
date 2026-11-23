@@ -54,6 +54,25 @@ async function apply(mode){
  }catch(e){if(id!==runId)return;state.result=state.work;show(state.work);state.mask=null;state.note='';setBusy('');dialog.querySelector('[data-status]').textContent=(e&&e.message)||'Non riuscito. Riprova.';for(const b of dialog.querySelectorAll('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode==='orig'))}
 }
 
+// Ritaglio con il dito: trascina un rettangolo sull'anteprima, poi "Ritaglia".
+function startCrop(){
+ if(!state||state.busy)return;runId++;
+ const stage=dialog.querySelector('.po-stage'),view=stage.querySelector('canvas');state.mode='orig';state.result=state.work;show(state.work);
+ for(const b of dialog.querySelectorAll('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode==='orig'));dialog.querySelector('[data-tol]').hidden=true;
+ const box=el('div',{className:'po-crop'}),bar=el('div',{className:'po-cropbar'});const ok=el('button',{type:'button',textContent:'✓ Ritaglia'}),no=el('button',{type:'button',textContent:'Annulla'});ok.disabled=true;bar.append(no,ok);
+ const rect=el('div',{className:'po-rect'});rect.hidden=true;box.append(rect);stage.append(box);dialog.querySelector('.po-actions').hidden=true;dialog.querySelector('.po-modes').hidden=true;stage.after(bar);
+ dialog.querySelector('[data-status]').textContent='Trascina con il dito per scegliere la parte da tenere.';
+ let a=null,sel=null;const area=()=>view.getBoundingClientRect();
+ const pt=e=>{const r=area();return {x:Math.max(0,Math.min(r.width,e.clientX-r.left)),y:Math.max(0,Math.min(r.height,e.clientY-r.top))}};
+ const paint=()=>{const r=area(),s0=stage.getBoundingClientRect();if(!sel){rect.hidden=true;return}rect.hidden=false;rect.style.left=(r.left-s0.left+sel.x)+'px';rect.style.top=(r.top-s0.top+sel.y)+'px';rect.style.width=sel.w+'px';rect.style.height=sel.h+'px'};
+ box.addEventListener('pointerdown',e=>{e.preventDefault();box.setPointerCapture(e.pointerId);a=pt(e);sel={x:a.x,y:a.y,w:0,h:0};paint()});
+ box.addEventListener('pointermove',e=>{if(!a)return;const b=pt(e);sel={x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),w:Math.abs(b.x-a.x),h:Math.abs(b.y-a.y)};ok.disabled=sel.w<12||sel.h<12;paint()});
+ const up=()=>{a=null};box.addEventListener('pointerup',up);box.addEventListener('pointercancel',up);
+ const done=()=>{box.remove();bar.remove();dialog.querySelector('.po-actions').hidden=false;dialog.querySelector('.po-modes').hidden=false;dialog.querySelector('[data-status]').textContent=''};
+ no.onclick=done;
+ ok.onclick=()=>{const r=area(),k=state.work.width/r.width,x=Math.round(sel.x*k),y=Math.round(sel.y*k),w=Math.max(1,Math.round(sel.w*k)),h=Math.max(1,Math.round(sel.h*k));
+  const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(state.work,x,y,w,h,0,0,w,h);state.work=c;state.mask=null;state.result=c;done();show(c);apply('orig')};
+}
 function reset(){replaceId=null;const ab=dialog?.querySelector('[data-add]');if(ab)ab.textContent='＋ Aggiungi al video';runId++;ai?.dispose();ai=null;state=null;dialog.classList.remove('editing','busy');dialog.querySelector('[data-status]').textContent=''}
 async function chooseImage(file){
  if(!file)return;
@@ -101,6 +120,7 @@ function build(){
  const status=el('p',{className:'po-status',role:'status'});status.dataset.status='1';
  const add=el('button',{type:'button',className:'po-add',textContent:'＋ Aggiungi al video'});add.dataset.add='1';add.onclick=confirmAdd;
  const back=el('button',{type:'button',className:'po-back',textContent:'Cambia file'});back.dataset.back='1';back.onclick=reset;
+ const cropBtn=el('button',{type:'button',textContent:'✂ Ritaglia'});cropBtn.onclick=startCrop;modes.append(cropBtn);
  const edit=el('div',{className:'po-edit'},stage,modes,tol,status,el('div',{className:'po-actions'},back,add));
  dialog.append(head,pick,edit,imageInput,videoInput);
  imageInput.onchange=()=>{const f=imageInput.files?.[0];imageInput.value='';chooseImage(f)};

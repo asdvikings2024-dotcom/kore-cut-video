@@ -115,6 +115,15 @@ function volumePop(id){
  const mute=el('button','kc-mute','🔇 Muto');mute.type='button';mute.onclick=()=>{r.value='0';r.oninput()};
  const row=el('div','kc-vol');row.append(r,out);p.append(row,mute);
 }
+function setInput(id,v){const i=document.getElementById(id);if(!i)return false;i.value=String(v);i.dispatchEvent(new Event('input',{bubbles:true}));i.dispatchEvent(new Event('change',{bubbles:true}));return true}
+function opacityPop(id){
+ const p=openPop('Trasparenza');const cur=Number(document.getElementById('opacity')?.value)||100;const out=el('span','kc-val',cur+'%');
+ const r=el('input');r.type='range';r.min='10';r.max='100';r.step='5';r.value=String(cur);r.setAttribute('aria-label','Opacità');
+ r.oninput=()=>{out.textContent=r.value+'%';setInput('opacity',r.value)};
+ const row=el('div','kc-vol');row.append(r,out);p.append(row);
+}
+function mirror(){const m=document.getElementById('mirror');setInput('mirror',m&&m.value==='on'?'off':'on')}
+function turn90(id){const b=window.koreHandles?.box(id);if(!b)return;let v=(b.rotation||0)+90;v=((v+540)%360)-180;window.koreHandles.begin();window.koreHandles.set(id,{rotation:v});window.koreHandles.end()}
 async function pausesPop(id){
  const p=openPop('Togli pause');const msg=el('p','kc-msg','Analizzo l\'audio… può volerci qualche secondo.');p.append(msg);
  try{
@@ -137,6 +146,7 @@ function buildTools(){
   btn('⏱','Velocità',()=>speedPop(sel)),
   btn('🔊','Volume',()=>volumePop(sel)),
   btn('⧉','Duplica',()=>$('duplicate')?.click()));
+ if(c&&c.kind!=='audio')toolbar.append(btn('◐','Trasparenza',()=>opacityPop(sel)),btn('⇋','Specchia',mirror),btn('⟳','Ruota 90°',()=>turn90(sel)));
  if(c&&(c.kind==='video'||c.kind==='audio')&&c.url!==undefined)toolbar.append(btn('🤫','Togli pause',()=>pausesPop(sel)));
  if(c&&c.tr)toolbar.append(btn('✎','Correggi parole',()=>window.koreOpenTranscriptEditor?.()));
  if(c&&c.kind==='image')toolbar.append(btn('✦','Togli sfondo',()=>window.koreCutoutAI?.(sel)));

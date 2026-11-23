@@ -134,3 +134,4 @@ body.kc-clean #koreCapFs{display:none!important}
 body.kore-cap .kore-center-guides i[style*="0.3"]{display:none!important}
 body.kore-cap .kore-center-guides i[style*="opacity: 1"]{animation:kcGuide 1.1s ease-out forwards}
 @keyframes kcGuide{0%,55%{opacity:1}100%{opacity:0}}
+body.kore-cap .stage,body.kore-cap #preview,body.kore-cap .stage canvas{touch-action:none!important}

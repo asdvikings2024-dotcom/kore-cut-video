@@ -19,7 +19,7 @@
 #phoneOverlayDialog .po-stage{display:grid;place-items:center;height:min(42dvh,320px);border-radius:14px;overflow:hidden;background:conic-gradient(#3a3340 25%,#2b2531 0 50%,#3a3340 0 75%,#2b2531 0) 0 0/20px 20px}
 #phoneOverlayDialog .po-stage canvas{max-width:100%;max-height:100%;object-fit:contain}
 #phoneOverlayDialog.busy .po-stage canvas{opacity:.45}
-#phoneOverlayDialog .po-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+#phoneOverlayDialog .po-modes{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
 #phoneOverlayDialog .po-modes button,#phoneOverlayDialog .po-actions button{min-height:44px;padding:6px 8px;border:1px solid #ffffff33;border-radius:12px;background:#2a1d33;color:#fff;font-family:inherit;font-size:13px;font-weight:600;line-height:1.15}
 #phoneOverlayDialog .po-modes button[aria-pressed="true"]{background:#ff2d92;border-color:#ff87bd}
 #phoneOverlayDialog button:disabled{opacity:.45}
@@ -35,3 +35,11 @@
 #koreTouchEditor .kore-extra::-webkit-scrollbar{display:none}
 #koreTouchEditor .kore-extra button{flex:0 0 auto;min-height:44px;min-width:56px;padding:4px 12px;border-radius:12px;border:1px solid #ffffff44;background:#2a1d33;color:#fff;font-family:inherit;font-size:13px;font-weight:600}
 #koreTouchEditor .kore-extra button.danger{color:#ff9fb8}
+
+#phoneOverlayDialog .po-stage{position:relative}
+#phoneOverlayDialog .po-crop{position:absolute;inset:0;z-index:3;touch-action:none;cursor:crosshair}
+#phoneOverlayDialog .po-rect{position:absolute;border:2px solid #fff;box-shadow:0 0 0 9999px #0009;pointer-events:none}
+#phoneOverlayDialog .po-cropbar{display:grid;grid-template-columns:1fr 2fr;gap:8px}
+#phoneOverlayDialog .po-cropbar button{min-height:46px;border:1px solid #ffffff33;border-radius:12px;background:#ffffff14;color:#fff;font-weight:700;font-size:15px}
+#phoneOverlayDialog .po-cropbar button:last-child{background:#ff2d92;border-color:#ff87bd}
+#phoneOverlayDialog .po-modes[hidden],#phoneOverlayDialog .po-actions[hidden]{display:none!important}
