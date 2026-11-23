@@ -15,3 +15,5 @@
 #koreWorkPill .wp-dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:#ff2d92;animation:kwPulse 1s ease-in-out infinite}
 @keyframes kwPulse{50%{opacity:.35;transform:scale(.7)}}
 @media (prefers-reduced-motion:reduce){#koreWorkPill .wp-dot{animation:none}}
+
+.kore-work-note{margin:6px 0;padding:8px 10px;border-radius:10px;background:#ffb43622;color:#ffe2a8;font-size:13px}

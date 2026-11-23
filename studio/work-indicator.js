@@ -2,6 +2,11 @@
 // pillola sempre visibile (anche con la finestra ridotta) e schermo tenuto acceso durante l'analisi.
 const $=id=>document.getElementById(id);
 let lock=null;
+const KEY='koreAsrRun',SAFE='koreAsrSafe';
+const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+const ios=typeof navigator!=='undefined'&&(/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1));
+let recovered=false;
+if(typeof window!=='undefined'){if(store.get(KEY)){store.set(SAFE,'1');store.del(KEY);recovered=true}window.koreAsrSafe=store.get(SAFE)==='1'}
 export function parseStatus(text){
  const t=String(text||'');let m;
  if(/^✓/.test(t))return {phase:'done'};
@@ -37,8 +42,16 @@ function pill(){
 }
 function attach(dialog){
  if(dialog.dataset.work)return;dialog.dataset.work='1';
+ const quality=dialog.querySelector('select[aria-label="Precisione riconoscimento"]');
  const state=dialog.querySelector('.kore-speech-status'),actions=dialog.querySelector('.kore-speech-actions:last-of-type')||dialog.querySelector('.kore-speech-actions');
  if(!state)return;
+ if(quality&&(window.koreAsrSafe||ios)){
+  quality.value='tiny';
+  if(window.koreAsrSafe)for(const o of [...quality.options])if(o.value!=='tiny')o.remove();
+  const note=document.createElement('p');note.className='kore-work-note';
+  note.textContent=window.koreAsrSafe?'L’ultima analisi ha riavviato l’app (poca memoria sul telefono): uso il modello leggero, più sicuro.':'Su iPhone parto col modello leggero per non riavviare l’app. Se tutto va bene puoi provare "Accurata" dal menu.';
+  state.before(note);
+ }
  const box=document.createElement('div');box.className='kore-work';box.hidden=true;
  box.innerHTML='<div class="kw-step"></div><div class="kw-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i></i></div><div class="kw-eta"></div>';
  state.after(box);
@@ -51,6 +64,7 @@ function attach(dialog){
  const stop=ok=>{clearTick();samples=[];keepAwake(false);min.hidden=true;dialog.classList.remove('kore-minimized');if(ok){box.hidden=false;bar.classList.remove('indeterminate');fill.style.width='100%';step.textContent='Fatto';eta.textContent='';p.hidden=false;pt.textContent='✓ Sottotitoli pronti';clearTimeout(p.t);p.t=setTimeout(()=>{p.hidden=true},3500)}else{box.hidden=true;p.hidden=true}};
  const read=()=>{
   const r=parseStatus(state.textContent);if(!r)return;
+  if(r.phase==='done'||r.phase==='end')store.del(KEY);else store.set(KEY,String(Date.now()));
   if(r.phase==='done')return stop(true);if(r.phase==='end')return stop(false);
   if(r.phase!==3)clearTick();
   if(r.phase===1){samples=[];show('Passo 1 di 3 · Estraggo l’audio',null,'','✦ Estraggo l’audio…')}
@@ -64,11 +78,16 @@ function attach(dialog){
   }
  };
  new MutationObserver(read).observe(state,{childList:true,characterData:true,subtree:true});
- new MutationObserver(()=>{if(!document.contains(dialog)){keepAwake(false);p.hidden=true}}).observe(document.body,{childList:true});
+ new MutationObserver(()=>{if(!document.contains(dialog)){keepAwake(false);p.hidden=true;store.del(KEY)}}).observe(document.body,{childList:true});
  read();
 }
 function init(){
  const scan=()=>{const d=$('koreVideoAsrDialog');if(d)attach(d)};
  new MutationObserver(scan).observe(document.body,{childList:true});scan();
 }
-if(typeof document!=='undefined'){if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init()}
+async function version(){
+ try{const b=await (await fetch(new URL('./build.json',import.meta.url),{cache:'no-store'})).json();
+  const put=()=>{const d=$('phoneMoreDialog');if(!d||d.querySelector('.kore-version'))return !!d;const p=document.createElement('p');p.className='kore-version';p.textContent='Versione KORE · '+b.sha+' · '+String(b.time||'').replace('T',' ');p.style.cssText='margin:8px 16px;font-size:12px;opacity:.6';d.append(p);return true};
+  let n=0;const t=setInterval(()=>{if(put()||++n>40)clearInterval(t)},500)}catch(e){}
+}
+if(typeof document!=='undefined'){version();if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init()}
