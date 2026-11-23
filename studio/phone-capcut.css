@@ -73,3 +73,21 @@
 @media (max-width:759px){
  body.kore-cap #koreImportFeedback{top:calc(env(safe-area-inset-top) + 64px)!important;bottom:auto!important;max-width:calc(100vw - 90px)!important;font-size:13px!important;padding:8px 12px!important;pointer-events:none}
 }
+
+/* Video a tutto schermo: comandi sopra il video, timeline compatta e ferma. */
+@media (max-width:759px){
+ body.kore-cap:not(.mobile-home-open) header{background:linear-gradient(#000d,#0000)!important;border-bottom:0!important;z-index:30!important}
+ body.kore-cap:not(.mobile-home-open) .layout{inset:0!important;height:100dvh!important}
+ body.kore-cap:not(.mobile-home-open) .stage{flex:1 1 auto!important;height:100%!important;min-height:0!important;background:#000!important}
+ body.kore-cap:not(.mobile-home-open) .bottom{position:absolute!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;max-height:none!important;padding:0!important;gap:0!important;border:0!important;background:linear-gradient(#0000,#000c 30%)!important;z-index:20!important;pointer-events:none}
+ body.kore-cap:not(.mobile-home-open) .bottom>#koreCap{pointer-events:auto;background:transparent!important}
+ #koreCap .kc-scroll{position:relative;overflow:hidden!important;max-height:none!important;touch-action:none!important}
+ #koreCap .kc-inner{position:absolute!important;left:50%;top:0;margin:0!important;min-height:0!important;will-change:transform}
+ #koreCap .kc-trans{min-height:40px!important}
+ #koreCap .kc-tl{border-top:0!important}
+ #koreCap .kc-line{background:#fff;box-shadow:0 0 6px #000}
+ #koreCap .kc-main{background:linear-gradient(135deg,#5b2d73,#2b3f7a)}
+ #koreCap{padding-bottom:max(6px,env(safe-area-inset-bottom))!important}
+ #koreCap .kc-tools{background:#000b!important;border-top:0!important}
+ #koreRail{top:calc(50% - 20px)!important}
+}

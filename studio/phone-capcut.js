@@ -3,9 +3,9 @@
 // Ogni azione richiama i pulsanti già esistenti dell'editor: la logica resta una sola.
 const $=id=>document.getElementById(id);
 const mobile=matchMedia('(max-width:759px)');
-const PPS=44,FRAME_W=34,ROW=58,SMALL=30;
+const PPS=44,FRAME_W=30,ROW=46,OVER=34,SMALL=28;
 let root,scroller,inner,toolbar,clock,playBtn,undoBtn,redoBtn,line;
-let rail,built=false,lastSet=-1,touching=false,raf=0,lastRows='',pending=0,tools='root';
+let rail,built=false,raf=0,lastRows='',tools='root';
 const thumbs=new Map();
 const fmt=s=>{s=Math.max(0,s);const m=Math.floor(s/60),r=Math.floor(s%60);return String(m).padStart(2,'0')+':'+String(r).padStart(2,'0')};
 function el(tag,cls,html){const n=document.createElement(tag);if(cls)n.className=cls;if(html!=null)n.innerHTML=html;return n}
@@ -18,8 +18,8 @@ async function frames(c,count){
  try{
   if(c.image&&c.image.naturalWidth){for(let i=0;i<count;i++)draw(c.image,c.image.naturalWidth,c.image.naturalHeight,i)}
   else if(c.url){
-   const v=document.createElement('video');v.muted=true;v.preload='auto';v.playsInline=true;v.src=c.url;
-   await new Promise((res,rej)=>{v.onloadeddata=res;v.onerror=rej;setTimeout(rej,5000)});
+   const v=document.createElement('video');v.muted=true;v.preload='auto';v.playsInline=true;v.src=c.url;try{v.play?.().then(()=>v.pause()).catch(()=>{})}catch(e){}
+   await new Promise((res,rej)=>{v.onloadeddata=res;v.onerror=rej;setTimeout(rej,8000)});
    for(let i=0;i<count;i++){
     const t=Math.min((v.duration||c.out)-.05,c.in+(c.out-c.in)*(i+.5)/count);
     await new Promise(res=>{v.onseeked=res;setTimeout(res,1200);try{v.currentTime=Math.max(0,t)}catch(e){res()}});
@@ -61,21 +61,22 @@ function render(){
  const sig=JSON.stringify(rows.map(r=>r.clips.map(c=>[c.id,c.start,c.dur,c.in,c.out,c.label])))+'|'+total;
  if(sig===lastRows){mark(sel);return}
  lastRows=sig;
- const keep=scroller.scrollLeft;
  inner.replaceChildren();inner.style.width=total*PPS+'px';
  inner.append(ruler(total));
  const main=rows[0],over=rows.slice(1);
  const overClips=over.flatMap(r=>r.clips.filter(c=>c.kind==='video'||c.kind==='image'));
  const textClips=rows.flatMap(r=>r.clips.filter(c=>c.kind==='title'));
  const audioClips=rows.flatMap(r=>r.clips.filter(c=>c.kind==='audio'));
- const mk=(cls,h)=>{const d=el('div','kc-row '+cls);d.style.height=h+'px';inner.append(d);return d};
+ let h=22;
+ const mk=(cls,hh)=>{const d=el('div','kc-row '+cls);d.style.height=hh+'px';inner.append(d);h+=hh+5;return d};
  const rm=mk('main',ROW);for(const c of main.clips.filter(c=>c.kind!=='title'&&c.kind!=='audio'))rm.append(clipEl(c,'main'));
  const plus=el('button','kc-plus','＋');plus.type='button';plus.setAttribute('aria-label','Aggiungi un altro video o foto');plus.style.left=(total*PPS+8)+'px';plus.onclick=e=>{e.stopPropagation();addMedia()};rm.append(plus);
- if(overClips.length){const ro=mk('over',ROW);for(const c of overClips)ro.append(clipEl(c,'over'))}
- const ra=mk('audio',SMALL);for(const c of audioClips)ra.append(clipEl(c,'audio'));if(!audioClips.length)ra.append(placeholder('Aggiungi audio','♪',pickAudio));
- const rt=mk('text',SMALL);for(const c of textClips)rt.append(clipEl(c,'text'));if(!textClips.length)rt.append(placeholder('Aggiungi testo','T',()=>$('mobileText')?.click()));
+ if(overClips.length){const ro=mk('over',OVER);for(const c of overClips)ro.append(clipEl(c,'over'))}
+ if(textClips.length){const rt=mk('text',SMALL);for(const c of textClips)rt.append(clipEl(c,'text'))}
+ if(audioClips.length){const ra=mk('audio',SMALL);for(const c of audioClips)ra.append(clipEl(c,'audio'))}
+ scroller.style.height=(h+2)+'px';
  inner.onclick=()=>api().select(null);
- scroller.scrollLeft=keep;mark(sel);
+ mark(sel);
 }
 function mark(sel){
  for(const b of inner.querySelectorAll('.kc-clip'))b.classList.toggle('on',b.dataset.id===sel);
@@ -112,23 +113,45 @@ function buildRail(){
  add('☷','Modifica',()=>{if(needClip())$('mobileAdvanced')?.click()});
  stage.append(rail);
 }
-let userAt=0;
-function setScroll(x){if(Math.abs(scroller.scrollLeft-x)>1){lastSet=x;scroller.scrollLeft=x}}
+// Timeline mossa con la trasformazione (non con lo scorrimento del browser): niente rimbalzi né scatti.
+let drag=null,inertia=0,dragged=false;
+const endT=()=>Math.max(.1,api().end());
+function setView(t){inner.style.transform='translate3d('+(-t*PPS)+'px,0,0)'}
+function stopInertia(){if(inertia){cancelAnimationFrame(inertia);inertia=0}}
+function moveTo(t){t=Math.max(0,Math.min(endT(),t));setView(t);api().seek(t);clock.textContent=fmt(t)+' / '+fmt(endT());return t}
 function loop(){
  raf=0;if(!root||root.hidden)return;
  const k=api();if(k){
-  if(k.playing()&&!touching)setScroll(Math.round(k.time()*PPS));
-  clock.textContent=fmt(k.time())+' / '+fmt(k.end());
+  if(!drag&&!inertia)setView(k.time());
+  if(!drag&&!inertia)clock.textContent=fmt(k.time())+' / '+fmt(k.end());
   const p=k.playing();if(playBtn.dataset.p!==String(p)){playBtn.dataset.p=String(p);playBtn.firstChild.textContent=p?'❚❚':'▶'}
  }
  raf=requestAnimationFrame(loop);
 }
-// Spostamenti fatti altrove (annulla, dividi, salti): il filmato segue il cursore, a meno che il dito stia scorrendo.
-document.addEventListener('kore-timechange',()=>{if(!scroller||root.hidden||touching||performance.now()-userAt<500)return;const k=api();if(k&&!k.playing())setScroll(Math.round(k.time()*PPS))});
-function onScroll(){
- if(Math.abs(scroller.scrollLeft-lastSet)<2)return;
- userAt=performance.now();
- if(pending)return;pending=requestAnimationFrame(()=>{pending=0;const k=api();if(!k)return;if(k.playing()&&touching)k.toggle();lastSet=scroller.scrollLeft;k.seek(scroller.scrollLeft/PPS)});
+function bindDrag(){
+ scroller.addEventListener('pointerdown',e=>{
+  if(e.button>0)return;stopInertia();dragged=false;
+  drag={x:e.clientX,t0:api().time(),id:e.pointerId,on:false,last:[{x:e.clientX,at:performance.now()}]};
+ });
+ scroller.addEventListener('pointermove',e=>{
+  if(!drag||e.pointerId!==drag.id)return;
+  const dx=e.clientX-drag.x;
+  if(!drag.on){if(Math.abs(dx)<6)return;drag.on=true;dragged=true;try{scroller.setPointerCapture(e.pointerId)}catch(_){}if(api().playing())api().toggle()}
+  e.preventDefault();drag.last.push({x:e.clientX,at:performance.now()});if(drag.last.length>6)drag.last.shift();
+  moveTo(drag.t0-dx/PPS);
+ });
+ const up=e=>{
+  if(!drag||e.pointerId!==drag.id)return;const d=drag;drag=null;
+  if(!d.on){return}
+  setTimeout(()=>{dragged=false},60);
+  const a=d.last[0],b=d.last[d.last.length-1],dt=Math.max(1,b.at-a.at);let v=-(b.x-a.x)/dt/PPS*1000;// secondi al secondo
+  if(performance.now()-b.at>90||Math.abs(v)<.4)return;
+  let t=api().time(),prev=performance.now();
+  const step=now=>{const dt2=Math.min(40,now-prev);prev=now;t+=v*dt2/1000;v*=Math.pow(.93,dt2/16);const c=Math.max(0,Math.min(endT(),t));moveTo(c);if(Math.abs(v)<.35||c!==t){inertia=0;return}inertia=requestAnimationFrame(step)};
+  inertia=requestAnimationFrame(step);
+ };
+ scroller.addEventListener('pointerup',up);scroller.addEventListener('pointercancel',up);
+ scroller.addEventListener('click',e=>{if(dragged){e.stopPropagation();e.preventDefault()}},true);
 }
 
 function build(){
@@ -145,9 +168,7 @@ function build(){
  const tl=el('div','kc-tl');tl.append(scroller,line);
  toolbar=el('div','kc-tools');toolbar.setAttribute('aria-label','Strumenti');
  root.append(trans,tl,toolbar);host.after(root);
- scroller.addEventListener('scroll',onScroll,{passive:true});
- scroller.addEventListener('touchstart',()=>{touching=true;if(api().playing())api().toggle()},{passive:true});
- const end=()=>{setTimeout(()=>{touching=false},350)};scroller.addEventListener('touchend',end,{passive:true});scroller.addEventListener('touchcancel',end,{passive:true});
+ bindDrag();
  buildRail();built=true;buildTools();return true;
 }
 function active(){
