@@ -31,7 +31,7 @@ function place(){
  raf=0;
  const on=mobile.matches&&document.body.classList.contains('kore-cap')&&!document.body.classList.contains('mobile-home-open');
  const id=on&&window.koreCap?.selected(),b=id&&window.koreHandles?.box(id);
- if(!b){if(box)box.hidden=true;raf=requestAnimationFrame(place);return}
+ if(!b||(b.w>=.97&&b.h>=.97)){if(box)box.hidden=true;raf=requestAnimationFrame(place);return}
  const stage=box.parentElement.getBoundingClientRect(),r=b.canvas.getBoundingClientRect();
  // Se il video è più grande dell'anteprima, le maniglie restano dentro lo schermo.
  const w=Math.min(b.w,1)*r.width,h=Math.min(b.h,1)*r.height;

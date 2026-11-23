@@ -91,3 +91,8 @@
  #koreCap .kc-tools{background:#000b!important;border-top:0!important}
  #koreRail{top:calc(50% - 20px)!important}
 }
+
+@media (max-width:759px){
+ #koreCap .kc-tools,#koreCap .kc-tools *{touch-action:pan-x!important}
+ #koreRail,#koreRail *{touch-action:pan-y!important}
+}

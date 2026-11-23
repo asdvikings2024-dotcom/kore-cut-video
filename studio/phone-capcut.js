@@ -3,7 +3,7 @@
 // Ogni azione richiama i pulsanti già esistenti dell'editor: la logica resta una sola.
 const $=id=>document.getElementById(id);
 const mobile=matchMedia('(max-width:759px)');
-const PPS=44,FRAME_W=30,ROW=46,OVER=34,SMALL=28;
+const PPS=44,ROW=46,FRAME_W=46,OVER=34,SMALL=28,DPR=2,MAX_SAMPLES=60;
 let root,scroller,inner,toolbar,clock,playBtn,undoBtn,redoBtn,line;
 let rail,built=false,raf=0,lastRows='',tools='root';
 const thumbs=new Map();
@@ -11,24 +11,26 @@ const fmt=s=>{s=Math.max(0,s);const m=Math.floor(s/60),r=Math.floor(s%60);return
 function el(tag,cls,html){const n=document.createElement(tag);if(cls)n.className=cls;if(html!=null)n.innerHTML=html;return n}
 const api=()=>window.koreCap;
 
-async function frames(c,count){
- const key=c.key+':'+c.in+':'+count;if(thumbs.has(key))return thumbs.get(key);
- const cv=document.createElement('canvas');cv.width=FRAME_W*count;cv.height=ROW;const ctx=cv.getContext('2d');ctx.fillStyle='#241b2c';ctx.fillRect(0,0,cv.width,cv.height);
- const draw=(src,sw,sh,i)=>{const k=Math.max(FRAME_W/sw,ROW/sh);ctx.save();ctx.beginPath();ctx.rect(i*FRAME_W,0,FRAME_W,ROW);ctx.clip();ctx.drawImage(src,i*FRAME_W+(FRAME_W-sw*k)/2,(ROW-sh*k)/2,sw*k,sh*k);ctx.restore()};
+async function frames(c,tiles){
+ const samples=Math.max(1,Math.min(tiles,MAX_SAMPLES)),key=c.key+':'+c.in+':'+c.out+':'+tiles;if(thumbs.has(key))return thumbs.get(key);
+ const tw=FRAME_W*DPR,th=ROW*DPR,cv=document.createElement('canvas');cv.width=tw*tiles;cv.height=th;const ctx=cv.getContext('2d');ctx.fillStyle='#241b2c';ctx.fillRect(0,0,cv.width,cv.height);
+ const tile=(src,sw,sh,j)=>{const k=Math.max(tw/sw,th/sh);ctx.save();ctx.beginPath();ctx.rect(j*tw,0,tw,th);ctx.clip();ctx.drawImage(src,j*tw+(tw-sw*k)/2,(th-sh*k)/2,sw*k,sh*k);ctx.restore()};
+ // Ogni campione copre una o più tessere affiancate (mai stirato, così resta nitido).
+ const put=(src,sw,sh,i)=>{const a=Math.floor(i*tiles/samples),b=Math.floor((i+1)*tiles/samples);for(let j=a;j<b;j++)tile(src,sw,sh,j)};
  try{
-  if(c.image&&c.image.naturalWidth){for(let i=0;i<count;i++)draw(c.image,c.image.naturalWidth,c.image.naturalHeight,i)}
+  if(c.image&&c.image.naturalWidth){for(let i=0;i<samples;i++)put(c.image,c.image.naturalWidth,c.image.naturalHeight,i)}
   else if(c.url){
    const v=document.createElement('video');v.muted=true;v.preload='auto';v.playsInline=true;v.src=c.url;try{v.play?.().then(()=>v.pause()).catch(()=>{})}catch(e){}
    await new Promise((res,rej)=>{v.onloadeddata=res;v.onerror=rej;setTimeout(rej,8000)});
-   for(let i=0;i<count;i++){
-    const t=Math.min((v.duration||c.out)-.05,c.in+(c.out-c.in)*(i+.5)/count);
-    await new Promise(res=>{v.onseeked=res;setTimeout(res,1200);try{v.currentTime=Math.max(0,t)}catch(e){res()}});
-    if(v.videoWidth)draw(v,v.videoWidth,v.videoHeight,i);
+   for(let i=0;i<samples;i++){
+    const t=Math.min((v.duration||c.out)-.05,c.in+(c.out-c.in)*(i+.5)/samples);
+    await new Promise(res=>{v.onseeked=res;setTimeout(res,1500);try{v.currentTime=Math.max(0,t)}catch(e){res()}});
+    if(v.videoWidth)put(v,v.videoWidth,v.videoHeight,i);
    }
    v.removeAttribute('src');v.load();
   }
  }catch(e){}
- const url=cv.toDataURL('image/jpeg',.6);thumbs.set(key,url);return url;
+ const url=cv.toDataURL('image/jpeg',.72);thumbs.set(key,url);return url;
 }
 
 function clipEl(c,rowKind){
@@ -36,7 +38,7 @@ function clipEl(c,rowKind){
  b.style.left=c.start*PPS+'px';b.style.width=Math.max(10,c.dur*PPS)+'px';
  b.setAttribute('aria-label',(c.label||c.kind)+', '+c.dur.toFixed(1)+' secondi');
  if(rowKind==='main'||rowKind==='over'){
-  if(c.url||c.image){const n=Math.max(1,Math.min(14,Math.ceil(c.dur*PPS/FRAME_W)));frames(c,n).then(u=>{b.style.backgroundImage='url('+u+')';b.style.backgroundSize='100% 100%'})}
+  if(c.url||c.image){const n=Math.max(1,Math.ceil(c.dur*PPS/FRAME_W));frames(c,n).then(u=>{b.style.backgroundImage='url('+u+')';b.style.backgroundSize=(n*FRAME_W)+'px 100%';b.style.backgroundRepeat='no-repeat';b.style.backgroundPosition='left center'})}
   else b.textContent=c.label||'';
  }else b.append(el('span','kc-l',(c.kind==='title'?'T ':'♪ ')+(c.label||'')));
  b.onclick=e=>{e.stopPropagation();const on=api().selected()===c.id;api().select(on?null:c.id)};
