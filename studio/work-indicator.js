@@ -46,12 +46,13 @@ function attach(dialog){
  const min=document.createElement('button');min.type='button';min.className='kw-min';min.textContent='Riduci e continua a montare';min.hidden=true;
  (dialog.querySelector('.kore-caption-panel')||dialog).append(min);
  min.onclick=()=>dialog.classList.add('kore-minimized');
- let samples=[],ending=null;
- const show=(label,frac,etaText,pillText)=>{box.hidden=false;min.hidden=false;step.textContent=label;eta.textContent=etaText||'';if(frac==null){bar.classList.add('indeterminate');bar.removeAttribute('aria-valuenow');fill.style.width=''}else{bar.classList.remove('indeterminate');const v=Math.max(2,Math.min(100,Math.round(frac*100)));fill.style.width=v+'%';bar.setAttribute('aria-valuenow',String(v))}p.hidden=false;pt.textContent=pillText||label;keepAwake(true)};
- const stop=ok=>{samples=[];keepAwake(false);min.hidden=true;dialog.classList.remove('kore-minimized');if(ok){box.hidden=false;bar.classList.remove('indeterminate');fill.style.width='100%';step.textContent='Fatto';eta.textContent='';p.hidden=false;pt.textContent='✓ Sottotitoli pronti';clearTimeout(p.t);p.t=setTimeout(()=>{p.hidden=true},3500)}else{box.hidden=true;p.hidden=true}};
+ let samples=[],tick=null,waitFrom=0;const clearTick=()=>{clearInterval(tick);tick=null};
+ const show=(label,frac,etaText,pillText)=>{if(box.hidden)setTimeout(()=>box.scrollIntoView({block:'center',behavior:'smooth'}),50);box.hidden=false;min.hidden=false;step.textContent=label;eta.textContent=etaText||'';if(frac==null){bar.classList.add('indeterminate');bar.removeAttribute('aria-valuenow');fill.style.width=''}else{bar.classList.remove('indeterminate');const v=Math.max(2,Math.min(100,Math.round(frac*100)));fill.style.width=v+'%';bar.setAttribute('aria-valuenow',String(v))}p.hidden=false;pt.textContent=pillText||label;keepAwake(true)};
+ const stop=ok=>{clearTick();samples=[];keepAwake(false);min.hidden=true;dialog.classList.remove('kore-minimized');if(ok){box.hidden=false;bar.classList.remove('indeterminate');fill.style.width='100%';step.textContent='Fatto';eta.textContent='';p.hidden=false;pt.textContent='✓ Sottotitoli pronti';clearTimeout(p.t);p.t=setTimeout(()=>{p.hidden=true},3500)}else{box.hidden=true;p.hidden=true}};
  const read=()=>{
   const r=parseStatus(state.textContent);if(!r)return;
   if(r.phase==='done')return stop(true);if(r.phase==='end')return stop(false);
+  if(r.phase!==3)clearTick();
   if(r.phase===1){samples=[];show('Passo 1 di 3 · Estraggo l’audio',null,'','✦ Estraggo l’audio…')}
   else if(r.phase===2){samples=[];if(r.download!=null)show('Passo 2 di 3 · Scarico l’AI ('+r.download+'%) · solo la prima volta',r.download/100,'Dopo il primo uso resta nel telefono','✦ Scarico l’AI · '+r.download+'%');else show('Passo 2 di 3 · Preparo l’AI',null,'','✦ Preparo l’AI…')}
   else if(r.phase===3&&!r.keep){
@@ -59,6 +60,7 @@ function attach(dialog){
    const left=r.total?estimate(samples,now,total,r.from):null,frac=r.total?r.from/total:null,etaText=left==null?(r.total?'Calcolo il tempo che manca…':''):'Mancano '+formatEta(left);
    const pc=frac==null?'':' · '+Math.round(frac*100)+'%';
    show('Passo 3 di 3 · Trascrivo '+(r.total?r.from+' s su '+total+' s':'…'),frac,etaText,'✦ Sottotitoli'+pc+(left==null?'':' · '+formatEta(left)));
+   if(left==null){if(samples.length===1)waitFrom=now;clearTick();tick=setInterval(()=>{if(box.hidden){clearTick();return}eta.textContent='L’AI sta ascoltando… è al lavoro da '+Math.round((performance.now()-waitFrom)/1000)+' s'},1000)}else clearTick();
   }
  };
  new MutationObserver(read).observe(state,{childList:true,characterData:true,subtree:true});
