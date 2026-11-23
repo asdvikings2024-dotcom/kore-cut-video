@@ -134,7 +134,7 @@ function build(){
  scroller=el('div','kc-scroll');inner=el('div','kc-inner');scroller.append(inner);
  line=el('i','kc-line');line.setAttribute('aria-hidden','true');
  const tl=el('div','kc-tl');tl.append(scroller,line);
- toolbar=el('nav','kc-tools');toolbar.setAttribute('aria-label','Strumenti');
+ toolbar=el('div','kc-tools');toolbar.setAttribute('aria-label','Strumenti');
  root.append(trans,tl,toolbar);host.after(root);
  scroller.addEventListener('scroll',onScroll,{passive:true});
  scroller.addEventListener('touchstart',()=>{touching=true;if(api().playing())api().toggle()},{passive:true});
