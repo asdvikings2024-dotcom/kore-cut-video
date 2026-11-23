@@ -154,7 +154,12 @@ function buildRail(){
  add('✦','Effetti',()=>$('mobileEffects')?.click());
  add('☷','Modifica',()=>{if(needClip())$('mobileAdvanced')?.click()});
  stage.append(rail);
+ const back=el('button','kc-back','▤ Montaggio');back.id='koreCapBack';back.type='button';back.onclick=()=>document.body.classList.remove('kc-clean');stage.append(back);
+ const fs=el('button','kc-fs','⛶');fs.id='koreCapFs';fs.type='button';fs.setAttribute('aria-label','Schermo intero');fs.onclick=()=>document.body.classList.add('kc-clean');stage.append(fs);
 }
+// Altezza reale visibile (Chrome/Safari iOS: 100dvh può finire sotto la barra del browser)
+function setVh(){const h=(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--kvh',Math.round(h)+'px')}
+setVh();window.addEventListener('resize',setVh);window.visualViewport?.addEventListener('resize',setVh);window.addEventListener('orientationchange',()=>setTimeout(setVh,300));
 // Timeline mossa con la trasformazione (non con lo scorrimento del browser): niente rimbalzi né scatti.
 let drag=null,inertia=0,dragged=false;
 const endT=()=>Math.max(.1,api().end());
