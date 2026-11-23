@@ -30,8 +30,10 @@ export function estimate(samples,now,total,at){
  if(samples.length<2)return null;const a=samples[0],b=samples[samples.length-1],done=b.at-a.at,elapsed=(b.t-a.t)/1000;
  if(done<=0||elapsed<=0)return null;return Math.max(0,(total-at)/(done/elapsed));
 }
+let asking=false;
 async function keepAwake(on){
- try{if(on&&!lock&&navigator.wakeLock){lock=await navigator.wakeLock.request('screen');lock.addEventListener('release',()=>{lock=null})}else if(!on&&lock){await lock.release();lock=null}}catch(e){}
+ if(ios)return; // su iPhone lo schermo acceso non è affidabile: meglio non rischiare
+ try{if(on&&!lock&&!asking&&navigator.wakeLock){asking=true;try{lock=await navigator.wakeLock.request('screen')}finally{asking=false}if(!lock)return;lock.addEventListener('release',()=>{lock=null})}else if(!on&&lock){await lock.release();lock=null}}catch(e){}
 }
 function pill(){
  let p=$('koreWorkPill');if(p)return p;
@@ -49,7 +51,7 @@ function attach(dialog){
   quality.value='tiny';
   if(window.koreAsrSafe)for(const o of [...quality.options])if(o.value!=='tiny')o.remove();
   const note=document.createElement('p');note.className='kore-work-note';
-  note.textContent=window.koreAsrSafe?'L’ultima analisi ha riavviato l’app (poca memoria sul telefono): uso il modello leggero, più sicuro.':'Su iPhone parto col modello leggero per non riavviare l’app. Se tutto va bene puoi provare "Accurata" dal menu.';
+  const last=store.get('koreAsrLast');note.textContent=window.koreAsrSafe?'L’ultima analisi ha riavviato l’app (poca memoria sul telefono): uso il modello leggero, più sicuro.'+(last?' Ultimo passo prima del riavvio: «'+last+'».':''):'Su iPhone parto col modello leggero per non riavviare l’app. Se tutto va bene puoi provare "Accurata" dal menu.';
   state.before(note);
  }
  const box=document.createElement('div');box.className='kore-work';box.hidden=true;
@@ -64,7 +66,7 @@ function attach(dialog){
  const stop=ok=>{clearTick();samples=[];keepAwake(false);min.hidden=true;dialog.classList.remove('kore-minimized');if(ok){box.hidden=false;bar.classList.remove('indeterminate');fill.style.width='100%';step.textContent='Fatto';eta.textContent='';p.hidden=false;pt.textContent='✓ Sottotitoli pronti';clearTimeout(p.t);p.t=setTimeout(()=>{p.hidden=true},3500)}else{box.hidden=true;p.hidden=true}};
  const read=()=>{
   const r=parseStatus(state.textContent);if(!r)return;
-  if(r.phase==='done'||r.phase==='end')store.del(KEY);else store.set(KEY,String(Date.now()));
+  if(r.phase==='done'||r.phase==='end')store.del(KEY);else{store.set(KEY,String(Date.now()));store.set('koreAsrLast',String(state.textContent||'').slice(0,100))}
   if(r.phase==='done')return stop(true);if(r.phase==='end')return stop(false);
   if(r.phase!==3)clearTick();
   if(r.phase===1){samples=[];show('Passo 1 di 3 · Estraggo l’audio',null,'','✦ Estraggo l’audio…')}
