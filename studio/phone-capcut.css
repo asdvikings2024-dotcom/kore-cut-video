@@ -96,3 +96,24 @@
  #koreCap .kc-tools,#koreCap .kc-tools *{touch-action:pan-x!important}
  #koreRail,#koreRail *{touch-action:pan-y!important}
 }
+
+@media (max-width:759px){
+ #koreCap .kc-h{display:none;position:absolute;top:0;bottom:0;width:18px;background:#fff;z-index:5;touch-action:none;cursor:ew-resize}
+ #koreCap .kc-h::after{content:'';position:absolute;left:50%;top:30%;bottom:30%;width:3px;margin-left:-1.5px;border-radius:2px;background:#555}
+ #koreCap .kc-h.l{left:0;border-radius:7px 0 0 7px}
+ #koreCap .kc-h.r{right:0;border-radius:0 7px 7px 0}
+ #koreCap .kc-clip.on .kc-h{display:block}
+ #koreCap .kc-right{gap:2px}
+ #koreCap .kc-ur{width:38px}
+ #koreCap .kc-pop{margin:0 10px 8px;padding:10px 12px;border-radius:16px;background:#1b1422f2;border:1px solid #ffffff22;color:#fff}
+ #koreCap .kc-pop-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+ #koreCap .kc-pop-h button{width:34px;height:34px;border:0;border-radius:50%;background:#ffffff14;color:#fff}
+ #koreCap .kc-chips{display:flex;gap:8px}
+ #koreCap .kc-chips button{flex:1;min-height:44px;border:1px solid #ffffff2a;border-radius:12px;background:#ffffff0d;color:#fff;font:700 15px inherit;font-family:inherit}
+ #koreCap .kc-chips button[aria-pressed=true]{background:#ff2d92;border-color:#ff2d92}
+ #koreCap .kc-vol{display:flex;align-items:center;gap:12px}
+ #koreCap .kc-vol input{flex:1;accent-color:#ff2d92;height:34px}
+ #koreCap .kc-val{min-width:48px;text-align:right;font-variant-numeric:tabular-nums}
+ #koreCap .kc-mute{margin-top:8px;min-height:40px;padding:0 14px;border:1px solid #ffffff2a;border-radius:12px;background:#ffffff0d;color:#fff;font-family:inherit}
+ #koreCap .kc-msg{margin:0;font-size:14px;line-height:1.4}
+}

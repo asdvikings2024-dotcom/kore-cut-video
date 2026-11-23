@@ -1632,6 +1632,37 @@ window.koreHandles={
  end(){persist();refresh()},
  remove(id){const c=project.clips.find(q=>q.id===id);if(!c||exporting)return;selected=id;$('remove').click()}
 };
+// Taglio col dito sui bordi, velocità, volume e "Togli pause" per la timeline da telefono.
+{
+ let trim=null;
+ Object.assign(window.koreCap,{
+  trimBegin(id){const c=project.clips.find(q=>q.id===id);if(!c||exporting)return null;snapshot();const m=media.get(c.media),src=m?.kind==='video'||m?.kind==='audio'||(c.kind==='title'&&!!c.transcriptCues),main=project.tracks[0]?.id===c.track;trim={id,base:{start:c.start,in:c.in,out:c.out},main,src,maxOut:(m?.kind==='video'||m?.kind==='audio')?(m.el?.duration||m.duration||Infinity):Infinity,later:main?project.clips.filter(q=>q.track===c.track&&q.id!==c.id&&q.start>=c.start+duration(c)-.001).map(q=>[q.id,q.start]):[]};return {speed:c.speed||1}},
+  trimTo(side,dt){const t=trim,c=t&&project.clips.find(q=>q.id===t.id);if(!c)return null;const sp=c.speed||1,b=t.base,minD=.2,shift=d=>{for(const [id,st] of t.later){const q=project.clips.find(x=>x.id===id);if(q)q.start=Math.max(0,st+d)}};
+   if(side==='r'){const out=Math.max(b.in+minD*sp,Math.min(t.maxOut,b.out+dt*sp));c.out=out;shift((out-b.out)/sp)}
+   else{let d=Math.min(dt,(b.out-b.in)/sp-minD);if(t.src)d=Math.max(d,-b.in/sp);if(t.src)c.in=b.in+d*sp;else c.out=b.out-d*sp;if(t.main)shift(-d);else c.start=Math.max(0,b.start+d)}
+   draw();return {start:c.start,dur:duration(c)}},
+  trimEnd(){if(!trim)return;trim=null;persist();refresh()},
+  info(id){const c=project.clips.find(q=>q.id===id);const m=c&&media.get(c.media);return c?{speed:c.speed||1,volume:c.volume??1,audio:m?.kind==='video'||m?.kind==='audio'}:null},
+  setSpeed(id,v){const c=project.clips.find(q=>q.id===id);if(!c||exporting)return;const old=duration(c),main=project.tracks[0]?.id===c.track;mutate(()=>{c.speed=v;if(main){const d=duration(c)-old;for(const q of project.clips)if(q.track===c.track&&q.id!==c.id&&q.start>=c.start+old-.001)q.start=Math.max(0,q.start+d)}})},
+  setVolume(id,v){const c=project.clips.find(q=>q.id===id);if(!c||exporting)return;mutate(()=>{c.volume=Math.max(0,Math.min(2,v))})},
+  async removeSilences(id,onProgress){
+   const c=project.clips.find(q=>q.id===id),m=c&&media.get(c.media);
+   if(!c||!m||!['video','audio'].includes(m.kind)||!m.blob||exporting)return {error:'Seleziona un video con parlato.'};
+   const limit=Math.min(300,c.out-c.in),before={in:c.in,out:c.out};
+   const {samples,offset}=await koreExtractAudio(m.blob,c.in,limit,{onProgress});
+   const cuts=detectSilences(samples).map(x=>({start:x.start+offset+.12,end:x.end+offset-.12})).filter(x=>x.end-x.start>=.3);
+   if(!cuts.length)return {removed:0,cuts:0};
+   const keeps=[];let pos=c.in;for(const x of cuts){if(x.start>pos+.3)keeps.push([pos,x.start]);pos=x.end}if(c.out-pos>.3)keeps.push([pos,c.out]);
+   const cur=project.clips.find(q=>q.id===id);if(!cur||cur.in!==before.in||cur.out!==before.out)return {error:'La clip è cambiata durante l\'analisi. Riprova.'};
+   const sp=c.speed||1,oldDur=duration(c),main=project.tracks[0]?.id===c.track;let removed=0;
+   mutate(()=>{let at=c.start;const copies=keeps.map((k,i)=>{const copy={...clone(c),id:uid(),in:k[0],out:k[1],start:at};delete copy.keyframes;if(i>0){copy.fadeIn=0;copy.transitionDuration=0}if(i<keeps.length-1)copy.fadeOut=0;at+=(k[1]-k[0])/sp;return copy});
+    const delta=at-c.start-oldDur;removed=-delta;project.clips=project.clips.filter(q=>q.id!==id);
+    if(main)for(const q of project.clips)if(q.track===c.track&&q.start>=c.start+oldDur-.001)q.start=Math.max(0,q.start+delta);
+    project.clips.push(...copies);selected=copies[0].id});
+   return {removed,cuts:cuts.length,parts:keeps.length};
+  }
+ });
+}
 window.koreTranscript={
  find(){const c=selectedClip();const t=c&&c.transcriptCues?c:project.clips.find(q=>q.transcriptCues);return t?{id:t.id,speed:t.speed||1,start:t.start,in:t.in,cues:clone(t.transcriptCues)}:null},
  apply(id,cues){const c=project.clips.find(q=>q.id===id);if(!c||exporting)return false;mutate(()=>{c.transcriptCues=cues;c.text=cues.map(q=>q.text).join(' ')});return true},
