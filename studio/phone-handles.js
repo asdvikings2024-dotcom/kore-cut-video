@@ -41,3 +41,7 @@ function place(){
  raf=requestAnimationFrame(place);
 }
 const wait=setInterval(()=>{if(build()){clearInterval(wait);if(!raf)raf=requestAnimationFrame(place)}},200);
+
+// Etichetta verde "NUOVA": se non la vedi in alto, stai usando il link vecchio.
+(async()=>{let v='';try{v=(await (await fetch(new URL('./build.json',import.meta.url),{cache:'no-store'})).json()).sha?.slice(0,7)||''}catch(e){}
+ const b=el('div',null,'✓ NUOVA VERSIONE'+(v?' · '+v:''));b.id='koreNewBadge';document.body.append(b)})();

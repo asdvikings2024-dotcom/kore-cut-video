@@ -1,4 +1,4 @@
-import {openWordEditor,openTextLooks} from './text-tools.js?v=nav-22';
+import {openWordEditor,openTextLooks} from './text-tools.js?v=nav-23';
 import {gestureTransform,bounded} from './touch-transform.js?v=smart-20';
 export function installTouchEditor(api){
  const {canvas,getProject,getTime,getActive,getMedia,select,getSelected,mutate,snapshot,draw,refresh,persist,pause,seek,isExporting,displayCaption,status,setRatio,previewLayout,renderFormatPreview}=api,$=id=>document.getElementById(id),stage=canvas.closest('.stage');let guide=null,target=null,panel=null,points=new Map(),gesture=null,saved=false,lastTap=null;
