@@ -1,0 +1,3 @@
+export function sceneReady(media,scene,offset=0){return !!media?.ready&&!!scene&&Number.isFinite(offset)&&offset>=0&&(media.kind==='image'||media.kind==='video'&&Number.isFinite(media.el?.duration)&&media.el.duration+.001>=offset+scene.seconds)}
+export function sceneTarget(slots,replacing=null){return Number.isInteger(replacing)&&replacing>=0&&replacing<slots.length?replacing:slots.findIndex(id=>!id)}
+export function mediaMatchesFilter(media,filter){if(!['image','video'].includes(media.kind))return false;if(filter==='live')return media.isLivePhoto===true||/\.(livp|livephoto)$/i.test(media.name||'');return filter==='all'||media.kind===filter}

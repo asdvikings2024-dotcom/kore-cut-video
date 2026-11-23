@@ -1,0 +1,21 @@
+const random=n=>{const x=Math.sin(n*71.71)*43758.5453;return x-Math.floor(x)};
+export const STUDIO_VIDEO_EFFECTS=[['fxStudioBokeh','Bokeh fluttuante'],['fxStudioSnow','Neve soffice'],['fxStudioRain','Pioggia cinematografica'],['fxStudioTunnel','Tunnel di luce'],['fxStudioLaser','Scansione laser'],['fxStudioFilm','Cornice pellicola 35 mm'],['fxStudioHalftone','Retino pop animato'],['fxStudioAurora','Aurora in movimento']];
+export function drawStudioVideo(ctx,value,t,w,h){
+ if(!value?.startsWith('fxStudio'))return;ctx.save();const x=-w/2,y=-h/2;
+ if(value==='fxStudioBokeh'){ctx.globalCompositeOperation='screen';for(let i=0;i<15;i++){const r=w*(.016+random(i+4)*.055),xx=x+((random(i)+t*.016*(i%2?1:-1)+10)%1)*w,yy=y+((random(i+100)+t*.013)%1)*h;const glow=ctx.createRadialGradient(xx,yy,0,xx,yy,r);glow.addColorStop(0,i%2?'#ef9dca18':'#b5eaff12');glow.addColorStop(.8,i%2?'#ffb9da40':'#b3f0ff40');glow.addColorStop(1,'#ffffff00');ctx.fillStyle=glow;ctx.fillRect(xx-r,yy-r,r*2,r*2)}}
+ if(value==='fxStudioSnow'){ctx.fillStyle='#ffffffb0';for(let i=0;i<65;i++){ctx.beginPath();ctx.arc(x+((random(i+50)+Math.sin(t*.7+i)*.025+1)%1)*w,y+((random(i+150)+t*(.035+random(i+250)*.06))%1)*h,w*(.001+random(i+350)*.003),0,Math.PI*2);ctx.fill()}}
+ if(value==='fxStudioRain'){ctx.strokeStyle='#d6efff65';ctx.lineWidth=Math.max(1,w*.0012);ctx.beginPath();for(let i=0;i<90;i++){const xx=x+random(i+10)*w,yy=y+((random(i+200)+t*.55)%1)*h;ctx.moveTo(xx,yy);ctx.lineTo(xx-w*.013,yy+h*.035)}ctx.stroke()}
+ if(value==='fxStudioTunnel'){ctx.globalCompositeOperation='screen';for(let i=0;i<8;i++){const p=((t*.18+i/8)%1),r=Math.max(w,h)*p;ctx.globalAlpha*=.94;ctx.strokeStyle=i%2?'#f68dcf65':'#77ddff65';ctx.lineWidth=Math.max(1,w*.002*(1-p));ctx.beginPath();ctx.ellipse(0,0,r*.55,r,0,0,Math.PI*2);ctx.stroke()}}
+ if(value==='fxStudioLaser'){const yy=y+(.5+.45*Math.sin(t*.8))*h;ctx.globalCompositeOperation='screen';const g=ctx.createLinearGradient(0,yy-h*.05,0,yy+h*.05);g.addColorStop(0,'#ff459900');g.addColorStop(.48,'#ff459933');g.addColorStop(.5,'#ffcdecd0');g.addColorStop(1,'#ff459900');ctx.fillStyle=g;ctx.fillRect(x,yy-h*.05,w,h*.1)}
+ if(value==='fxStudioFilm'){ctx.fillStyle='#111018';ctx.fillRect(x,y,w*.075,h);ctx.fillRect(x+w*.925,y,w*.075,h);ctx.fillStyle='#d2c8b8';for(let i=0;i<12;i++){const yy=y+((i/12+t*.025)%1)*h;ctx.fillRect(x+w*.018,yy,w*.036,h*.043);ctx.fillRect(x+w*.946,yy,w*.036,h*.043)}}
+ if(value==='fxStudioHalftone'){const gap=w/27;ctx.fillStyle='#30133b45';for(let r=0;r<h/gap;r++)for(let c=0;c<27;c++){ctx.beginPath();ctx.arc(x+c*gap,y+r*gap,gap*(.12+.05*Math.sin(t*2+c*.3+r*.2)),0,Math.PI*2);ctx.fill()}}
+ if(value==='fxStudioAurora'){ctx.globalCompositeOperation='screen';for(let i=0;i<3;i++){const xx=x+w*(.2+i*.3+.15*Math.sin(t*.4+i));const g=ctx.createLinearGradient(xx,y,xx+w*.5,y+h);g.addColorStop(0,['#66ffc34a','#bf83ff4a','#68d9ff4a'][i]);g.addColorStop(1,'#ffffff00');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(xx,y);ctx.bezierCurveTo(xx-w*.3,y+h*.4,xx+w*.4,y+h*.6,xx+w*.1,y+h);ctx.lineTo(xx+w*.5,y+h);ctx.lineTo(xx+w*.25,y);ctx.fill()}}
+ ctx.restore();
+}
+export function finishStudioPhoto(canvas,s){
+ if(!(s.photoGlow||s.photoLeak||s.photoPrism||s.photoStars))return;const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;ctx.save();ctx.globalCompositeOperation='source-atop';
+ if(s.photoGlow){const g=ctx.createRadialGradient(w*.45,h*.32,0,w*.45,h*.32,Math.max(w,h)*.7);g.addColorStop(0,'rgba(255,242,214,'+(s.photoGlow/100*.4)+')');g.addColorStop(1,'#ffffff00');ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
+ if(s.photoLeak){const g=ctx.createLinearGradient(0,0,w*.65,h*.2);g.addColorStop(0,'rgba(255,98,98,'+(s.photoLeak/100*.65)+')');g.addColorStop(.45,'rgba(255,204,106,'+(s.photoLeak/100*.2)+')');g.addColorStop(1,'#ffffff00');ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
+ if(s.photoPrism){const g=ctx.createLinearGradient(0,h,w,0),a=s.photoPrism/100*.22;g.addColorStop(0,'rgba(255,95,194,'+a+')');g.addColorStop(.5,'rgba(119,244,239,'+a+')');g.addColorStop(1,'rgba(142,112,255,'+a+')');ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
+ if(s.photoStars){ctx.fillStyle='rgba(255,249,224,'+(s.photoStars/100*.85)+')';for(let i=0;i<18;i++){const x=random(i+4)*w,y=random(i+130)*h,size=w*(.003+random(i+250)*.006);ctx.fillRect(x-size,y-size*.08,size*2,size*.16);ctx.fillRect(x-size*.08,y-size,size*.16,size*2)}}ctx.restore();
+}
