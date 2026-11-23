@@ -20,3 +20,28 @@ export function normalizeAsrTiming(result,seconds){
  }
  return {cues,estimated};
 }
+
+// Pause nel parlato: tratti silenziosi lunghi almeno minLength, con soglia relativa al livello della voce
+// (non fissa), così funziona anche con rumore di fondo. Senza un livello di voce credibile restituisce [].
+export function findPauses(samples,rate=16000,{frame=.05,minLength=.25,ratio=.12}={}){
+ const size=Math.round(rate*frame),rms=[];
+ for(let i=0;i+size<=samples.length;i+=size){let e=0;for(let j=i;j<i+size;j++)e+=samples[j]*samples[j];rms.push(Math.sqrt(e/size))}
+ if(rms.length<10)return [];
+ const speech=[...rms].sort((a,b)=>a-b)[Math.floor(rms.length*.75)];
+ if(!(speech>=.005))return [];
+ const limit=speech*ratio,out=[];let start=null;
+ rms.forEach((v,i)=>{if(v<limit){if(start===null)start=i}else{if(start!==null&&(i-start)*frame>=minLength)out.push([start*frame,i*frame]);start=null}});
+ if(start!==null&&(rms.length-start)*frame>=minLength)out.push([start*frame,rms.length*frame]);
+ return out;
+}
+// Whisper attribuisce spesso la pausa alla parola dopo (o prima): ogni parola viene ristretta alla parte
+// più lunga fuori dalle pause. Se la parola cade tutta in una pausa, o ne resterebbe meno di 60 ms, resta com'è.
+export function snapWordsToSpeech(cues,pauses){
+ if(!Array.isArray(cues)||!cues.length||!Array.isArray(pauses)||!pauses.length)return cues;
+ return cues.map(cue=>{
+  let parts=[[cue.start,cue.end]];
+  for(const [a,b] of pauses){const next=[];for(const [s,e] of parts){if(b<=s||a>=e){next.push([s,e]);continue}if(a>s)next.push([s,a]);if(b<e)next.push([b,e])}parts=next}
+  const best=parts.sort((x,y)=>(y[1]-y[0])-(x[1]-x[0]))[0];
+  return best&&best[1]-best[0]>=.06?{...cue,start:best[0],end:best[1]}:cue;
+ });
+}
