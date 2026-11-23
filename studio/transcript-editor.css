@@ -1,0 +1,21 @@
+.kt{position:fixed;inset:0;z-index:3000;display:flex;flex-direction:column;background:#121214;color:#fff;padding:calc(10px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom));font-family:inherit}
+.kt-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.kt-head h2{margin:0;font-size:19px}
+.kt-x{width:44px;height:44px;border:0;border-radius:50%;background:#ffffff14;color:#fff;font-size:18px}
+.kt-hint{margin:8px 2px;font-size:13px;line-height:1.4;color:#ffffffb8;min-height:36px}
+.kt-modes,.kt-quick{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.kt-modes button,.kt-quick button{flex:1 1 0;min-height:44px;padding:6px 10px;border:1px solid #ffffff2a;border-radius:12px;background:#ffffff0d;color:#fff;font:600 13px inherit;font-family:inherit}
+.kt-modes button[aria-pressed=true]{background:#ff2d92;border-color:#ff2d92}
+.kt-list{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:8px;padding:2px 0}
+.kt-row{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:start;padding:8px;border-radius:12px;background:#ffffff0a}
+.kt-time{min-height:34px;padding:0 8px;border:0;border-radius:8px;background:#ffffff14;color:#ffffffc0;font:600 12px inherit;font-variant-numeric:tabular-nums}
+.kt-words{display:flex;flex-wrap:wrap;gap:6px}
+.kt-w{min-height:38px;padding:4px 10px;border:1px solid #ffffff26;border-radius:10px;background:#ffffff10;color:#fff;font:500 15px inherit;font-family:inherit}
+.kt-w.off{text-decoration:line-through;opacity:.4;background:#ff4d4d22;border-color:#ff4d4d66}
+.kt-w.chg{border-color:#6cecff;color:#6cecff}
+.kt-in{min-height:38px;width:110px;padding:4px 8px;border:1px solid #6cecff;border-radius:10px;background:#000;color:#fff;font:500 16px inherit}
+.kt-row-del{min-width:38px;min-height:38px;border:0;border-radius:8px;background:transparent;color:#ff9a9a;font-size:17px}
+.kt-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:10px}
+.kt-count{font-size:13px;color:#ffffffa8}
+.kt-save{min-height:48px;padding:0 24px;border:0;border-radius:14px;background:#ff2d92;color:#fff;font:700 16px inherit;font-family:inherit}
+.kt-save:disabled{opacity:.4}

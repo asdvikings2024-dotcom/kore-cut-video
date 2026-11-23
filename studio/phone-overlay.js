@@ -137,5 +137,27 @@ function watchPanel(){
  new MutationObserver(()=>{const p=$('koreTouchEditor');if(p)extras(p)}).observe(document.body,{childList:true});
 }
 
+// Togli sfondo con l'AI in un tocco su una foto o un logo già nel video (si può annullare).
+let cutBusy=false;
+window.koreCutoutAI=async id=>{
+ if(cutBusy)return;const file=await window.koreSimple?.sourceFile(id);
+ if(!file)return toast('Lo sfondo si toglie solo dalle foto e dai loghi.');
+ cutBusy=true;toast('Tolgo lo sfondo con l\'AI… la prima volta scarica il modello, poi è veloce.');
+ let engine=null;
+ try{
+  const img=await loadImage(file),work=workCanvas(img);img.close?.();
+  const w=work.width,h=work.height,src=work.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h);
+  engine=createObjectAI();
+  const mask=await engine.run(work,{onProgress:t=>toast(t)});
+  const r=applyMask(src.data,w,h,mask.mask,mask.width,mask.height);
+  if(r.kept<.01){toast('Non trovo un soggetto da separare. Prova con "Sovrimpressione" → Logo · togli colore.');return}
+  const out=cropped(fromPixels(r.data,w,h)),blob=await new Promise(res=>out.toBlob(res,'image/png'));
+  if(!blob)throw Error('Esportazione non riuscita');
+  const ok=await window.koreSimple.replace(id,new File([blob],'senza-sfondo.png',{type:'image/png'}));
+  toast(ok?'Sfondo tolto ✓ Se non va bene premi Annulla.':'Non sono riuscito a sostituire l\'immagine.');
+ }catch(e){toast((e&&e.message)||'Non riuscito. Riprova.')}
+ finally{try{engine?.dispose()}catch(e){}cutBusy=false}
+};
+
 function init(){build();watchPanel();let tries=0;const t=setInterval(()=>{if(addButton()||++tries>75)clearInterval(t)},200)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();

@@ -79,22 +79,23 @@ function render(){
 }
 function mark(sel){
  for(const b of inner.querySelectorAll('.kc-clip'))b.classList.toggle('on',b.dataset.id===sel);
- const mode=sel?'clip':'root';if(mode!==tools){tools=mode;buildTools()}
+ const mode=sel||'root';if(mode!==tools){tools=mode;buildTools()}
  undoBtn.disabled=!!$('undo')?.disabled;redoBtn.disabled=!!$('redo')?.disabled;
 }
 
 function btn(icon,label,fn,cls){const b=el('button',cls||null,'<span aria-hidden="true">'+icon+'</span><small>'+label+'</small>');b.type='button';b.onclick=fn;return b}
 function needClip(){let id=api().selected();if(!id){id=api().atPlayhead();if(id)api().select(id)}return id}
 function buildTools(){
- toolbar.replaceChildren();toolbar.classList.toggle('clip',tools==='clip');
- if(tools==='clip'){
+ toolbar.replaceChildren();toolbar.classList.toggle('clip',tools!=='root');
+ if(tools!=='root'){
   const sel=api().selected(),c=api().rows().flatMap(r=>r.clips).find(x=>x.id===sel);
   toolbar.append(btn('‹','Indietro',()=>api().select(null)),
    btn('✂','Dividi',()=>$('mobileSplit')?.click()),
    btn('☷','Modifica',()=>$('mobileAdvanced')?.click()),
    btn('⧉','Duplica',()=>$('duplicate')?.click()));
-  if(c&&c.kind==='image'||c&&c.kind==='video'&&c.image)toolbar.append(btn('✦','Togli sfondo',()=>{window.koreTouchEdit?.(sel);setTimeout(()=>[...document.querySelectorAll('.kore-extra button')].find(b=>/sfondo/i.test(b.textContent))?.click(),150)}));
-  toolbar.append(btn('◫','Muovi',()=>window.koreTouchEdit?.(sel)),btn('🗑','Elimina',()=>$('remove')?.click(),'danger'));
+  if(c&&c.tr)toolbar.append(btn('✎','Correggi parole',()=>window.koreOpenTranscriptEditor?.()));
+  if(c&&c.kind==='image')toolbar.append(btn('✦','Togli sfondo',()=>window.koreCutoutAI?.(sel)));
+  toolbar.append(btn('🗑','Elimina',()=>$('remove')?.click(),'danger'));
   return;
  }
  toolbar.append(
