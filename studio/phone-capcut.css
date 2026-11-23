@@ -59,3 +59,14 @@
 @media (max-width:759px){
  #koreCap .kc-tools{height:auto!important;min-height:calc(66px + env(safe-area-inset-bottom))!important;align-items:stretch!important;box-sizing:border-box}
 }
+@media (max-width:759px){
+ #koreCap .kc-tools[hidden]{display:none!important}
+ #koreRail{display:none}
+ body.kore-cap:not(.mobile-home-open) #koreRail:not([hidden]){display:flex;flex-direction:column;gap:6px;position:absolute;z-index:7;right:4px;top:50%;transform:translateY(-50%);max-height:calc(100% - 16px);overflow-y:auto;scrollbar-width:none;padding:2px}
+ #koreRail::-webkit-scrollbar{display:none}
+ #koreRail button{width:58px;min-height:58px;padding:4px 0;border:0;background:transparent;color:#fff;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:inherit;text-shadow:0 1px 4px #000c;-webkit-tap-highlight-color:transparent}
+ #koreRail i{font-style:normal;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#000a;border:1px solid #ffffff30;font-size:19px;line-height:1}
+ #koreRail small{font-size:10.5px;font-weight:700;line-height:1.1;text-align:center}
+ #koreRail button:active i{background:#ff2d92}
+ body.kore-cap:not(.mobile-home-open) .stage{position:relative!important}
+}

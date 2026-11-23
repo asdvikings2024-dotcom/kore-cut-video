@@ -5,7 +5,7 @@ const $=id=>document.getElementById(id);
 const mobile=matchMedia('(max-width:759px)');
 const PPS=44,FRAME_W=34,ROW=58,SMALL=30;
 let root,scroller,inner,toolbar,clock,playBtn,undoBtn,redoBtn,line;
-let built=false,lastSet=-1,touching=false,raf=0,lastRows='',pending=0,tools='root';
+let rail,built=false,lastSet=-1,touching=false,raf=0,lastRows='',pending=0,tools='root';
 const thumbs=new Map();
 const fmt=s=>{s=Math.max(0,s);const m=Math.floor(s/60),r=Math.floor(s%60);return String(m).padStart(2,'0')+':'+String(r).padStart(2,'0')};
 function el(tag,cls,html){const n=document.createElement(tag);if(cls)n.className=cls;if(html!=null)n.innerHTML=html;return n}
@@ -86,28 +86,32 @@ function mark(sel){
 function btn(icon,label,fn,cls){const b=el('button',cls||null,'<span aria-hidden="true">'+icon+'</span><small>'+label+'</small>');b.type='button';b.onclick=fn;return b}
 function needClip(){let id=api().selected();if(!id){id=api().atPlayhead();if(id)api().select(id)}return id}
 function buildTools(){
- toolbar.replaceChildren();toolbar.classList.toggle('clip',tools!=='root');
- if(tools!=='root'){
-  const sel=api().selected(),c=api().rows().flatMap(r=>r.clips).find(x=>x.id===sel);
-  toolbar.append(btn('‹','Indietro',()=>api().select(null)),
-   btn('✂','Dividi',()=>$('mobileSplit')?.click()),
-   btn('☷','Modifica',()=>$('mobileAdvanced')?.click()),
-   btn('⧉','Duplica',()=>$('duplicate')?.click()));
-  if(c&&c.tr)toolbar.append(btn('✎','Correggi parole',()=>window.koreOpenTranscriptEditor?.()));
-  if(c&&c.kind==='image')toolbar.append(btn('✦','Togli sfondo',()=>window.koreCutoutAI?.(sel)));
-  toolbar.append(btn('🗑','Elimina',()=>$('remove')?.click(),'danger'));
-  return;
- }
- toolbar.append(
-  btn('☷','Modifica',()=>{if(needClip())$('mobileAdvanced')?.click()}),
-  btn('♪','Audio',pickAudio),
-  btn('T','Testo',()=>$('mobileText')?.click()),
-  btn('✦','Effetti',()=>$('mobileEffects')?.click()),
-  btn('◫','Sovrimpressione',()=>$('phoneOverlayOpen')?.click()),
-  btn('▤','Sottotitoli',()=>$('mobileSubtitles')?.click()),
-  btn('◎','Filtri',()=>{if(needClip())$('mobileAdvanced')?.click()}));
+ toolbar.replaceChildren();toolbar.classList.toggle('clip',tools!=='root');toolbar.hidden=tools==='root';
+ if(tools==='root')return;
+ const sel=api().selected(),c=api().rows().flatMap(r=>r.clips).find(x=>x.id===sel);
+ toolbar.append(btn('‹','Indietro',()=>api().select(null)),
+  btn('✂','Dividi',()=>$('mobileSplit')?.click()),
+  btn('⇤','Taglia inizio',()=>$('trimStart')?.click()),
+  btn('⇥','Taglia fine',()=>$('trimEnd')?.click()),
+  btn('☷','Modifica',()=>$('mobileAdvanced')?.click()),
+  btn('⧉','Duplica',()=>$('duplicate')?.click()));
+ if(c&&c.tr)toolbar.append(btn('✎','Correggi parole',()=>window.koreOpenTranscriptEditor?.()));
+ if(c&&c.kind==='image')toolbar.append(btn('✦','Togli sfondo',()=>window.koreCutoutAI?.(sel)));
+ toolbar.append(btn('🗑','Elimina',()=>$('remove')?.click(),'danger'));
 }
-
+// Barra laterale a destra del video, come nelle app social: ogni strumento a un tocco.
+function buildRail(){
+ const stage=document.querySelector('.stage');if(!stage||rail)return;
+ rail=el('div','kc-rail');rail.id='koreRail';rail.setAttribute('aria-label','Strumenti');
+ const add=(icon,label,fn)=>{const b=el('button',null,'<i aria-hidden="true">'+icon+'</i><small>'+label+'</small>');b.type='button';b.onclick=fn;rail.append(b)};
+ add('◫','Logo / Foto',()=>$('phoneOverlayOpen')?.click());
+ add('T','Testo',()=>$('mobileText')?.click());
+ add('▤','Sottotitoli',()=>$('mobileSubtitles')?.click());
+ add('♪','Audio',pickAudio);
+ add('✦','Effetti',()=>$('mobileEffects')?.click());
+ add('☷','Modifica',()=>{if(needClip())$('mobileAdvanced')?.click()});
+ stage.append(rail);
+}
 let userAt=0;
 function setScroll(x){if(Math.abs(scroller.scrollLeft-x)>1){lastSet=x;scroller.scrollLeft=x}}
 function loop(){
@@ -144,7 +148,7 @@ function build(){
  scroller.addEventListener('scroll',onScroll,{passive:true});
  scroller.addEventListener('touchstart',()=>{touching=true;if(api().playing())api().toggle()},{passive:true});
  const end=()=>{setTimeout(()=>{touching=false},350)};scroller.addEventListener('touchend',end,{passive:true});scroller.addEventListener('touchcancel',end,{passive:true});
- built=true;buildTools();return true;
+ buildRail();built=true;buildTools();return true;
 }
 function active(){
  return mobile.matches&&!document.body.classList.contains('mobile-home-open')&&!!document.querySelector('#tracks .clip');
@@ -153,7 +157,7 @@ function update(){
  if(!mobile.matches&&!built)return;
  if(!built&&!build())return;
  const on=active();
- document.body.classList.toggle('kore-cap',on);root.hidden=!on;
+ document.body.classList.toggle('kore-cap',on);root.hidden=!on;if(rail)rail.hidden=!on;
  if(on){render();if(!raf)raf=requestAnimationFrame(loop)}
 }
 window.addEventListener('kore-cap-refresh',()=>update());
