@@ -70,3 +70,6 @@
  #koreRail button:active i{background:#ff2d92}
  body.kore-cap:not(.mobile-home-open) .stage{position:relative!important}
 }
+@media (max-width:759px){
+ body.kore-cap #koreImportFeedback{top:calc(env(safe-area-inset-top) + 64px)!important;bottom:auto!important;max-width:calc(100vw - 90px)!important;font-size:13px!important;padding:8px 12px!important;pointer-events:none}
+}
