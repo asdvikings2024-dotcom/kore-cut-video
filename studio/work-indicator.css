@@ -1,0 +1,17 @@
+.kore-work{margin:8px 0;padding:10px 12px;border:1px solid #ff87bd55;border-radius:14px;background:#ff2d9214}
+.kore-work[hidden]{display:none}
+.kore-work .kw-step{font-weight:700;font-size:14px;color:#fff}
+.kore-work .kw-bar{position:relative;height:10px;margin:8px 0 6px;border-radius:8px;background:#ffffff22;overflow:hidden}
+.kore-work .kw-bar i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,#ff2d92,#ff87bd);transition:width .5s}
+.kore-work .kw-bar.indeterminate i{width:35%;animation:kwSlide 1.2s ease-in-out infinite alternate}
+@keyframes kwSlide{from{margin-left:0}to{margin-left:65%}}
+.kore-work .kw-eta{font-size:13px;color:#ffd1e6;min-height:1.2em}
+@media (prefers-reduced-motion:reduce){.kore-work .kw-bar.indeterminate i{animation:none;width:100%;opacity:.6}}
+#koreVideoAsrDialog .kw-min{display:block;width:100%;min-height:44px;margin-top:8px}
+#koreVideoAsrDialog .kw-min[hidden]{display:none}
+#koreVideoAsrDialog.kore-minimized{display:none!important}
+#koreWorkPill{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translateX(-50%);z-index:5000;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 24px);min-height:40px;padding:8px 14px;border:1px solid #ff87bd;border-radius:999px;background:#17101ff2;color:#fff;font-family:inherit;font-size:13px;font-weight:700;box-shadow:0 6px 24px #0008}
+#koreWorkPill[hidden]{display:none}
+#koreWorkPill .wp-dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:#ff2d92;animation:kwPulse 1s ease-in-out infinite}
+@keyframes kwPulse{50%{opacity:.35;transform:scale(.7)}}
+@media (prefers-reduced-motion:reduce){#koreWorkPill .wp-dot{animation:none}}
