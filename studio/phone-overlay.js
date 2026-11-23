@@ -3,7 +3,7 @@ import {removeBackgroundColor,applyMask,visibleBounds} from './overlay-cutout.js
 import {createObjectAI} from './product-studio.js?v=objects-5';
 const $=id=>document.getElementById(id);
 const MAX_SIDE=1400;
-let ai=null,dialog,state=null,runId=0;
+let ai=null,dialog,state=null,runId=0,replaceId=null;
 
 function el(tag,props={},...kids){const n=Object.assign(document.createElement(tag),props);n.append(...kids);return n}
 function toast(text){let t=$('phoneOverlayToast');if(!t){t=el('div',{id:'phoneOverlayToast',role:'status'});document.body.append(t)}t.textContent=text;t.classList.add('on');clearTimeout(t.timer);t.timer=setTimeout(()=>t.classList.remove('on'),5200)}
@@ -54,7 +54,7 @@ async function apply(mode){
  }catch(e){if(id!==runId)return;state.result=state.work;show(state.work);state.mask=null;state.note='';setBusy('');dialog.querySelector('[data-status]').textContent=(e&&e.message)||'Non riuscito. Riprova.';for(const b of dialog.querySelectorAll('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode==='orig'))}
 }
 
-function reset(){runId++;ai?.dispose();ai=null;state=null;dialog.classList.remove('editing','busy');dialog.querySelector('[data-status]').textContent=''}
+function reset(){replaceId=null;const ab=dialog?.querySelector('[data-add]');if(ab)ab.textContent='＋ Aggiungi al video';runId++;ai?.dispose();ai=null;state=null;dialog.classList.remove('editing','busy');dialog.querySelector('[data-status]').textContent=''}
 async function chooseImage(file){
  if(!file)return;
  try{
@@ -79,7 +79,9 @@ async function confirmAdd(){
   if(!blob)return toast('Esportazione immagine non riuscita.');
   out=new File([blob],(file.name.replace(/\.[^.]+$/,'')||'logo')+'-senza-sfondo.png',{type:'image/png'});
  }
- dialog.close();reset();await addToProject([out],'Elemento');
+ const target=replaceId;dialog.close();reset();
+ if(target){const ok=await window.koreSimple?.replace(target,out);toast(ok?'Sfondo tolto. Puoi muoverlo con un dito.':'Non sono riuscito a sostituire l\'immagine.');if(ok)window.koreTouchEdit?.(target);return}
+ await addToProject([out],'Elemento');
 }
 
 function build(){
@@ -119,12 +121,14 @@ function extras(panel){
  const bold=panel.querySelector('[data-style="bold"]');if(!bold||!bold.hidden)return; // solo foto/video, non titoli
  const set=(id,value)=>{const input=$(id);input.value=String(value);input.dispatchEvent(new Event('change',{bubbles:true}))};
  const row=el('div',{className:'kore-extra'});
- const mk=(label,aria,fn)=>{const b=el('button',{type:'button',textContent:label,ariaLabel:aria});b.onclick=fn;row.append(b)};
+ const mk=(label,aria,fn)=>{const b=el('button',{type:'button',textContent:label,ariaLabel:aria});b.onclick=fn;row.append(b);return b};
  const turn=d=>{const v=Number($('rotation').value)||0;set('rotation',Math.round(((v+d+540)%360)-180))};
  mk('⟲ 15°','Ruota a sinistra',()=>turn(-15));mk('⟳ 15°','Ruota a destra',()=>turn(15));
  mk('◐ −','Più trasparente',()=>set('opacity',Math.max(10,(Number($('opacity').value)||100)-15)));
  mk('◐ +','Meno trasparente',()=>set('opacity',Math.min(100,(Number($('opacity').value)||100)+15)));
  mk('⇋ Specchia','Specchia',()=>set('mirror',$('mirror').value==='on'?'off':'on'));
+ mk('✂ Dividi','Dividi qui',()=>$('split').click());mk('⧉ Duplica','Duplica',()=>$('duplicate').click());
+ const cut=mk('✦ Togli sfondo','Togli lo sfondo da questa immagine',async()=>{const id=window.koreSimple?.selected();const f=id&&await window.koreSimple.sourceFile(id);if(!f)return toast('Lo sfondo si toglie solo dalle foto e dai loghi.');panel.querySelector('[aria-label="Chiudi modifica touch"]')?.click();reset();dialog.showModal();await chooseImage(f);replaceId=id;dialog.querySelector('[data-add]').textContent='✓ Applica'});
  const del=el('button',{type:'button',textContent:'🗑 Elimina',ariaLabel:'Elimina elemento',className:'danger'});
  del.onclick=()=>{$('remove').click();panel.querySelector('[aria-label="Chiudi modifica touch"]')?.click()};row.append(del);
  panel.querySelector('.touch-actions').after(row);

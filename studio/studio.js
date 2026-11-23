@@ -1611,6 +1611,7 @@ $('addTitleLayer').onclick=()=>$('addText').click();
 window.koreSimple={
  clips(){const t=project.tracks[0].id;return project.clips.filter(c=>c.track===t&&(c.kind==='video'||c.kind==='image')).sort((a,b)=>a.start-b.start).map(c=>{const m=media.get(c.media);return {id:c.id,kind:c.kind,start:c.start,dur:duration(c),in:c.in,out:c.out,url:m?.url||null,image:m?.kind==='image'?m.el:null,mediaDur:m?.kind==='video'?m.el.duration:null}})},
  selected:()=>selected,
+ async sourceFile(id){const c=project.clips.find(q=>q.id===id);const m=c&&media.get(c.media);if(!m||m.kind!=='image')return null;try{const b=m.blob||await (await fetch(m.url)).blob();return new File([b],(m.name||'immagine')+'.png',{type:b.type||'image/png'})}catch(e){return null}},
  select(id){const c=project.clips.find(q=>q.id===id);if(!c)return;selected=id;refresh();seek(c.start+.05)},
  setIn(id,value){const c=project.clips.find(q=>q.id===id);if(!c||c.kind!=='video'||exporting)return;const m=media.get(c.media),len=c.out-c.in,max=Math.max(0,(m?.el?.duration||c.out)-len);mutate(()=>{c.in=Math.max(0,Math.min(max,Number(value)||0));c.out=c.in+len});seek(c.start+.05)},
  async replace(id,file){const c=project.clips.find(q=>q.id===id);if(!c||exporting||importingMedia)return false;const r=await importFiles([file],{libraryOnly:true});if(!r.imported)return false;const m=media.get(r.ids[0]);if(!m)return false;const len=c.out-c.in;mutate(()=>{c.media=r.ids[0];c.kind=m.kind;c.in=0;c.out=m.kind==='video'?Math.min(len,m.el.duration||len):len});refresh();seek(c.start+.05);return true}
