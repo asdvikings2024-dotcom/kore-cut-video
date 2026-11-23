@@ -51,3 +51,4 @@
  body.kore-cap:not(.mobile-home-open) .bottom{padding:0!important;gap:0!important}
 }
 @media (max-width:759px){body.kore-cap:not(.mobile-home-open) #koreQuickTimeline{display:none!important}}
+@media (max-width:759px){#koreCap .kc-inner{padding-bottom:10px!important}}
