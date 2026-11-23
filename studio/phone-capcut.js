@@ -107,19 +107,23 @@ function buildTools(){
   btn('◎','Filtri',()=>{if(needClip())$('mobileAdvanced')?.click()}));
 }
 
+let userAt=0;
+function setScroll(x){if(Math.abs(scroller.scrollLeft-x)>1){lastSet=x;scroller.scrollLeft=x}}
 function loop(){
  raf=0;if(!root||root.hidden)return;
- const k=api();if(k&&!touching){
-  const x=Math.round(k.time()*PPS);
-  if(Math.abs(scroller.scrollLeft-x)>1){lastSet=x;scroller.scrollLeft=x}
+ const k=api();if(k){
+  if(k.playing()&&!touching)setScroll(Math.round(k.time()*PPS));
   clock.textContent=fmt(k.time())+' / '+fmt(k.end());
   const p=k.playing();if(playBtn.dataset.p!==String(p)){playBtn.dataset.p=String(p);playBtn.firstChild.textContent=p?'❚❚':'▶'}
  }
  raf=requestAnimationFrame(loop);
 }
+// Spostamenti fatti altrove (annulla, dividi, salti): il filmato segue il cursore, a meno che il dito stia scorrendo.
+document.addEventListener('kore-timechange',()=>{if(!scroller||root.hidden||touching||performance.now()-userAt<500)return;const k=api();if(k&&!k.playing())setScroll(Math.round(k.time()*PPS))});
 function onScroll(){
  if(Math.abs(scroller.scrollLeft-lastSet)<2)return;
- if(pending)return;pending=requestAnimationFrame(()=>{pending=0;const k=api();if(!k)return;if(k.playing()&&touching)k.toggle();k.seek(scroller.scrollLeft/PPS);clock.textContent=fmt(k.time())+' / '+fmt(k.end())});
+ userAt=performance.now();
+ if(pending)return;pending=requestAnimationFrame(()=>{pending=0;const k=api();if(!k)return;if(k.playing()&&touching)k.toggle();lastSet=scroller.scrollLeft;k.seek(scroller.scrollLeft/PPS)});
 }
 
 function build(){
