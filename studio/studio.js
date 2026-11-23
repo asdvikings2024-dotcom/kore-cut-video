@@ -56,7 +56,7 @@ function snapshot(){if(!exitCheckpoint||exitCheckpointKey!==activeProjectKey){ex
 function mutate(fn){if(exporting)return;snapshot();fn();syncVideoPlayback(true);refresh();persist()}
 function seek(t){time=clamp(t,0,endTime());syncVideoPlayback(true);draw();refreshClock();renderInspector();document.querySelectorAll('.playhead').forEach(h=>h.style.left=time*px+'px')}
 function refreshClock(){document.dispatchEvent(new Event('kore-timechange'));$('clock').textContent=fmt(time)+' / '+fmt(endTime());$('seek').value=endTime()?Math.round(1000*time/endTime()):0;if(document.activeElement!==$('preciseSeek'))$('preciseSeek').value=time.toFixed(1)}
-function refresh(){renderTimeline();syncAdvancedControls();renderProjectMedia();renderInspector();refreshClock();draw();$('mobileEmpty').classList.toggle('hidden',project.clips.length>0);$('empty').classList.add('hidden');$('undo').disabled=!history.length;$('redo').disabled=!future.length}
+function refresh(){renderTimeline();syncAdvancedControls();renderProjectMedia();renderInspector();refreshClock();draw();$('mobileEmpty').classList.toggle('hidden',project.clips.length>0);$('empty').classList.add('hidden');$('undo').disabled=!history.length;$('redo').disabled=!future.length;window.dispatchEvent(new Event('kore-cap-refresh'))}
 let previewResolution=1080;
 function frameDimensions(shortEdge,ratio){const [a,b]=ratio.split(':').map(Number);return a>=b?{width:Math.round(shortEdge*a/b/2)*2,height:shortEdge}:{width:shortEdge,height:Math.round(shortEdge*b/a/2)*2}}
 function isTimedMedia(m){return m?.kind==='video'||m?.kind==='audio'}
@@ -1615,6 +1615,14 @@ window.koreSimple={
  select(id){const c=project.clips.find(q=>q.id===id);if(!c)return;selected=id;refresh();seek(c.start+.05)},
  setIn(id,value){const c=project.clips.find(q=>q.id===id);if(!c||c.kind!=='video'||exporting)return;const m=media.get(c.media),len=c.out-c.in,max=Math.max(0,(m?.el?.duration||c.out)-len);mutate(()=>{c.in=Math.max(0,Math.min(max,Number(value)||0));c.out=c.in+len});seek(c.start+.05)},
  async replace(id,file){const c=project.clips.find(q=>q.id===id);if(!c||exporting||importingMedia)return false;const r=await importFiles([file],{libraryOnly:true});if(!r.imported)return false;const m=media.get(r.ids[0]);if(!m)return false;const len=c.out-c.in;mutate(()=>{c.media=r.ids[0];c.kind=m.kind;c.in=0;c.out=m.kind==='video'?Math.min(len,m.el.duration||len):len});refresh();seek(c.start+.05);return true}
+};
+// API per la schermata stile CapCut da telefono (timeline con cursore fisso).
+window.koreCap={
+ rows(){return project.tracks.map((t,i)=>({id:t.id,index:i,clips:trackClips(t.id).map(c=>{const m=media.get(c.media);return {id:c.id,kind:c.kind,start:c.start,dur:duration(c),in:c.in,out:c.out,label:c.kind==='title'?String(c.text||'Testo').split('\n')[0]:(m?.name||''),url:m?.kind==='video'?m.url:null,image:m?.kind==='image'?m.el:null,key:c.media||c.id}})}))},
+ end:()=>endTime(),time:()=>time,playing:()=>playing,seek:t=>seek(t),toggle:()=>togglePlay(),
+ selected:()=>selected,select(id){selected=id;refresh()},
+ atPlayhead(){const c=project.clips.filter(c=>c.kind!=='audio'&&c.start<=time+.01&&time<c.start+duration(c)).sort((a,b)=>b.start-a.start)[0];return c?.id||null},
+ async addFiles(files){if(exporting||importingMedia)return;window.koreImportTarget=null;window.koreImportDefaults=null;return importFiles(files)}
 };
 // Sovrapposizione da telefono: sceglie (o crea) una traccia libera sopra il video e aggiunge il file ridotto e centrato, in un solo passo di cronologia.
 window.koreOverlayImport=async(files,{zoom=.45,imageSeconds=4}={})=>{if(exporting||importingMedia)return {imported:0,failed:0,ids:[]};const from=time,until=time+imageSeconds;let track=project.tracks.slice(1).find(t=>!trackClips(t.id).some(c=>c.start<until&&c.start+duration(c)>from));if(!track){track={id:uid(),name:'Sovrapposizione '+project.tracks.length};project.tracks.push(track)}window.koreImportTarget=track.id;window.koreImportDefaults={props:{fitMode:'contain',zoom},imageSeconds};const result=await importFiles(files);const clip=selectedClip();return {...result,clipId:clip?.id||null}};
