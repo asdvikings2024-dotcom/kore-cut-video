@@ -1518,7 +1518,7 @@ function enableClipDragging(){
  container.addEventListener('pointerdown',e=>{
   const el=e.target.closest('.clip'),clip=project.clips.find(c=>c.id===el?.dataset.id);
   if(!clip||exporting||e.button!==0)return;
-  dragState={id:clip.id,pointer:e.pointerId,x:e.clientX,scroll:timeline.scrollLeft,edge:desktopWorkspace.matches?e.target.closest('.clip-trim')?.dataset.edge:null,moved:false};
+  dragState={id:clip.id,pointer:e.pointerId,x:e.clientX,scroll:timeline.scrollLeft,edge:e.target.closest('.clip-trim')?.dataset.edge||null,moved:false};
   el.setPointerCapture(e.pointerId);
  });
  container.addEventListener('pointermove',e=>{
