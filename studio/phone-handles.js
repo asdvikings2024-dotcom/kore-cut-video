@@ -44,4 +44,4 @@ const wait=setInterval(()=>{if(build()){clearInterval(wait);if(!raf)raf=requestA
 
 // Etichetta verde "NUOVA": se non la vedi in alto, stai usando il link vecchio.
 (async()=>{let v='';try{v=(await (await fetch(new URL('./build.json',import.meta.url),{cache:'no-store'})).json()).sha?.slice(0,7)||''}catch(e){}
- const b=el('div',null,'✓ NUOVA VERSIONE'+(v?' · '+v:''));b.id='koreNewBadge';document.body.append(b)})();
+ const b=el('div',null,'✓ NUOVA VERSIONE'+(v?' · '+v:''));b.id='koreNewBadge';document.body.append(b);const diag=()=>{const bt=document.querySelector('.bottom');if(!bt||!document.body.classList.contains('kore-cap'))return;const r=bt.getBoundingClientRect();b.textContent='✓ NUOVA VERSIONE'+(v?' · '+v:'')+' · '+Math.round(r.bottom)+'/'+Math.round(window.innerHeight)};setInterval(diag,1500)})();
