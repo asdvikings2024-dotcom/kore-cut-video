@@ -46,3 +46,24 @@ const wait=setInterval(()=>{
   update();
  }else if(++tries>75)clearInterval(wait);
 },200);
+
+// Maniglia "Timeline": di base la timeline resta chiusa; si apre solo toccando questa barra (e si richiude allo stesso modo).
+function buildHandle(){
+ const bar=$('mobileEditorBar');if(!bar||$('phoneTimelineHandle'))return !!$('phoneTimelineHandle');
+ const h=document.createElement('button');h.id='phoneTimelineHandle';h.type='button';h.setAttribute('aria-controls','timeline');
+ h.innerHTML='<span class="th-grip" aria-hidden="true"></span><span class="th-label"></span><span class="th-info"></span>';
+ h.onclick=()=>{$('mobileTimeline')?.click()};
+ bar.before(h);
+ const refresh=()=>{
+  const open=document.body.classList.contains('mobile-timeline-open'),count=document.querySelectorAll('#tracks .clip').length,clock=$('clock')?.textContent||'';
+  h.setAttribute('aria-expanded',String(open));
+  h.querySelector('.th-label').textContent=open?'▼ Chiudi timeline':'▲ Timeline';
+  h.querySelector('.th-info').textContent=count+(count===1?' clip':' clip')+' · '+clock.split('/')[0].trim();
+  document.body.classList.toggle('phone-handle-on',mobile.matches&&count>0&&!document.body.classList.contains('mobile-home-open'));
+ };
+ new MutationObserver(refresh).observe(document.body,{attributes:true,attributeFilter:['class']});
+ if($('tracks'))new MutationObserver(refresh).observe($('tracks'),{childList:true,subtree:true});
+ if($('clock'))new MutationObserver(refresh).observe($('clock'),{childList:true,characterData:true,subtree:true});
+ mobile.addEventListener('change',refresh);refresh();return true;
+}
+let handleTries=0;const handleWait=setInterval(()=>{if(buildHandle()||++handleTries>75)clearInterval(handleWait)},200);

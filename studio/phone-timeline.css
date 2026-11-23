@@ -33,4 +33,10 @@
  #phoneClipBar button:disabled{opacity:.38}
  #phoneClipBar button.danger{color:#ff9fb8}
  #phoneClipBar i{flex:0 0 1px;align-self:stretch;background:#ffffff26}
+ /* Maniglia timeline */
+ #phoneTimelineHandle{display:none}
+ body.phone-handle-on:not(.mobile-home-open) #phoneTimelineHandle{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:10px;position:relative;min-height:44px;margin:2px 0;padding:6px 14px;border:1px solid #ffffff33;border-radius:14px;background:#2a1d33;color:#fff;font-family:inherit;font-size:14px;font-weight:700}
+ #phoneTimelineHandle .th-grip{position:absolute;left:50%;top:5px;width:36px;height:4px;margin-left:-18px;border-radius:4px;background:#ffffff55}
+ #phoneTimelineHandle .th-info{font-weight:500;opacity:.8;font-size:13px}
+ #phoneTimelineHandle[aria-expanded="true"]{background:#ff2d9233;border-color:#ff87bd}
 }
