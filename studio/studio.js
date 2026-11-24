@@ -122,7 +122,7 @@ function renderTimeline(){
  });
 }
 
-function modelDemoSubject(template,type){if(template.subject)return template.subject;const mapping={travel:'travel',memories:'travel',wedding:'travel',realestate:'travel',summer:'travel',fashion:'fashion',beauty:'fashion',fitness:'fashion',sports:'fashion',podcast:'fashion',education:'fashion',food:'food',product:'food',night:'city',gaming:'city',retro90:'city',cinematic:'city'};if(mapping[template.id])return mapping[template.id];const list=type==='graphic'?GRAPHIC_TEMPLATES:SOCIAL_MIX_TEMPLATES;return ['travel','fashion','food','city'][Math.max(0,list.findIndex(t=>t.id===template.id))%4]}
+function modelDemoSubject(template,type){if(template.subject){const ok=['travel','fashion','food','city'];return ok.includes(template.subject)?template.subject:({soft:'travel',sport:'fashion',trendy:'fashion',urban:'city',party:'city'})[template.subject]||'city'}const mapping={travel:'travel',memories:'travel',wedding:'travel',realestate:'travel',summer:'travel',fashion:'fashion',beauty:'fashion',fitness:'fashion',sports:'fashion',podcast:'fashion',education:'fashion',food:'food',product:'food',night:'city',gaming:'city',retro90:'city',cinematic:'city'};if(mapping[template.id])return mapping[template.id];const list=type==='graphic'?GRAPHIC_TEMPLATES:SOCIAL_MIX_TEMPLATES;return ['travel','fashion','food','city'][Math.max(0,list.findIndex(t=>t.id===template.id))%4]}
 function openModelPreview(template,type,apply){
  if(exporting||document.getElementById('modelPreviewDialog'))return;
  if(playing){playing=false;syncVideoPlayback();$('play').textContent='▶';updateMobilePlayback()}
