@@ -149,7 +149,7 @@ function buildTools(){
  if(c&&c.kind!=='audio')toolbar.append(btn('◐','Trasparenza',()=>opacityPop(sel)),btn('⇋','Specchia',mirror),btn('⟳','Ruota 90°',()=>turn90(sel)));
  if(c&&(c.kind==='video'||c.kind==='audio')&&c.url!==undefined)toolbar.append(btn('🤫','Togli pause',()=>pausesPop(sel)));
  if(c&&c.kind==='title')toolbar.append(btn('Aa','Stile testo',()=>window.koreTextSheet?.()));
- if(c&&c.tr)toolbar.append(btn('✎','Correggi parole',()=>window.koreOpenTranscriptEditor?.()));
+ if(c&&(c.tr||c.kind==='title'))toolbar.append(btn('✎','Correggi parole',()=>window.koreOpenTranscriptEditor?.()));
  if(c&&c.kind==='image')toolbar.append(btn('✦','Togli sfondo',()=>window.koreCutoutAI?.(sel)));
  toolbar.append(btn('🗑','Elimina',()=>$('remove')?.click(),'danger'));
 }
