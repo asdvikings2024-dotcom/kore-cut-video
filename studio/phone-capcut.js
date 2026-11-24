@@ -169,7 +169,7 @@ function buildRail(){
  const fs=el('button','kc-fs','⛶');fs.id='koreCapFs';fs.type='button';fs.setAttribute('aria-label','Schermo intero');fs.onclick=()=>document.body.classList.add('kc-clean');stage.append(fs);
 }
 // Altezza reale visibile (Chrome/Safari iOS: 100dvh può finire sotto la barra del browser)
-function setVh(){const h=(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--kvh',Math.round(h)+'px')}
+function setVh(){const ios=/CriOS|FxiOS|EdgiOS/.test(navigator.userAgent);document.documentElement.style.setProperty('--kbar',ios?'78px':'0px');const h=(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--kvh',Math.round(h)+'px')}
 setVh();window.addEventListener('resize',setVh);window.visualViewport?.addEventListener('resize',setVh);window.addEventListener('orientationchange',()=>setTimeout(setVh,300));
 // Timeline mossa con la trasformazione (non con lo scorrimento del browser): niente rimbalzi né scatti.
 let drag=null,inertia=0,dragged=false;
