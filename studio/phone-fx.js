@@ -14,8 +14,10 @@ export function openFxSheet(){
  const opts=()=>[...sel.options].filter(o=>tab==='fx'?o.value.startsWith('fx'):!o.value.startsWith('fx'));
  function render(){
   tFx.setAttribute('aria-pressed',String(tab==='fx'));tLook.setAttribute('aria-pressed',String(tab==='look'));grid.replaceChildren();
-  if(tab==='fx'){const none=el('button','kfx-c kfx-none','⊘\nNessuno');none.type='button';none.onclick=()=>apply('original');grid.append(none)}
-  for(const o of opts()){const b=el('button','kfx-c',(tab==='fx'?(ICON[o.value]||'✦'):'●')+'\n'+o.textContent.replace(/^◆\s*/,''));b.type='button';b.dataset.v=o.value;b.setAttribute('aria-pressed',String(sel.value===o.value));b.onclick=()=>apply(o.value);grid.append(b)}
+  if(tab==='fx'){const none=el('button','kfx-c kfx-none');none.type='button';none.dataset.v='original';const nt=el('span','kfx-th');const fr0=window.koreFxTools?.thumb(132);if(fr0)nt.style.backgroundImage='url('+fr0+')';none.append(nt,el('span','kfx-n','Nessuno'));none.onclick=()=>apply('original');grid.append(none)}
+  const frame=window.koreFxTools?.thumb(132),F=window.koreFxTools?.filters||{};
+  const mk=(v,label,icon)=>{const b=el('button','kfx-c');b.type='button';b.dataset.v=v;const th=el('span','kfx-th');if(frame)th.style.backgroundImage='url('+frame+')';if(F[v])th.style.filter=F[v];th.dataset.fx=v;b.append(th,el('span','kfx-n',label));return b};
+  for(const o of opts()){const b=mk(o.value,o.textContent.replace(/^◆\s*/,''));b.setAttribute('aria-pressed',String(sel.value===o.value));b.onclick=()=>apply(o.value);grid.append(b)}
  }
  function apply(v){sel.value=v;sel.dispatchEvent(new Event('input',{bubbles:true}));sel.dispatchEvent(new Event('change',{bubbles:true}));for(const b of grid.children)b.setAttribute('aria-pressed',String(b.dataset.v===v))}
  tFx.onclick=()=>{tab='fx';render()};tLook.onclick=()=>{tab='look';render()};

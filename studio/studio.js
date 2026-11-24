@@ -341,6 +341,7 @@ async function createKoreSoundMedia(id,seconds){
  const file=makeKoreSound(id,seconds),m=await loadMedia(uid(),file,file.name,'audio');m.koreOriginal=true;if(db)queueMediaSave(m,file);else m.saveState='session';return m;
 }
 
+window.koreFxTools={filters:effectFilters,thumb(w=132){try{const h=Math.round(w*canvas.height/canvas.width),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d'),v=document.querySelector('#nativePreview video')||document.getElementById('nativePreview');let ok=false;if(v&&v.videoWidth&&v.readyState>=2){try{x.drawImage(v,0,0,w,h);ok=true}catch(e){}}if(!ok)x.drawImage(canvas,0,0,w,h);const d=x.getImageData(0,0,w,h).data;let sum=0;for(let i=0;i<d.length;i+=40)sum+=d[i]+d[i+1]+d[i+2];if(sum<30)return null;return c.toDataURL('image/jpeg',.7)}catch(e){return null}}};
 window.koreMusicApi={
  list:()=>KORE_SOUNDS.filter(x=>x.v2).map(x=>({id:x.id,name:x.name.split(' · ')[0],mood:x.name.split(' · ').slice(1).join(' · ')})),
  async preview(id,button){await listenKoreSound(id,button)},
@@ -1652,7 +1653,7 @@ window.koreSimple={
 };
 // API per la schermata stile CapCut da telefono (timeline con cursore fisso).
 window.koreCap={
- rows(){return project.tracks.map((t,i)=>({id:t.id,index:i,clips:trackClips(t.id).map(c=>{const m=media.get(c.media);return {id:c.id,kind:c.kind,start:c.start,dur:duration(c),in:c.in,out:c.out,label:c.kind==='title'?String(c.text||'Testo').split('\n')[0]:(m?.name||''),url:m?.kind==='video'?m.url:null,image:m?.kind==='image'?m.el:null,key:c.media||c.id,tr:!!c.transcriptCues}})}))},
+ rows(){return project.tracks.map((t,i)=>({id:t.id,index:i,clips:trackClips(t.id).map(c=>{const m=media.get(c.media);return {id:c.id,kind:c.kind,start:c.start,dur:duration(c),in:c.in,out:c.out,label:c.kind==='title'?String(c.text||'Testo').split('\n')[0]:(m?.name||''),url:m?.kind==='video'?m.url:null,audioUrl:m?.kind==='audio'?m.url:null,image:m?.kind==='image'?m.el:null,key:c.media||c.id,tr:!!c.transcriptCues}})}))},
  end:()=>endTime(),time:()=>time,playing:()=>playing,seek:t=>seek(t),toggle:()=>togglePlay(),
  selected:()=>selected,select(id){selected=id;refresh()},
  atPlayhead(){const c=project.clips.filter(c=>c.kind!=='audio'&&c.start<=time+.01&&time<c.start+duration(c)).sort((a,b)=>b.start-a.start)[0];return c?.id||null},

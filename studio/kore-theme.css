@@ -1,0 +1,29 @@
+/* KORE Studio · tema unico: vetro scuro, bordi morbidi, rosa/viola come colore guida, animazioni leggere */
+:root{--k-pink:#ff2d92;--k-violet:#a56eff;--k-glass:#14101fe6;--k-line:#ffffff24;--k-r:16px}
+@keyframes kSlideUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@keyframes kPop{0%{transform:scale(.92);opacity:0}60%{transform:scale(1.03)}100%{transform:none;opacity:1}}
+@keyframes kFade{from{opacity:0}to{opacity:1}}
+.kfx,.kt,.kore-caption-panel,#phoneOverlayDialog,.import-choice-sheet,#koreImportChoice>*{animation:kSlideUp .24s cubic-bezier(.2,.8,.2,1)}
+.kfx-c,.kfx-chip,.kfx-song,.entry-card,.caption-choice{transition:transform .12s ease,background .15s ease,border-color .15s ease}
+.kfx-c:active,.kfx-chip:active,.entry-card:active,.caption-choice:active,#koreRail button:active,.kc-tools button:active,.kfx-add:active{transform:scale(.94)}
+#koreToast,#phoneOverlayToast,#koreImportFeedback{animation:kPop .28s ease}
+.kc-clip{animation:kFade .2s ease}
+/* Stessa pelle per i pannelli "vecchi" */
+@media(max-width:759px){
+ .kore-caption-panel,#mobileTools,#mobileCaptionMenu .kore-caption-panel,#modelPreviewDialog .model-preview-panel{background:var(--k-glass)!important;border:1px solid var(--k-line)!important;border-radius:20px!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff}
+ .caption-choice{min-height:52px;border-radius:14px!important;border:1px solid var(--k-line)!important;background:#ffffff0e!important;color:#fff!important;font-weight:700;text-align:left;padding:0 16px}
+ .caption-choice:first-of-type{background:linear-gradient(135deg,var(--k-pink),var(--k-violet))!important;border-color:#ffffff55!important}
+ #mobileTools{border-radius:20px 20px 0 0!important}
+ #mobileTools :is(input[type=range]){accent-color:var(--k-pink)}
+ #mobileTools :is(select,input[type=text],input[type=number],textarea){background:#ffffff10!important;border:1px solid var(--k-line)!important;border-radius:12px!important;color:#fff!important}
+ #mobileTools button{border-radius:12px}
+ /* Home: logo più piccolo e griglia ordinata, così sta tutto in una schermata */
+ .entry-phone-hero{height:auto!important;min-height:0!important}
+ .entry-emblem{transform:scale(.62);margin:-52px 0 -22px!important}
+ .mobile-start-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:10px}
+ .mobile-start-actions>.entry-card:first-child{grid-column:1/-1}
+ .mobile-start-actions .entry-card:not(:first-child){grid-column:auto!important;width:auto!important;min-height:0!important;height:auto!important;padding:14px!important;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+ .mobile-start-actions .entry-card:not(:first-child) small{display:none!important}
+ .mobile-start-actions .entry-card:not(:first-child) strong{font-size:15px}
+}
+}

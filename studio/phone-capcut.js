@@ -44,6 +44,20 @@ function addHandles(b,c){
   b.append(h);
  }
 }
+// Onda del suono sulle tracce audio
+const WAVES=new Map();
+function wavePeaks(url){
+ if(WAVES.has(url))return WAVES.get(url);
+ const pr=(async()=>{const buf=await (await fetch(url)).arrayBuffer();const AC=window.OfflineAudioContext||window.webkitOfflineAudioContext;if(!AC)return null;const a=await new AC(1,1,44100).decodeAudioData(buf);const d=a.getChannelData(0),N=1500,step=Math.max(1,Math.floor(d.length/N)),peaks=new Float32Array(N);for(let i=0;i<N;i++){let m=0;const s=i*step,e=Math.min(d.length,s+step),k=Math.max(1,Math.floor(step/24));for(let j=s;j<e;j+=k){const v=Math.abs(d[j]);if(v>m)m=v}peaks[i]=m}return {peaks,dur:a.duration}})().catch(()=>null);
+ WAVES.set(url,pr);return pr;
+}
+function drawWave(b,c){
+ wavePeaks(c.audioUrl).then(w=>{
+  if(!w||!b.isConnected)return;const cw=Math.max(10,Math.round(c.dur*PPS)),ch=28,cv=document.createElement('canvas');cv.className='kc-wave';cv.width=Math.min(2400,cw*DPR);cv.height=ch*DPR;cv.style.width=cw+'px';cv.style.height=ch+'px';
+  const g=cv.getContext('2d');g.fillStyle='#ffffffb8';const bars=Math.floor(cv.width/(3*DPR/2));for(let i=0;i<bars;i++){const t=(c.in||0)+(i/bars)*(c.out-c.in||c.dur),idx=Math.min(w.peaks.length-1,Math.floor(t/w.dur*w.peaks.length)),h=Math.max(2*DPR,w.peaks[idx]*cv.height*.95);g.fillRect(i*(3*DPR/2),(cv.height-h)/2,Math.max(1,DPR),h)}
+  b.append(cv);
+ });
+}
 function clipEl(c,rowKind){
  const b=el('button','kc-clip kc-'+rowKind);b.type='button';b.dataset.id=c.id;
  b.style.left=c.start*PPS+'px';b.style.width=Math.max(10,c.dur*PPS)+'px';
@@ -51,7 +65,7 @@ function clipEl(c,rowKind){
  if(rowKind==='main'||rowKind==='over'){
   if(c.url||c.image){const n=Math.max(1,Math.ceil(c.dur*PPS/FRAME_W));frames(c,n).then(u=>{b.style.backgroundImage='url('+u+')';b.style.backgroundSize=(n*FRAME_W)+'px 100%';b.style.backgroundRepeat='no-repeat';b.style.backgroundPosition='left center'})}
   else b.textContent=c.label||'';
- }else b.append(el('span','kc-l',(c.kind==='title'?'T ':'♪ ')+(c.label||'')));
+ }else{b.append(el('span','kc-l',(c.kind==='title'?'T ':'♪ ')+(c.label||'')));if(c.kind==='audio'&&c.audioUrl)drawWave(b,c)}
  addHandles(b,c);
  b.onclick=e=>{e.stopPropagation();const on=api().selected()===c.id;api().select(on?null:c.id)};
  return b;
@@ -81,8 +95,8 @@ function render(){
  const overClips=over.flatMap(r=>r.clips.filter(c=>c.kind==='video'||c.kind==='image'));
  const textClips=rows.flatMap(r=>r.clips.filter(c=>c.kind==='title'));
  const audioClips=rows.flatMap(r=>r.clips.filter(c=>c.kind==='audio'));
- let h=22;
- const mk=(cls,hh)=>{const d=el('div','kc-row '+cls);d.style.height=hh+'px';inner.append(d);h+=hh+5;return d};
+ let h=26;
+ const mk=(cls,hh)=>{const d=el('div','kc-row '+cls);d.style.height=hh+'px';inner.append(d);h+=hh+7;return d};
  const rm=mk('main',ROW);for(const c of main.clips.filter(c=>c.kind!=='title'&&c.kind!=='audio'))rm.append(clipEl(c,'main'));
  const plus=el('button','kc-plus','＋');plus.type='button';plus.setAttribute('aria-label','Aggiungi un altro video o foto');plus.style.left=(total*PPS+8)+'px';plus.onclick=e=>{e.stopPropagation();addMedia()};rm.append(plus);
  if(overClips.length){const ro=mk('over',OVER);for(const c of overClips)ro.append(clipEl(c,'over'))}
