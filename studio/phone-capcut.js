@@ -165,6 +165,7 @@ function buildRail(){
  add('☷','Modifica',()=>{if(needClip())$('mobileAdvanced')?.click()});
  stage.append(rail);
  const back=el('button','kc-back','▤ Montaggio');back.id='koreCapBack';back.type='button';back.onclick=()=>document.body.classList.remove('kc-clean');stage.append(back);
+ const cp=el('button','kc-cleanplay','▶');cp.id='koreCapPlay2';cp.type='button';cp.setAttribute('aria-label','Riproduci o ferma');cp.onclick=()=>api().toggle();stage.append(cp);
  const fs=el('button','kc-fs','⛶');fs.id='koreCapFs';fs.type='button';fs.setAttribute('aria-label','Schermo intero');fs.onclick=()=>document.body.classList.add('kc-clean');stage.append(fs);
 }
 // Altezza reale visibile (Chrome/Safari iOS: 100dvh può finire sotto la barra del browser)
@@ -181,7 +182,7 @@ function loop(){
  const k=api();if(k){
   if(!drag&&!inertia)setView(k.time());
   if(!drag&&!inertia)clock.textContent=fmt(k.time())+' / '+fmt(k.end());
-  const p=k.playing();if(playBtn.dataset.p!==String(p)){playBtn.dataset.p=String(p);playBtn.firstChild.textContent=p?'❚❚':'▶'}
+  const p=k.playing();if(playBtn.dataset.p!==String(p)){playBtn.dataset.p=String(p);playBtn.firstChild.textContent=p?'❚❚':'▶';const c2=document.getElementById('koreCapPlay2');if(c2)c2.textContent=p?'❚❚':'▶'}
  }
  raf=requestAnimationFrame(loop);
 }
