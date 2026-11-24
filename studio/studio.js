@@ -361,6 +361,21 @@ Object.assign(window.koreMusicApi,{
  beatCut(bpm,beats){if(exporting||!bpm)return 0;const main=project.tracks[0]?.id,list=project.clips.filter(c=>c.track===main&&c.kind!=='audio').sort((a,b)=>a.start-b.start);if(!list.length)return 0;const step=60/bpm*beats;let cursor=list[0].start;mutate(()=>{for(const c of list){const dur=duration(c);c.start=cursor;if(dur>step+.01)c.out=c.in+step*(c.speed||1);cursor+=Math.min(dur,step)}const au=project.clips.filter(c=>c.kind==='audio').sort((a,b)=>a.start-b.start)[0];if(au)au.start=list[0].start});return list.length}
 });
 
+
+// Magia KORE: un tocco = taglio a tempo + musica + look sui clip.
+const KORE_MAGIC=[
+ {id:'energia',name:'Energia',icon:'⚡',desc:'Tagli veloci, musica phonk, look forte',sound:'phonk',beats:1,effect:'filmPunch'},
+ {id:'cinema',name:'Cinema',icon:'🎬',desc:'Tagli lenti, musica epica, look da film',sound:'cinema',beats:4,effect:'filmGold'},
+ {id:'chill',name:'Chill',icon:'☕',desc:'Ritmo rilassato, lofi, colori caldi',sound:'lofi',beats:2,effect:'filmPolaroid'},
+ {id:'party',name:'Party',icon:'🪩',desc:'House ballabile, colori pop',sound:'house',beats:2,effect:'koreFuchsia'}];
+window.koreMagic={
+ list:()=>KORE_MAGIC.map(({id,name,icon,desc})=>({id,name,icon,desc})),
+ async apply(id){const p=KORE_MAGIC.find(x=>x.id===id);if(!p||exporting)return 0;const vis=project.clips.filter(c=>c.kind!=='audio'&&c.kind!=='title');if(!vis.length)return 0;
+  const bpm=window.koreMusic?.info?.(p.sound)?.bpm||120;const n=window.koreMusicApi.beatCut(bpm,p.beats);
+  project.clips.filter(c=>c.kind==='audio'&&c.koreOriginal).forEach(c=>{});
+  mutate(()=>{for(const c of project.clips)if(c.kind!=='audio'&&c.kind!=='title')c.effect=p.effect});
+  seek(0);await window.koreMusicApi.add(p.sound);seek(0);return n}
+};
 function modelSceneCount(t){return t.count||({sports:10,beat:8,fashion:8,night:8,food:7})[t.id]||6}
 function filterModelEntries(entries,category,query){const q=String(query||'').trim().toLocaleLowerCase('it');return entries.filter(item=>(category==='all'||(category==='new'?item.template.isNew:modelCategory(item)===category))&&`${item.template.name} ${item.template.description} ${item.template.preview} ${MODEL_CATEGORIES.find(c=>c[0]===modelCategory(item))?.[1]||''}`.toLocaleLowerCase('it').includes(q))}
 function modelScenePlan(t){const patterns={soft:[1.12,1,.92,1.05,.9,1.01],party:[1.2,.8,1,.85,1.15],urban:[1,.75,1.25,.9,1.1],sport:[1.15,.7,1,.85,1.3],travel:[1.1,1,1.2,.85,.9],trendy:[1.2,1,1,.9,.8]};const pattern=patterns[t.category]||[1.1,1,1,.9];return Array.from({length:modelSceneCount(t)},(_,i)=>({seconds:Math.round((t.sceneDurations?.[i]||t.duration*pattern[i%pattern.length])*100)/100,effect:t.effects[i%t.effects.length],transition:t.transitions[i%t.transitions.length]}))}

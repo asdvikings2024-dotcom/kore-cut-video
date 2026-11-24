@@ -26,3 +26,19 @@ export function openMusicSheet(uploadFn){
  sheet.append(head,note,list,beat,up);document.body.append(sheet);document.body.classList.add('kfx-open');
 }
 window.koreMusicSheet=openMusicSheet;
+
+export function openMagicSheet(){
+ const api=window.koreMagic;if(!api)return;close();
+ sheet=el('div','kfx kfx-music');sheet.setAttribute('role','dialog');sheet.setAttribute('aria-label','Magia KORE');
+ const head=el('div','kfx-h');head.append(el('b',null,'✨ Magia KORE'));const x=el('button',null,'✕');x.type='button';x.onclick=close;head.append(x);
+ const note=el('p','kfx-note','Un tocco: tagli a tempo, musica e look. Scegli la versione che ti piace (puoi annullare).');
+ const list=el('div','kfx-music-list');
+ for(const m of api.list()){
+  const row=el('div','kfx-song');const info=el('div','kfx-song-i');info.append(el('b',null,m.icon+' '+m.name),el('small',null,m.desc));
+  const go=el('button','kfx-add','✨ Applica');go.type='button';
+  go.onclick=async()=>{go.disabled=true;go.textContent='…';try{const n=await api.apply(m.id);if(!n){go.textContent='Aggiungi prima un video';go.disabled=false;return}go.textContent='✓ Fatto';setTimeout(close,600)}catch(e){go.textContent='Riprova';go.disabled=false}};
+  row.append(info,go);list.append(row);
+ }
+ sheet.append(head,note,list);document.body.append(sheet);document.body.classList.add('kfx-open');
+}
+window.koreMagicSheet=openMagicSheet;
