@@ -17,7 +17,7 @@ import {sceneReady,sceneTarget,mediaMatchesFilter} from './scene-selection.js?v=
 import {encodeNormalizedWav} from './audio-tools.js?v=projects-6';
 import {drawStudioVideo,STUDIO_VIDEO_EFFECTS} from './creative-effects.js?v=objects-5';
 import {installMobileExperience} from './mobile-experience.js?v=phone-4';
-import { openPhotoEditor } from '/studio/photo-editor.js?v=smart-19';
+import { openPhotoEditor } from '/studio/photo-editor.js?v=smart-21';
 'use strict';
 const KORE_EDIT_TRANSITIONS={"editpush0": ["push", 0, "Push sinistra"], "editpush1": ["push", 1, "Push destra"], "editpush2": ["push", 2, "Push alto"], "editpush3": ["push", 3, "Push basso"], "editwhip0": ["whip", 0, "Whip sinistra"], "editwhip1": ["whip", 1, "Whip destra"], "editwhip2": ["whip", 2, "Whip alto"], "editwhip3": ["whip", 3, "Whip basso"], "editwipe0": ["wipe", 0, "Reveal sinistra"], "editwipe1": ["wipe", 1, "Reveal destra"], "editwipe2": ["wipe", 2, "Reveal alto"], "editwipe3": ["wipe", 3, "Reveal basso"], "editzoom0": ["zoom", 0, "Zoom punch"], "editzoom1": ["zoom", 1, "Zoom pull"], "editzoom2": ["zoom", 2, "Zoom bounce"], "editzoom3": ["zoom", 3, "Zoom smooth"], "editspin0": ["spin", 0, "Spin orario"], "editspin1": ["spin", 1, "Spin antiorario"], "editsplit0": ["split", 0, "Split verticale"], "editsplit1": ["split", 1, "Split orizzontale"]};
 

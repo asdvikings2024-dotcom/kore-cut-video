@@ -34,3 +34,5 @@
 .kfx-beat{margin:12px 0;padding:12px;border-radius:16px;background:linear-gradient(135deg,rgba(255,45,146,.18),rgba(124,92,255,.18));border:1px solid rgba(255,255,255,.14);display:grid;gap:8px}
 .kfx-beat-row{display:flex;gap:8px}.kfx-beat-row button{flex:1;min-height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font:600 13px inherit}
 .kfx-beat-row button[aria-pressed=true]{background:#ff2d92;border-color:#ff2d92}.kfx-beat-go{min-height:44px;width:100%}
+#korePhotoEditor .photo-looks button.has-th{min-height:84px!important;background-size:cover!important;background-position:center!important;color:#fff!important;font-weight:700;text-shadow:0 1px 3px #000;display:flex;align-items:flex-end;justify-content:center;border:1px solid rgba(255,255,255,.18)!important;overflow:hidden}
+#korePhotoEditor .photo-looks button.has-th[aria-pressed=true],#korePhotoEditor .photo-looks button.has-th.active{outline:2px solid #ff2d92}
