@@ -164,7 +164,7 @@ function buildRail(){
  add('✦','Effetti',()=>$('mobileEffects')?.click());
  add('☷','Modifica',()=>{if(needClip())$('mobileAdvanced')?.click()});
  stage.append(rail);
- const back=el('button','kc-back','▤ Montaggio');back.id='koreCapBack';back.type='button';back.onclick=()=>document.body.classList.remove('kc-clean');stage.append(back);
+ const back=el('button','kc-back','▤ Montaggio');back.id='koreCapBack';back.type='button';back.onclick=()=>{document.body.classList.remove('kc-clean');setTimeout(()=>window.dispatchEvent(new Event('kore-cap-refresh')),30);setTimeout(()=>window.dispatchEvent(new Event('resize')),60)};stage.append(back);
  const cp=el('button','kc-cleanplay','▶');cp.id='koreCapPlay2';cp.type='button';cp.setAttribute('aria-label','Riproduci o ferma');cp.onclick=()=>api().toggle();stage.append(cp);
  const fs=el('button','kc-fs','⛶');fs.id='koreCapFs';fs.type='button';fs.setAttribute('aria-label','Schermo intero');fs.onclick=()=>document.body.classList.add('kc-clean');stage.append(fs);
 }

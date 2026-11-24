@@ -1106,6 +1106,22 @@ function drawClipFx(clip,value,amount,start,el,sw,sh,scale){
   ctx.filter='sepia(1) saturate(8) hue-rotate(285deg)';ctx.drawImage(el,-w/2+dx,-h/2,w,h);
   ctx.filter='sepia(1) saturate(8) hue-rotate(130deg)';ctx.drawImage(el,-w/2-dx,-h/2,w,h);
  }
+ {
+  const t=time-start,q=Math.floor(t*9),rnd=n=>{const k=Math.sin(n*127.1+q*311.7)*43758.5;return k-Math.floor(k)};
+  const strip=(sy,sh2,dx)=>{const y0=sy*sh,h0=sh2*sh;ctx.drawImage(el,0,y0,sw,h0,-w/2+dx,-h/2+sy*h,w,sh2*h)};
+  if(value==='fxGlitchPro'){
+   for(let i=0;i<7;i++){const sy=rnd(i+1)*.9,sh2=.02+rnd(i+9)*.09;if(rnd(i+20)>.35)strip(sy,sh2,(rnd(i+30)-.5)*w*.18)}
+   ctx.globalAlpha*=.5;ctx.globalCompositeOperation='screen';ctx.filter='sepia(1) saturate(8) hue-rotate(285deg)';ctx.drawImage(el,-w/2+w*.012,-h/2,w,h);ctx.filter='sepia(1) saturate(8) hue-rotate(130deg)';ctx.drawImage(el,-w/2-w*.012,-h/2,w,h);
+  }
+  if(value==='fxChroma'){const d=w*.018;ctx.globalAlpha*=.55;ctx.globalCompositeOperation='screen';ctx.filter='sepia(1) saturate(9) hue-rotate(320deg)';ctx.drawImage(el,-w/2+d,-h/2,w,h);ctx.filter='sepia(1) saturate(9) hue-rotate(170deg)';ctx.drawImage(el,-w/2-d,-h/2,w,h)}
+  if(value==='fxShake'){const a=w*.012;ctx.drawImage(el,-w/2+(rnd(1)-.5)*a*2,-h/2+(rnd(2)-.5)*a*2,w,h)}
+  if(value==='fxWave'){const n=28;for(let i=0;i<n;i++){const sy=i/n;strip(sy,1/n+.002,Math.sin(t*5+i*.45)*w*.025)}}
+  if(value==='fxPulse'){const p=Math.pow(.5+.5*Math.sin(t*7),3),k=1+.07*p;ctx.globalAlpha*=.7;ctx.drawImage(el,-w*k/2,-h*k/2,w*k,h*k)}
+  if(value==='fxFlash'){const f=Math.pow(Math.max(0,Math.sin(t*5.5)),14);ctx.globalAlpha=Math.min(1,f*.9*amount);ctx.fillStyle='#fff';ctx.fillRect(-w/2,-h/2,w,h)}
+  if(value==='fxInvert'){if(Math.sin(t*9)>.82){ctx.filter='invert(1)';ctx.drawImage(el,-w/2,-h/2,w,h)}}
+  if(value==='fxMosaic'){const px=Math.max(6,Math.round(sw/(10+Math.floor(18*rnd(3)))));fxCanvas.width=Math.max(6,Math.round(sw/px*3));fxCanvas.height=Math.max(6,Math.round(sh/px*3));fxCanvas.getContext('2d').drawImage(el,0,0,fxCanvas.width,fxCanvas.height);ctx.imageSmoothingEnabled=false;if(Math.sin(t*6)>.2)ctx.drawImage(fxCanvas,-w/2,-h/2,w,h)}
+  if(value==='fxZoomBurst'){const k=1+.18*((t*1.6)%1);ctx.globalAlpha*=.55;ctx.drawImage(el,-w*k/2,-h*k/2,w*k,h*k)}
+ }
  renderFXOverlay({...clip,effect:value,start},time,w,h);
  ctx.restore();
 }
