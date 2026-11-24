@@ -148,6 +148,7 @@ function buildTools(){
   btn('⧉','Duplica',()=>$('duplicate')?.click()));
  if(c&&c.kind!=='audio')toolbar.append(btn('◐','Trasparenza',()=>opacityPop(sel)),btn('⇋','Specchia',mirror),btn('⟳','Ruota 90°',()=>turn90(sel)));
  if(c&&(c.kind==='video'||c.kind==='audio')&&c.url!==undefined)toolbar.append(btn('🤫','Togli pause',()=>pausesPop(sel)));
+ if(c&&c.kind==='title')toolbar.append(btn('Aa','Stile testo',()=>window.koreTextSheet?.()));
  if(c&&c.tr)toolbar.append(btn('✎','Correggi parole',()=>window.koreOpenTranscriptEditor?.()));
  if(c&&c.kind==='image')toolbar.append(btn('✦','Togli sfondo',()=>window.koreCutoutAI?.(sel)));
  toolbar.append(btn('🗑','Elimina',()=>$('remove')?.click(),'danger'));
@@ -158,7 +159,7 @@ function buildRail(){
  rail=el('div','kc-rail');rail.id='koreRail';rail.setAttribute('aria-label','Strumenti');
  const add=(icon,label,fn)=>{const b=el('button',null,'<i aria-hidden="true">'+icon+'</i><small>'+label+'</small>');b.type='button';b.onclick=fn;rail.append(b)};
  add('◫','Logo / Foto',()=>$('phoneOverlayOpen')?.click());
- add('T','Testo',()=>$('mobileText')?.click());
+ add('T','Testo',()=>{$('mobileText')?.click();setTimeout(()=>{window.koreTextSheet?.()},700)});
  add('▤','Sottotitoli',()=>$('mobileSubtitles')?.click());
  add('♪','Audio',pickAudio);
  add('✦','Effetti',()=>{needClip();window.koreFxSheet?window.koreFxSheet():$('mobileEffects')?.click()});
@@ -183,7 +184,7 @@ function loop(){
  const k=api();if(k){
   if(!drag&&!inertia)setView(k.time());
   if(!drag&&!inertia)clock.textContent=fmt(k.time())+' / '+fmt(k.end());
-  const p=k.playing();if(playBtn.dataset.p!==String(p)){playBtn.dataset.p=String(p);playBtn.firstChild.textContent=p?'❚❚':'▶';const c2=document.getElementById('koreCapPlay2');if(c2)c2.textContent=p?'❚❚':'▶'}
+  const p=k.playing();if(playBtn.dataset.p!==String(p)){playBtn.dataset.p=String(p);playBtn.firstChild.textContent=p?'❚❚':'▶';const c2=document.getElementById('koreCapPlay2');if(c2)c2.textContent=p?'❚❚':'▶';document.body.classList.toggle('kc-playing',!!p)}
  }
  raf=requestAnimationFrame(loop);
 }
