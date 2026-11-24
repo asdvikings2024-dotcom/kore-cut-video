@@ -161,7 +161,7 @@ function buildRail(){
  add('T','Testo',()=>$('mobileText')?.click());
  add('▤','Sottotitoli',()=>$('mobileSubtitles')?.click());
  add('♪','Audio',pickAudio);
- add('✦','Effetti',()=>$('mobileEffects')?.click());
+ add('✦','Effetti',()=>{needClip();window.koreFxSheet?window.koreFxSheet():$('mobileEffects')?.click()});
  add('☷','Modifica',()=>{if(needClip())$('mobileAdvanced')?.click()});
  stage.append(rail);
  const back=el('button','kc-back','▤ Montaggio');back.id='koreCapBack';back.type='button';back.onclick=()=>{document.body.classList.remove('kc-clean');setTimeout(()=>window.dispatchEvent(new Event('kore-cap-refresh')),30);setTimeout(()=>window.dispatchEvent(new Event('resize')),60)};stage.append(back);
