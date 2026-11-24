@@ -139,3 +139,4 @@ body.kore-cap .stage,body.kore-cap #preview,body.kore-cap .stage canvas{touch-ac
 #koreCapPlay2{display:none}
 body.kc-clean.kore-cap:not(.mobile-home-open) #koreCapPlay2{display:grid;place-items:center;position:fixed;z-index:41;left:16px;bottom:calc(10px + var(--kbar,0px) + env(safe-area-inset-bottom));width:56px;height:56px;min-width:0;min-height:0;padding:0;border-radius:50%;border:1.5px solid #ffffffb0;background:#0007;color:#fff;font-size:22px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 @media(max-width:759px){body.kore-cap #koreRail{top:calc(46% - 30px)!important;bottom:auto!important;transform:translateY(-50%) scale(.78)!important;transform-origin:right center}}
+body.kore-cap .bottom{z-index:30!important}

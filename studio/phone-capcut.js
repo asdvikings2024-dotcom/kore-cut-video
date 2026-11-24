@@ -178,7 +178,8 @@ function setView(t){inner.style.transform='translate3d('+(-t*PPS)+'px,0,0)'}
 function stopInertia(){if(inertia){cancelAnimationFrame(inertia);inertia=0}}
 function moveTo(t){t=Math.max(0,Math.min(endT(),t));setView(t);api().seek(t);clock.textContent=fmt(t)+' / '+fmt(endT());return t}
 function loop(){
- raf=0;if(!root||root.hidden)return;
+ raf=0;if(root&&!root.isConnected){const bt=document.querySelector('.bottom');if(bt){const t=document.getElementById('phoneTransport');t&&t.parentNode===bt?t.after(root):bt.append(root)}}
+ if(!root||root.hidden)return;
  const k=api();if(k){
   if(!drag&&!inertia)setView(k.time());
   if(!drag&&!inertia)clock.textContent=fmt(k.time())+' / '+fmt(k.end());
