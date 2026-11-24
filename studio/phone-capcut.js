@@ -161,7 +161,7 @@ function buildRail(){
  add('◫','Logo / Foto',()=>$('phoneOverlayOpen')?.click());
  add('T','Testo',()=>{$('mobileText')?.click();setTimeout(()=>{window.koreTextSheet?.()},700)});
  add('▤','Sottotitoli',()=>$('mobileSubtitles')?.click());
- add('♪','Audio',pickAudio);
+ add('♪','Audio',()=>window.koreMusicSheet?window.koreMusicSheet(pickAudio):pickAudio());
  add('✦','Effetti',()=>{needClip();window.koreFxSheet?window.koreFxSheet():$('mobileEffects')?.click()});
  add('☷','Modifica',()=>{if(needClip())$('mobileAdvanced')?.click()});
  stage.append(rail);
