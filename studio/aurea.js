@@ -1,7 +1,7 @@
 // Tema Aurea: palette oro/ambra con due varianti (Notte e Giorno).
 // Ricalcola al volo i colori di tutti i fogli di stile; il video e l'anteprima restano invariati.
 const KEY='koreTheme',MODES=['orig','aurea-dark','aurea-light'],NAMES={orig:'Originale','aurea-dark':'Aurea Notte','aurea-light':'Aurea Giorno'};
-const SKIP=/stage|preview|canvas|video|kc-wave|kfx-th|has-th|kore-wave|demo|poster|thumb/i;
+const SKIP=/data-kore-theme|k-themes|k-theme-btn|stage|preview|canvas|video|kc-wave|kfx-th|has-th|kore-wave|demo|poster|thumb/i;
 function rgb2hsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;let h=0,s=0;if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h*=60}return[h,s,l]}
 function hsl2rgb(h,s,l){h/=360;const f=(p,q,t)=>{t=(t+1)%1;return t<1/6?p+(q-p)*6*t:t<.5?q:t<2/3?p+(q-p)*(2/3-t)*6:p},q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;return[f(p,q,h+1/3),f(p,q,h),f(p,q,h-1/3)].map(v=>Math.round(v*255))}
 function map(r,g,b,mode){
@@ -42,15 +42,19 @@ function addButtons(){homePicker();
   const rail=document.getElementById('koreRail');if(rail&&!rail.querySelector('.k-theme-btn')){const b=mk();b.className+=' k-rail-theme';b.innerHTML='<i aria-hidden="true">◐</i><small>Tema</small>';rail.append(b)}
 }
 function homePicker(){
- const fn=document.querySelector('#mobileStart .mobile-start-actions')||document.querySelector('.entry-functions'),foot=document.querySelector('.mobile-start-foot');if(document.querySelector('.k-themes')||!(fn||foot))return;
- const box=document.createElement('div');box.className='k-themes';box.setAttribute('role','group');box.setAttribute('aria-label','Tema');
- const opts=[['dark','Nero'],['light','Bianco'],['aurea-dark','Aurea Notte'],['aurea-light','Aurea Giorno']];
- const mark=()=>{const cur=current!=='orig'?current:(document.body.dataset.look==='light'?'light':'dark');box.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.t===cur)))};
- for(const [v,t] of opts){const b=document.createElement('button');b.type='button';b.dataset.t=v;b.textContent=t;b.onclick=()=>{
-  if(v.startsWith('aurea')){setTheme(v)}else{setTheme('orig');document.querySelectorAll('[data-kore-theme]').forEach(sel=>{sel.value=v;sel.dispatchEvent(new Event('change',{bubbles:true}))})}
-  mark()};box.append(b)}
- if(fn)fn.after(box);else foot.prepend(box);mark();document.addEventListener('kore-theme-change',mark);
+ const targets=[document.querySelector('#mobileStart .mobile-start-actions'),document.querySelector('.entry-functions')].filter(Boolean);
+ for(const fn of targets){
+  if(fn.nextElementSibling?.classList.contains('k-themes'))continue;
+  const box=document.createElement('div');box.className='k-themes';box.setAttribute('role','group');box.setAttribute('aria-label','Tema');
+  for(const [v,t] of [['dark','Nero'],['light','Bianco'],['aurea-dark','Aurea Notte'],['aurea-light','Aurea Giorno']]){const b=document.createElement('button');b.type='button';b.dataset.t=v;b.textContent=t;b.onclick=()=>{
+   if(v.startsWith('aurea')){setTheme(v)}else{setTheme('orig');document.querySelectorAll('[data-kore-theme]').forEach(sel=>{sel.value=v;sel.dispatchEvent(new Event('change',{bubbles:true}))})}
+   markThemes()};box.append(b)}
+  fn.after(box);
+ }
+ markThemes();
 }
+function markThemes(){const cur=current!=='orig'?current:(document.body.dataset.look==='light'?'light':'dark');document.querySelectorAll('.k-themes button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.t===cur)))}
+document.addEventListener('kore-theme-change',()=>markThemes());
 function wireSelects(){
  document.querySelectorAll('[data-kore-theme]').forEach(sel=>{
   for(const [v,t] of [['aurea-dark','Aurea Notte'],['aurea-light','Aurea Giorno']])if(![...sel.options].some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=t;sel.append(o)}

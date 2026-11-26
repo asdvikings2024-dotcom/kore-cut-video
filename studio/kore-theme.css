@@ -42,3 +42,12 @@
 .k-themes{margin-top:12px!important;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px;width:100%}
 .k-themes button{min-height:42px;padding:6px 4px;border-radius:13px;border:1px solid #ffffff2e;background:#ffffff0d;color:inherit;font:600 11.5px/1.15 inherit;backdrop-filter:blur(8px)}
 .k-themes button[aria-pressed=true]{background:linear-gradient(135deg,#ff2d92,#8a5cff);border-color:transparent;color:#fff}
+@media(min-width:760px){.k-themes{max-width:620px;grid-template-columns:repeat(4,1fr);margin:18px 0 0!important}.k-themes button{min-height:46px;font-size:13px;cursor:pointer}}
+/* Aurea Giorno: testi sempre leggibili sul chiaro */
+html[data-kore-theme=aurea-light] :is(.entry-choice-heading h2,.entry-choice h2,.mobile-models-heading h1){color:#1b1020!important;-webkit-text-fill-color:#1b1020!important}
+html[data-kore-theme=aurea-light] :is(.entry-card small,.entry-card-copy small,.entry-choice p,.entry-card-tag,.entry-choice-heading p,.entry-eyebrow,.mobile-start-content p){color:#5a4660!important;-webkit-text-fill-color:#5a4660!important}
+html[data-kore-theme=aurea-light] .mobile-start-actions .primary small,html[data-kore-theme=aurea-light] .entry-card.is-primary small{color:#fff!important;-webkit-text-fill-color:#fff!important}
+/* Scelta tema su desktop: sempre visibile in basso a sinistra */
+@media(min-width:760px){.entry-choice+.k-themes,.sheet .k-themes,.k-themes{position:fixed;left:48px;bottom:44px;z-index:60;width:min(560px,calc(100vw - 96px));margin:0!important}}
+html[data-kore-theme=aurea-light] .k-themes button{color:#2a1830;background:#ffffffb3;border-color:#2a183033}
+html[data-kore-theme=aurea-light] .k-themes button[aria-pressed=true]{color:#fff;background:linear-gradient(135deg,#e0148a,#7a3df0)}
