@@ -39,3 +39,6 @@
 .k-theme-btn{width:40px;height:40px;border-radius:50%;border:1px solid #ffffff40;background:#0006;color:#fff;font-size:20px;display:inline-grid;place-items:center;margin-left:8px}
 .mobile-start-top .k-theme-btn{margin-left:auto}
 #koreRail .k-rail-theme{width:auto;height:auto;border-radius:inherit;border:inherit;background:inherit;font-size:inherit;margin:0;display:grid}
+.k-themes{margin-top:12px!important;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px;width:100%}
+.k-themes button{min-height:42px;padding:6px 4px;border-radius:13px;border:1px solid #ffffff2e;background:#ffffff0d;color:inherit;font:600 11.5px/1.15 inherit;backdrop-filter:blur(8px)}
+.k-themes button[aria-pressed=true]{background:linear-gradient(135deg,#ff2d92,#8a5cff);border-color:transparent;color:#fff}
