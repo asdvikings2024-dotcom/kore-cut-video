@@ -36,3 +36,6 @@
 .kfx-beat-row button[aria-pressed=true]{background:#ff2d92;border-color:#ff2d92}.kfx-beat-go{min-height:44px;width:100%}
 #korePhotoEditor .photo-looks button.has-th{min-height:84px!important;background-size:cover!important;background-position:center!important;color:#fff!important;font-weight:700;text-shadow:0 1px 3px #000;display:flex;align-items:flex-end;justify-content:center;border:1px solid rgba(255,255,255,.18)!important;overflow:hidden}
 #korePhotoEditor .photo-looks button.has-th[aria-pressed=true],#korePhotoEditor .photo-looks button.has-th.active{outline:2px solid #ff2d92}
+.k-theme-btn{width:40px;height:40px;border-radius:50%;border:1px solid #ffffff40;background:#0006;color:#fff;font-size:20px;display:inline-grid;place-items:center;margin-left:8px}
+.mobile-start-top .k-theme-btn{margin-left:auto}
+#koreRail .k-rail-theme{width:auto;height:auto;border-radius:inherit;border:inherit;background:inherit;font-size:inherit;margin:0;display:grid}
