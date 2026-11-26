@@ -1,0 +1,95 @@
+// Indicatore di lavoro per i Sottotitoli AI: passi chiari, barra di avanzamento, tempo stimato,
+// pillola sempre visibile (anche con la finestra ridotta) e schermo tenuto acceso durante l'analisi.
+const $=id=>document.getElementById(id);
+let lock=null;
+const KEY='koreAsrRun',SAFE='koreAsrSafe';
+const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+const ios=typeof navigator!=='undefined'&&(/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1));
+let recovered=false;
+if(typeof window!=='undefined'){if(store.get(KEY)){store.set(SAFE,'1');store.del(KEY);recovered=true}window.koreAsrSafe=store.get(SAFE)==='1'}
+export function parseStatus(text){
+ const t=String(text||'');let m;
+ if(/^✓/.test(t))return {phase:'done'};
+ if(/^(Errore|Da verificare|Analisi annullata)/.test(t))return {phase:'end'};
+ if(m=t.match(/Trascrizione\s+(\d+)\s*[–-]\s*(\d+)\s*s\s*\/\s*(\d+)\s*s/))return {phase:3,from:+m[1],to:+m[2],total:+m[3]};
+ if(m=t.match(/Riprendo l.analisi da (\d+)/))return {phase:3,from:+m[1],to:+m[1],total:0,resumed:true};
+ if(/Rianalisi/.test(t))return {phase:3,keep:true};
+ if(m=t.match(/Download .*?(\d+)\s*%/))return {phase:2,download:+m[1]};
+ if(/Caricamento AI|Preparazione|AI già pronta|Trascrizione già disponibile/.test(t))return {phase:2};
+ if(/Decodifica|audio|Audio/.test(t))return {phase:1};
+ return null;
+}
+export function formatEta(seconds){
+ if(!Number.isFinite(seconds)||seconds<0)return '';
+ if(seconds<8)return 'meno di 10 secondi';
+ if(seconds<55)return 'circa '+Math.round(seconds/5)*5+' secondi';
+ const min=Math.round(seconds/60);return 'circa '+min+(min===1?' minuto':' minuti');
+}
+export function estimate(samples,now,total,at){
+ // samples: [{t, at}] a partire dal primo tratto; ritorna secondi rimanenti o null
+ if(samples.length<2)return null;const a=samples[0],b=samples[samples.length-1],done=b.at-a.at,elapsed=(b.t-a.t)/1000;
+ if(done<=0||elapsed<=0)return null;return Math.max(0,(total-at)/(done/elapsed));
+}
+let asking=false;
+async function keepAwake(on){
+ if(ios)return; // su iPhone lo schermo acceso non è affidabile: meglio non rischiare
+ try{if(on&&!lock&&!asking&&navigator.wakeLock){asking=true;try{lock=await navigator.wakeLock.request('screen')}finally{asking=false}if(!lock)return;lock.addEventListener('release',()=>{lock=null})}else if(!on&&lock){await lock.release();lock=null}}catch(e){}
+}
+function pill(){
+ let p=$('koreWorkPill');if(p)return p;
+ p=document.createElement('button');p.id='koreWorkPill';p.type='button';p.hidden=true;p.setAttribute('aria-live','polite');
+ p.innerHTML='<span class="wp-dot" aria-hidden="true"></span><span class="wp-text"></span>';
+ p.onclick=()=>{const d=$('koreVideoAsrDialog');if(d)d.classList.remove('kore-minimized')};
+ document.body.append(p);return p;
+}
+function attach(dialog){
+ if(dialog.dataset.work)return;dialog.dataset.work='1';
+ const quality=dialog.querySelector('select[aria-label="Precisione riconoscimento"]');
+ const state=dialog.querySelector('.kore-speech-status'),actions=dialog.querySelector('.kore-speech-actions:last-of-type')||dialog.querySelector('.kore-speech-actions');
+ if(!state)return;
+ if(quality&&(window.koreAsrSafe||ios)){
+  quality.value='tiny';
+  if(window.koreAsrSafe)for(const o of [...quality.options])if(o.value!=='tiny')o.remove();
+  const note=document.createElement('p');note.className='kore-work-note';
+  const last=store.get('koreAsrLast');note.textContent=window.koreAsrSafe?'L’ultima analisi ha riavviato l’app (poca memoria sul telefono): uso il modello leggero, più sicuro.'+(last?' Ultimo passo prima del riavvio: «'+last+'».':''):'Su iPhone parto col modello leggero per non riavviare l’app. Se tutto va bene puoi provare "Accurata" dal menu.';
+  state.before(note);
+ }
+ const box=document.createElement('div');box.className='kore-work';box.hidden=true;
+ box.innerHTML='<div class="kw-step"></div><div class="kw-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i></i></div><div class="kw-eta"></div>';
+ state.after(box);
+ const step=box.querySelector('.kw-step'),bar=box.querySelector('.kw-bar'),fill=bar.firstElementChild,eta=box.querySelector('.kw-eta'),p=pill(),pt=p.querySelector('.wp-text');
+ const min=document.createElement('button');min.type='button';min.className='kw-min';min.textContent='Riduci e continua a montare';min.hidden=true;
+ (dialog.querySelector('.kore-caption-panel')||dialog).append(min);
+ min.onclick=()=>dialog.classList.add('kore-minimized');
+ let samples=[],tick=null,waitFrom=0;const clearTick=()=>{clearInterval(tick);tick=null};
+ const show=(label,frac,etaText,pillText)=>{if(box.hidden)setTimeout(()=>box.scrollIntoView({block:'center',behavior:'smooth'}),50);box.hidden=false;min.hidden=false;step.textContent=label;eta.textContent=etaText||'';if(frac==null){bar.classList.add('indeterminate');bar.removeAttribute('aria-valuenow');fill.style.width=''}else{bar.classList.remove('indeterminate');const v=Math.max(2,Math.min(100,Math.round(frac*100)));fill.style.width=v+'%';bar.setAttribute('aria-valuenow',String(v))}p.hidden=false;pt.textContent=pillText||label;keepAwake(true)};
+ const stop=ok=>{clearTick();samples=[];keepAwake(false);min.hidden=true;dialog.classList.remove('kore-minimized');if(ok){box.hidden=false;bar.classList.remove('indeterminate');fill.style.width='100%';step.textContent='Fatto';eta.textContent='';p.hidden=false;pt.textContent='✓ Sottotitoli pronti';clearTimeout(p.t);p.t=setTimeout(()=>{p.hidden=true},3500)}else{box.hidden=true;p.hidden=true}};
+ const read=()=>{
+  const r=parseStatus(state.textContent);if(!r)return;
+  if(r.phase==='done'||r.phase==='end')store.del(KEY);else{store.set(KEY,String(Date.now()));store.set('koreAsrLast',String(state.textContent||'').slice(0,100))}
+  if(r.phase==='done')return stop(true);if(r.phase==='end')return stop(false);
+  if(r.phase!==3)clearTick();
+  if(r.phase===1){samples=[];show('Passo 1 di 3 · Estraggo l’audio',null,'','✦ Estraggo l’audio…')}
+  else if(r.phase===2){samples=[];if(r.download!=null)show('Passo 2 di 3 · Scarico l’AI ('+r.download+'%) · solo la prima volta',r.download/100,'Dopo il primo uso resta nel telefono','✦ Scarico l’AI · '+r.download+'%');else show('Passo 2 di 3 · Preparo l’AI',null,'','✦ Preparo l’AI…')}
+  else if(r.phase===3&&!r.keep){
+   const total=r.total||1,now=performance.now();samples.push({t:now,at:r.from});
+   const left=r.total?estimate(samples,now,total,r.from):null,frac=r.total?r.from/total:null,etaText=left==null?(r.total?'Calcolo il tempo che manca…':''):'Mancano '+formatEta(left);
+   const pc=frac==null?'':' · '+Math.round(frac*100)+'%';
+   show('Passo 3 di 3 · Trascrivo '+(r.total?r.from+' s su '+total+' s':'…'),frac,etaText,'✦ Sottotitoli'+pc+(left==null?'':' · '+formatEta(left)));
+   if(left==null){if(samples.length===1)waitFrom=now;clearTick();tick=setInterval(()=>{if(box.hidden){clearTick();return}eta.textContent='L’AI sta ascoltando… è al lavoro da '+Math.round((performance.now()-waitFrom)/1000)+' s'},1000)}else clearTick();
+  }
+ };
+ new MutationObserver(read).observe(state,{childList:true,characterData:true,subtree:true});
+ new MutationObserver(()=>{if(!document.contains(dialog)){keepAwake(false);p.hidden=true;store.del(KEY)}}).observe(document.body,{childList:true});
+ read();
+}
+function init(){
+ const scan=()=>{const d=$('koreVideoAsrDialog');if(d)attach(d)};
+ new MutationObserver(scan).observe(document.body,{childList:true});scan();
+}
+async function version(){
+ try{const b=await (await fetch(new URL('./build.json',import.meta.url),{cache:'no-store'})).json();
+  const put=()=>{const d=$('phoneMoreDialog');if(!d||d.querySelector('.kore-version'))return !!d;const p=document.createElement('p');p.className='kore-version';p.textContent='Versione KORE · '+b.sha+' · '+String(b.time||'').replace('T',' ');p.style.cssText='margin:8px 16px;font-size:12px;opacity:.6';d.append(p);return true};
+  let n=0;const t=setInterval(()=>{if(put()||++n>40)clearInterval(t)},500)}catch(e){}
+}
+if(typeof document!=='undefined'){version();if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init()}

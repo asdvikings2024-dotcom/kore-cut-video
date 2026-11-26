@@ -1,0 +1,42 @@
+/* Timeline da telefono: più alta, clip da 44 px, maniglie di taglio, barra azioni sulla clip selezionata.
+   Caricato per ultimo: le regole precedenti sono molte e con !important, quindi queste le sovrascrivono. */
+@media (max-width:759px){
+ /* Più spazio: ruler + circa 2,5 tracce invece di ~1,5 */
+ body.mobile-timeline-open:not(.mobile-home-open) .timeline,
+ body.mobile-advanced:not(.mobile-home-open) .timeline{min-height:clamp(120px,21vh,168px)!important;max-height:clamp(130px,24vh,190px)!important}
+ /* L'area in basso cresce col contenuto (prima era fissa al 55% dello schermo e il contenuto usciva) */
+ body.mobile-timeline-open:not(.mobile-home-open) .bottom{height:auto!important;max-height:none!important;flex:0 0 auto!important}
+ /* Il cursore della barra rapida duplica quello principale (#seek): resta solo ±3 s e Frase */
+ body.mobile-timeline-open:not(.mobile-home-open) #koreQuickTimeline input[type="range"]{display:none!important}
+ body:not(.mobile-home-open) .track,
+ body:not(.mobile-home-open) .trackbody{min-height:56px!important}
+ /* Clip abbastanza grandi per il dito (44 px) e testi leggibili */
+ body:not(.mobile-home-open) #tracks .clip{height:44px!important;top:6px!important;font-size:12px!important}
+ body:not(.mobile-home-open) #tracks .clip small{font-size:10px!important}
+ body:not(.mobile-home-open) .ruler,
+ body:not(.mobile-home-open) .ruler *{font-size:12px!important}
+ /* Una clip non selezionata si scorre con il dito (la timeline si sposta); una clip selezionata si trascina */
+ body:not(.mobile-home-open) #tracks .clip{touch-action:pan-x pan-y!important}
+ body:not(.mobile-home-open) #tracks .clip.selected{touch-action:none!important;padding-inline:30px!important}
+ /* Maniglie di taglio inizio/fine: visibili e grandi sulla clip selezionata */
+ body:not(.mobile-home-open) #tracks .clip.selected .clip-trim{display:block!important;position:absolute;top:0;bottom:0;width:26px;z-index:3;touch-action:none;background:#ff87bd80;border-inline:2px solid #ffb1d4}
+ body:not(.mobile-home-open) #tracks .clip.selected .clip-trim[data-edge="start"]{left:0;border-radius:6px 0 0 6px}
+ body:not(.mobile-home-open) #tracks .clip.selected .clip-trim[data-edge="end"]{right:0;border-radius:0 6px 6px 0}
+ body:not(.mobile-home-open) #tracks .clip.selected .clip-trim::after{inset:28% 9px}
+ /* Barra azioni sopra la timeline */
+ #phoneClipBar{display:none}
+ body.phone-clipbar-on #phoneClipBar{display:flex;flex:0 0 auto;min-height:44px;gap:6px;align-items:stretch;margin:4px 0;overflow-x:auto;scrollbar-width:none}
+ body.phone-clipbar-on #phoneClipBar::-webkit-scrollbar{display:none}
+ body.phone-clip-selected #phoneSelectionHint{display:none!important}
+ #phoneClipBar button{flex:1 0 auto;min-width:48px;min-height:44px;padding:4px 10px;border-radius:12px;border:1px solid #ffffff44;background:#2a1d33;color:#fff;font-family:inherit;font-weight:600;font-size:12px;line-height:1.1;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+ #phoneClipBar button span{font-size:16px;line-height:1}
+ #phoneClipBar button:disabled{opacity:.38}
+ #phoneClipBar button.danger{color:#ff9fb8}
+ #phoneClipBar i{flex:0 0 1px;align-self:stretch;background:#ffffff26}
+ /* Maniglia timeline */
+ #phoneTimelineHandle{display:none}
+ body.phone-handle-on:not(.mobile-home-open) #phoneTimelineHandle{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:10px;position:relative;min-height:44px;margin:2px 0;padding:6px 14px;border:1px solid #ffffff33;border-radius:14px;background:#2a1d33;color:#fff;font-family:inherit;font-size:14px;font-weight:700}
+ #phoneTimelineHandle .th-grip{position:absolute;left:50%;top:5px;width:36px;height:4px;margin-left:-18px;border-radius:4px;background:#ffffff55}
+ #phoneTimelineHandle .th-info{font-weight:500;opacity:.8;font-size:13px}
+ #phoneTimelineHandle[aria-expanded="true"]{background:#ff2d9233;border-color:#ff87bd}
+}

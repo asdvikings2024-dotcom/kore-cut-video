@@ -1,0 +1,57 @@
+/* KORE Studio · tema unico: vetro scuro, bordi morbidi, rosa/viola come colore guida, animazioni leggere */
+:root{--k-pink:#ff2d92;--k-violet:#a56eff;--k-glass:#14101fe6;--k-line:#ffffff24;--k-r:16px}
+@keyframes kSlideUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@keyframes kPop{0%{transform:scale(.92);opacity:0}60%{transform:scale(1.03)}100%{transform:none;opacity:1}}
+@keyframes kFade{from{opacity:0}to{opacity:1}}
+.kfx,.kt,.kore-caption-panel,#phoneOverlayDialog,.import-choice-sheet,#koreImportChoice>*{animation:kSlideUp .24s cubic-bezier(.2,.8,.2,1)}
+.kfx-c,.kfx-chip,.kfx-song,.entry-card,.caption-choice{transition:transform .12s ease,background .15s ease,border-color .15s ease}
+.kfx-c:active,.kfx-chip:active,.entry-card:active,.caption-choice:active,#koreRail button:active,.kc-tools button:active,.kfx-add:active{transform:scale(.94)}
+#koreToast,#phoneOverlayToast,#koreImportFeedback{animation:kPop .28s ease}
+.kc-clip{animation:kFade .2s ease}
+/* Stessa pelle per i pannelli "vecchi" */
+@media(max-width:759px){
+ .kore-caption-panel,#mobileTools,#mobileCaptionMenu .kore-caption-panel,#modelPreviewDialog .model-preview-panel{background:var(--k-glass)!important;border:1px solid var(--k-line)!important;border-radius:20px!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff}
+ .caption-choice{min-height:52px;border-radius:14px!important;border:1px solid var(--k-line)!important;background:#ffffff0e!important;color:#fff!important;font-weight:700;text-align:left;padding:0 16px}
+ .caption-choice:first-of-type{background:linear-gradient(135deg,var(--k-pink),var(--k-violet))!important;border-color:#ffffff55!important}
+ #mobileTools{border-radius:20px 20px 0 0!important}
+ #mobileTools :is(input[type=range]){accent-color:var(--k-pink)}
+ #mobileTools :is(select,input[type=text],input[type=number],textarea){background:#ffffff10!important;border:1px solid var(--k-line)!important;border-radius:12px!important;color:#fff!important}
+ #mobileTools button{border-radius:12px}
+ /* Home: logo più piccolo e griglia ordinata, così sta tutto in una schermata */
+ .entry-phone-hero{height:auto!important;min-height:0!important}
+ .entry-emblem{transform:scale(.62);margin:-52px 0 -22px!important}
+ .mobile-start-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:10px}
+ .mobile-start-actions>.entry-card:first-child{grid-column:1/-1}
+ .mobile-start-actions .entry-card:not(:first-child){grid-column:auto!important;width:auto!important;min-height:0!important;height:auto!important;padding:14px!important;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+ .mobile-start-actions .entry-card:not(:first-child) small{display:none!important}
+ .mobile-start-actions .entry-card:not(:first-child) strong{font-size:15px}
+}
+}
+.export-hint{width:100%;margin:2px 0 6px;font-size:13px;opacity:.85;text-align:center}
+#exportShare{min-height:56px;font-size:17px}
+.kt-ins{display:inline-block;padding:6px 10px;border-radius:10px;background:rgba(255,45,146,.22);border:1px dashed #ff2d92;font-size:14px}
+.kt-modes button{font-size:14px}
+.kfx-beat{margin:12px 0;padding:12px;border-radius:16px;background:linear-gradient(135deg,rgba(255,45,146,.18),rgba(124,92,255,.18));border:1px solid rgba(255,255,255,.14);display:grid;gap:8px}
+.kfx-beat-row{display:flex;gap:8px}.kfx-beat-row button{flex:1;min-height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font:600 13px inherit}
+.kfx-beat-row button[aria-pressed=true]{background:#ff2d92;border-color:#ff2d92}.kfx-beat-go{min-height:44px;width:100%}
+#korePhotoEditor .photo-looks button.has-th{min-height:84px!important;background-size:cover!important;background-position:center!important;color:#fff!important;font-weight:700;text-shadow:0 1px 3px #000;display:flex;align-items:flex-end;justify-content:center;border:1px solid rgba(255,255,255,.18)!important;overflow:hidden}
+#korePhotoEditor .photo-looks button.has-th[aria-pressed=true],#korePhotoEditor .photo-looks button.has-th.active{outline:2px solid #ff2d92}
+.k-theme-btn{width:40px;height:40px;border-radius:50%;border:1px solid #ffffff40;background:#0006;color:#fff;font-size:20px;display:inline-grid;place-items:center;margin-left:8px}
+.mobile-start-top .k-theme-btn{margin-left:auto}
+#koreRail .k-rail-theme{width:auto;height:auto;border-radius:inherit;border:inherit;background:inherit;font-size:inherit;margin:0;display:grid}
+.k-themes{margin-top:12px!important;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px;width:100%}
+.k-themes button{min-height:42px;padding:6px 4px;border-radius:13px;border:1px solid #ffffff2e;background:#ffffff0d;color:inherit;font:600 11.5px/1.15 inherit;backdrop-filter:blur(8px)}
+.k-themes button[aria-pressed=true]{background:linear-gradient(135deg,#ff2d92,#8a5cff);border-color:transparent;color:#fff}
+@media(min-width:760px){.k-themes{max-width:620px;grid-template-columns:repeat(4,1fr);margin:18px 0 0!important}.k-themes button{min-height:46px;font-size:13px;cursor:pointer}}
+/* Aurea Giorno: testi sempre leggibili sul chiaro */
+html[data-kore-theme=aurea-light] :is(.entry-choice-heading h2,.entry-choice h2,.mobile-models-heading h1){color:#1b1020!important;-webkit-text-fill-color:#1b1020!important}
+html[data-kore-theme=aurea-light] :is(.entry-card small,.entry-card-copy small,.entry-choice p,.entry-card-tag,.entry-choice-heading p,.entry-eyebrow,.mobile-start-content p){color:#5a4660!important;-webkit-text-fill-color:#5a4660!important}
+html[data-kore-theme=aurea-light] .mobile-start-actions .primary small,html[data-kore-theme=aurea-light] .entry-card.is-primary small{color:#fff!important;-webkit-text-fill-color:#fff!important}
+/* Scelta tema su desktop: sempre visibile in basso a sinistra */
+@media(min-width:760px){.entry-choice+.k-themes,.sheet .k-themes,.k-themes{position:fixed;left:48px;bottom:44px;z-index:60;width:min(560px,calc(100vw - 96px));margin:0!important}}
+html[data-kore-theme=aurea-light] .k-themes button{color:#2a1830;background:#ffffffb3;border-color:#2a183033}
+html[data-kore-theme=aurea-light] .k-themes button[aria-pressed=true]{color:#fff;background:linear-gradient(135deg,#e0148a,#7a3df0)}
+html[data-kore-theme=aurea-light] body select.kore-theme-select[data-kore-theme]{background:#fff!important;color:#1b1020!important;border-color:#1b102033!important}
+.mobile-start-content{padding-bottom:110px!important}
+html[data-kore-theme=aurea-light] body #resumeSceneDraft.projects-home-card,html[data-kore-theme=aurea-light] body #mobileStart button.projects-home-card{background:linear-gradient(120deg,#b00af518,#ffffffb8)!important;color:#1b1020!important;border-color:#1b102026!important}
+html[data-kore-theme=aurea-light] .projects-home-card *{color:inherit}
