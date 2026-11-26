@@ -51,3 +51,7 @@ html[data-kore-theme=aurea-light] .mobile-start-actions .primary small,html[data
 @media(min-width:760px){.entry-choice+.k-themes,.sheet .k-themes,.k-themes{position:fixed;left:48px;bottom:44px;z-index:60;width:min(560px,calc(100vw - 96px));margin:0!important}}
 html[data-kore-theme=aurea-light] .k-themes button{color:#2a1830;background:#ffffffb3;border-color:#2a183033}
 html[data-kore-theme=aurea-light] .k-themes button[aria-pressed=true]{color:#fff;background:linear-gradient(135deg,#e0148a,#7a3df0)}
+html[data-kore-theme=aurea-light] body select.kore-theme-select[data-kore-theme]{background:#fff!important;color:#1b1020!important;border-color:#1b102033!important}
+.mobile-start-content{padding-bottom:110px!important}
+html[data-kore-theme=aurea-light] body #resumeSceneDraft.projects-home-card,html[data-kore-theme=aurea-light] body #mobileStart button.projects-home-card{background:linear-gradient(120deg,#b00af518,#ffffffb8)!important;color:#1b1020!important;border-color:#1b102026!important}
+html[data-kore-theme=aurea-light] .projects-home-card *{color:inherit}

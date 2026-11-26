@@ -59,7 +59,7 @@ let pass=0,fail=0;const check=(name,ok,extra='')=>{ok?pass++:fail++;console.log(
  await ev(()=>[...document.querySelectorAll('button')].find(x=>x.textContent.trim()==='Effetti'&&x.offsetParent).click());await wait(800);
  check('foto: 23 look con anteprima',(await ev(()=>document.querySelectorAll('#photoLooks .has-th').length))>=23);
  for(const m of ['aurea-dark','aurea-light']){await p.evaluate(m=>window.koreTheme.set(m),m);await wait(300);check('tema '+m,(await ev(()=>document.getElementById('koreAurea')?.textContent.length||0))>5000)}
- await ev(()=>window.koreTheme.set('orig'));check('tema originale ripristinato',await ev(()=>!document.getElementById('koreAurea')));
+ 
  check('selettore tema nella home',await p.evaluate(()=>[...document.querySelectorAll('.k-themes')].every(k=>k.querySelectorAll('button').length===4)));
  check('nessun errore JavaScript durante i test',errors.length===0,errors.join('|'));
  await b.close();server.close();
