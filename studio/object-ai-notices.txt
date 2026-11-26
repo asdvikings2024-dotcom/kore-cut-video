@@ -1,0 +1,15 @@
+KORE Studio — AI oggetti, crediti e licenze
+
+U²-Netp (U2-Net small): Xuebin Qin, Zichen Zhang, Chenyang Huang, Masood Dehghan, Osmar Zaiane e Martin Jagersand.
+Paper: U²-Net: Going Deeper with Nested U-Structure for Salient Object Detection, Pattern Recognition 106 (2020), 107404.
+Progetto e licenza Apache License 2.0: https://github.com/xuebinqin/U-2-Net
+Testo integrale licenza: https://github.com/xuebinqin/U-2-Net/blob/master/LICENSE
+Modello ONNX distribuito dal progetto rembg; copia invariata: https://huggingface.co/edgetools/u2netp
+SHA-256: 309c8469258dda742793dce0ebea8e6dd393174f89934733ecc8b14c76f4ddd8
+
+ONNX Runtime Web 1.20.1 — Microsoft Corporation, MIT License.
+https://github.com/microsoft/onnxruntime/blob/main/LICENSE
+
+L'analisi si svolge nel browser. La foto non viene inviata a servizi di elaborazione. Il primo utilizzo scarica il modello e il runtime dai rispettivi distributori.
+Lo scontorno è una stima del soggetto principale. Controllare i dettagli prima dell'uso.
+Sfondi e ombre nello Studio Prodotto sono composizioni grafiche di KORE, non scene generate da un servizio esterno.

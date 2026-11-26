@@ -1,0 +1,45 @@
+/* Sovrapponi (telefono) + controlli extra nel pannello touch */
+#phoneOverlayOpen{display:none}
+@media (max-width:759px){
+ body.phone-polished #phoneOverlayOpen{display:inline-flex}
+}
+#phoneOverlayDialog{border:0;padding:0;margin:auto 0 0;width:100%;max-width:560px;max-height:92dvh;border-radius:22px 22px 0 0;background:#17101f;color:#fff;font-family:inherit;overflow:auto;left:50%;transform:translateX(-50%)}
+#phoneOverlayDialog::backdrop{background:#000a}
+#phoneOverlayDialog .po-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 6px}
+#phoneOverlayDialog h2{margin:0;font-size:18px}
+#phoneOverlayDialog .po-head button{min-width:44px;min-height:44px;border:0;border-radius:12px;background:#ffffff18;color:#fff;font-size:18px}
+#phoneOverlayDialog .po-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 16px 18px}
+#phoneOverlayDialog.editing .po-pick{display:none}
+#phoneOverlayDialog .po-big{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:118px;padding:12px;border:1px solid #ffffff33;border-radius:18px;background:#2a1d33;color:#fff;font-family:inherit;text-align:center}
+#phoneOverlayDialog .po-big span{font-size:30px;line-height:1;color:#ff87bd}
+#phoneOverlayDialog .po-big b{font-size:16px}
+#phoneOverlayDialog .po-big small{font-size:12px;opacity:.75}
+#phoneOverlayDialog .po-edit{display:none;padding:6px 16px 16px;gap:10px;flex-direction:column}
+#phoneOverlayDialog.editing .po-edit{display:flex}
+#phoneOverlayDialog .po-stage{display:grid;place-items:center;height:min(42dvh,320px);border-radius:14px;overflow:hidden;background:conic-gradient(#3a3340 25%,#2b2531 0 50%,#3a3340 0 75%,#2b2531 0) 0 0/20px 20px}
+#phoneOverlayDialog .po-stage canvas{max-width:100%;max-height:100%;object-fit:contain}
+#phoneOverlayDialog.busy .po-stage canvas{opacity:.45}
+#phoneOverlayDialog .po-modes{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+#phoneOverlayDialog .po-modes button,#phoneOverlayDialog .po-actions button{min-height:44px;padding:6px 8px;border:1px solid #ffffff33;border-radius:12px;background:#2a1d33;color:#fff;font-family:inherit;font-size:13px;font-weight:600;line-height:1.15}
+#phoneOverlayDialog .po-modes button[aria-pressed="true"]{background:#ff2d92;border-color:#ff87bd}
+#phoneOverlayDialog button:disabled{opacity:.45}
+#phoneOverlayDialog .po-tol{display:flex;align-items:center;gap:10px;font-size:13px}
+#phoneOverlayDialog .po-tol[hidden]{display:none}
+#phoneOverlayDialog .po-tol input{flex:1;min-height:44px}
+#phoneOverlayDialog .po-status{min-height:1.3em;margin:0;font-size:13px;color:#ffd1e6}
+#phoneOverlayDialog .po-actions{display:grid;grid-template-columns:1fr 2fr;gap:8px}
+#phoneOverlayDialog .po-actions .po-add{background:#ff2d92;border-color:#ff87bd;font-size:15px}
+#phoneOverlayToast{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:2500;padding:12px 14px;border-radius:14px;background:#17101fee;border:1px solid #ff87bd88;color:#fff;font-size:14px;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
+#phoneOverlayToast.on{opacity:1}
+#koreTouchEditor .kore-extra{display:flex;gap:6px;overflow-x:auto;padding:4px 0;scrollbar-width:none}
+#koreTouchEditor .kore-extra::-webkit-scrollbar{display:none}
+#koreTouchEditor .kore-extra button{flex:0 0 auto;min-height:44px;min-width:56px;padding:4px 12px;border-radius:12px;border:1px solid #ffffff44;background:#2a1d33;color:#fff;font-family:inherit;font-size:13px;font-weight:600}
+#koreTouchEditor .kore-extra button.danger{color:#ff9fb8}
+
+#phoneOverlayDialog .po-stage{position:relative}
+#phoneOverlayDialog .po-crop{position:absolute;inset:0;z-index:3;touch-action:none;cursor:crosshair}
+#phoneOverlayDialog .po-rect{position:absolute;border:2px solid #fff;box-shadow:0 0 0 9999px #0009;pointer-events:none}
+#phoneOverlayDialog .po-cropbar{display:grid;grid-template-columns:1fr 2fr;gap:8px}
+#phoneOverlayDialog .po-cropbar button{min-height:46px;border:1px solid #ffffff33;border-radius:12px;background:#ffffff14;color:#fff;font-weight:700;font-size:15px}
+#phoneOverlayDialog .po-cropbar button:last-child{background:#ff2d92;border-color:#ff87bd}
+#phoneOverlayDialog .po-modes[hidden],#phoneOverlayDialog .po-actions[hidden]{display:none!important}

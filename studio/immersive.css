@@ -1,0 +1,135 @@
+/* KORE · one-screen media selection */
+#koreMixDialog.kore-media-flow{--picker-pink:#f476b7;position:fixed!important;inset:0!important;z-index:4000!important;padding:0!important;background:#0d0b0f!important;color:#fff!important;display:flex!important;align-items:stretch!important;justify-content:center!important;overflow:hidden!important;font-family:inherit}
+#koreMixDialog.kore-media-flow .kore-caption-panel{width:min(100%,1040px)!important;max-width:none!important;height:100dvh!important;max-height:100dvh!important;padding:0!important;margin:0!important;background:#100e12!important;border:0!important;border-radius:0!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;color:#fff!important;box-sizing:border-box}
+#koreMixDialog.kore-media-flow button,#koreMixDialog.kore-media-flow select{color:#fff!important;font-family:inherit}
+#koreMixDialog.kore-media-flow .picker-head{display:grid;grid-template-columns:44px 1fr 44px;gap:12px;align-items:center;padding:calc(10px + env(safe-area-inset-top)) 16px 6px;background:transparent}
+#koreMixDialog.kore-media-flow .picker-head strong{text-align:center;font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#koreMixDialog.kore-media-flow .picker-head button{width:44px;height:44px;min-width:0;padding:0;background:transparent!important;border:0;font-size:30px;line-height:1}
+#koreMixDialog.kore-media-flow .picker-add{align-self:center;font-size:12px;padding:8px 18px;border:1px solid #ffffff22;border-radius:30px;color:#f5a7d0;cursor:pointer;min-height:36px;box-sizing:border-box;display:flex;align-items:center;margin:2px 0 4px}
+#koreMixDialog.kore-media-flow .is-disabled{pointer-events:none;opacity:.4}
+#koreMixDialog.kore-media-flow .phone-picker-tabs{display:grid!important;grid-template-columns:repeat(4,1fr)!important;margin:0!important;padding:0 8px!important;flex:0 0 auto;background:transparent!important;border-bottom:1px solid #fff1;gap:0!important}
+#koreMixDialog.kore-media-flow .phone-picker-tabs button{position:relative;min-width:0;min-height:44px;border:0!important;border-radius:0!important;background:transparent!important;color:#aaa4ad!important;font-size:14px;padding:8px 2px!important}
+#koreMixDialog.kore-media-flow .phone-picker-tabs button[aria-pressed=true]{color:#f792c7!important;font-weight:700;box-shadow:none!important}
+#koreMixDialog.kore-media-flow .phone-picker-tabs button[aria-pressed=true]:after{content:'';height:3px;background:#f792c7;border-radius:3px;position:absolute;bottom:0;left:22%;right:22%}
+#koreMixDialog.kore-media-flow .scene-filter-row,#koreMixDialog.kore-media-flow .scene-instructions,#koreMixDialog.kore-media-flow .kore-caption-panel>h3,#koreMixDialog.kore-media-flow .kore-caption-panel>h4,#koreMixDialog.kore-media-flow .scene-library-disclosure>summary,#koreMixDialog.kore-media-flow #sceneCancel{display:none!important}
+#koreMixDialog.kore-media-flow .scene-summary{flex:0 0 auto;margin:4px 16px;padding:10px;background:#ffffff08;font-size:12px;border-radius:12px}
+#koreMixDialog.kore-media-flow [hidden]{display:none!important}
+#koreMixDialog.kore-media-flow .scene-library-disclosure{display:block!important;flex:1 1 0!important;min-height:0!important;overflow:auto!important;overscroll-behavior:contain;padding:7px!important;margin:0!important;border:0!important;touch-action:pan-y;scrollbar-width:thin}
+#koreMixDialog.kore-media-flow #sceneLibrary{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;padding:0!important;max-height:none!important;overflow:visible!important}
+#koreMixDialog.kore-media-flow .scene-media{position:relative!important;display:block!important;width:100%!important;min-width:0!important;height:auto!important;aspect-ratio:1/1.05!important;padding:0!important;margin:0!important;overflow:hidden!important;background:#27232c!important;border:2px solid transparent!important;border-radius:10px!important;box-shadow:none!important}
+#koreMixDialog.kore-media-flow .scene-media :is(img,video){display:block;width:100%!important;height:100%!important;object-fit:cover!important;border-radius:0!important;pointer-events:none}
+#koreMixDialog.kore-media-flow .scene-media.media-picked{border-color:#f884c0!important;box-shadow:0 0 0 1px #f884c0 inset!important}
+#koreMixDialog.kore-media-flow .scene-media small{position:absolute;bottom:0;left:0;right:0;height:0;overflow:hidden;opacity:0}
+#koreMixDialog.kore-media-flow .picker-check{position:absolute;right:7px;top:7px;min-width:23px;height:23px;box-sizing:border-box;border:1.5px solid #fffd;border-radius:50%;font-size:11px;display:grid;place-items:center;color:#fff;text-shadow:0 1px 4px #000;box-shadow:0 1px 6px #0004}
+#koreMixDialog.kore-media-flow .media-picked .picker-check{background:#e64698;border-color:#fba2d1}
+#koreMixDialog.kore-media-flow .picker-kind{position:absolute;left:0;right:0;bottom:0;padding:16px 8px 7px;background:linear-gradient(transparent,#0009);text-align:right;font-size:12px}
+#koreMixDialog.kore-media-flow .picker-empty{grid-column:1/-1;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;color:#c6bbc8;font-size:13px;line-height:1.5}
+#koreMixDialog.kore-media-flow .picker-empty>span{font-size:42px;color:#ef84b9}
+#koreMixDialog.kore-media-flow .picker-empty p{max-width:340px;margin:0}
+#koreMixDialog.kore-media-flow .picker-empty-import{border-radius:30px;padding:13px 22px;background:#ed6eae;color:#1b1017;font-weight:700;cursor:pointer}
+#koreMixDialog.kore-media-flow .picker-bottom{flex:0 0 auto;max-height:55dvh;overflow:auto;overscroll-behavior:contain;padding:12px 16px calc(10px + env(safe-area-inset-bottom));border-radius:24px 24px 0 0;border-top:1px solid #ffffff18;background:linear-gradient(140deg,#29212b,#19151c);box-shadow:0 -10px 40px #0003}
+#koreMixDialog.kore-media-flow .picker-count{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;font-size:13px}
+#koreMixDialog.kore-media-flow .picker-count span{font-size:12px;color:#c7bdca}
+#koreMixDialog.kore-media-flow #sceneSlots{display:flex!important;gap:8px!important;overflow-x:auto!important;overflow-y:hidden!important;max-height:none!important;margin:0!important;padding:2px 1px 8px!important;scroll-snap-type:x proximity;scrollbar-width:thin}
+#koreMixDialog.kore-media-flow .scene-slot{position:relative;display:block!important;flex:0 0 calc((100% - 40px)/6)!important;min-width:53px!important;max-width:118px;padding:0!important;margin:0!important;background:transparent!important;border:0!important;border-radius:10px!important}
+#koreMixDialog.kore-media-flow .scene-slot>button{position:relative;display:block!important;width:100%!important;aspect-ratio:.8;height:auto!important;min-height:64px!important;min-width:0!important;padding:0!important;background:#39333e!important;border:1px solid #ffffff45!important;border-radius:10px!important;overflow:hidden;color:#fff}
+#koreMixDialog.kore-media-flow .scene-slot.active>button{border:2px solid #fa88c5!important;box-shadow:0 0 0 1px #fa88c555}
+#koreMixDialog.kore-media-flow .scene-slot.invalid>button{border-color:#ffad6f!important}
+#koreMixDialog.kore-media-flow .scene-assigned-thumb{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:cover!important;border-radius:0!important;opacity:.85}
+#koreMixDialog.kore-media-flow .scene-number{position:absolute!important;top:4px!important;left:4px!important;font-size:10px!important;line-height:18px!important;width:18px;height:18px;background:#16111b99;border-radius:50%;text-align:center;color:#fff!important;padding:0!important;z-index:1}
+#koreMixDialog.kore-media-flow .scene-duration{position:absolute!important;left:0!important;right:0!important;bottom:0!important;padding:12px 0 6px!important;font-size:11px!important;text-align:center;background:linear-gradient(transparent,#000b);z-index:1;color:#fff!important}
+#koreMixDialog.kore-media-flow .scene-plus{position:absolute;inset:0;display:grid;place-items:center;font-size:23px;color:#c8b8cd}
+#koreMixDialog.kore-media-flow .picker-scene-options{font-size:11px;color:#bfaec4;margin:1px 0 7px}
+#koreMixDialog.kore-media-flow .picker-scene-options summary{cursor:pointer;padding:4px 0;min-height:20px}
+#koreMixDialog.kore-media-flow .picker-options-body{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0}
+#koreMixDialog.kore-media-flow .picker-options-body p{width:100%;margin:0 0 5px;font-size:11px}
+#koreMixDialog.kore-media-flow .picker-options-body button{font-size:11px;padding:7px 10px;min-height:36px;background:#ffffff0a;border:1px solid #fff2;border-radius:9px}
+#koreMixDialog.kore-media-flow .picker-options-body label{width:100%}
+#koreMixDialog.kore-media-flow .picker-options-body input{width:80px;background:#1c1721;border:1px solid #ffffff2a;color:#fff;padding:8px;border-radius:8px}
+#koreMixDialog.kore-media-flow .kore-model-sound{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;align-items:center;border:0!important;border-top:1px solid #ffffff16!important;border-radius:0!important;padding:10px 0 0!important;margin:0!important;background:transparent!important}
+#koreMixDialog.kore-media-flow .kore-model-sound>label:first-child{display:flex;align-items:center;gap:7px;font-size:11px;color:#eccfe0;min-width:0;margin:0}
+#koreMixDialog.kore-media-flow .kore-model-sound select{flex:1;min-width:0;width:100%;border:1px solid #ffffff35;background:#ffffff0a!important;border-radius:12px;padding:9px 5px;font-size:12px;height:40px}
+#koreMixDialog.kore-media-flow option{background:#211925!important;color:#fff}
+#koreMixDialog.kore-media-flow .kore-sound-listen{border:1px solid #e8a2c9!important;background:transparent!important;border-radius:12px!important;padding:9px!important;min-height:40px;font-size:11px!important;margin:0!important}
+#koreMixDialog.kore-media-flow .model-personal-audio{grid-column:1/-1;position:relative!important;display:flex!important;align-items:center;justify-content:center;border:1px dashed #d687b3!important;border-radius:12px!important;min-height:40px;padding:4px 10px!important;font-size:12px!important;color:#efb1d2!important;margin:0!important;background:transparent!important;overflow:hidden}
+#koreMixDialog.kore-media-flow .model-personal-audio input{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;cursor:pointer}
+#koreMixDialog.kore-media-flow .kore-model-sound>small{grid-column:1/-1;font-size:9px!important;line-height:1.3;color:#ae9cae!important}
+#koreMixDialog.kore-media-flow .kore-model-sound a{color:#e4a4ca}
+#koreMixDialog.kore-media-flow #sceneMessage{margin:6px 0 0!important;font-size:11px!important;min-height:15px;color:#ebc4dc!important;line-height:1.3}
+#koreMixDialog.kore-media-flow .scene-draft-status{margin:2px 0 0!important;font-size:9px!important;color:#a491a7!important;min-height:11px}
+#koreMixDialog.kore-media-flow .scene-actions{display:block!important;margin:7px 0 0!important;padding:0!important;background:transparent!important;position:static!important}
+#koreMixDialog.kore-media-flow #sceneCreate{width:100%!important;border:0!important;border-radius:30px!important;min-height:46px!important;font-size:16px!important;font-weight:750!important;background:linear-gradient(110deg,#f977b7,#ee62ac)!important;color:#291422!important;box-shadow:none!important}
+#koreMixDialog.kore-media-flow #sceneCreate:disabled{opacity:.3!important;cursor:not-allowed}
+@media(min-width:760px){#koreMixDialog.kore-media-flow .scene-media{aspect-ratio:1.55!important}#koreMixDialog.kore-media-flow .picker-bottom{padding-left:26px;padding-right:26px}#koreMixDialog.kore-media-flow .kore-model-sound{grid-template-columns:1fr auto 1fr!important}#koreMixDialog.kore-media-flow .model-personal-audio{grid-column:auto}#koreMixDialog.kore-media-flow .kore-model-sound>small{grid-column:1/-1}#koreMixDialog.kore-media-flow .scene-slot{max-width:80px;flex-basis:70px!important}#koreMixDialog.kore-media-flow .picker-bottom{max-height:47dvh}}
+@media(max-height:690px){#koreMixDialog.kore-media-flow .picker-head{padding-top:4px}#koreMixDialog.kore-media-flow .picker-add{min-height:30px;padding:3px 14px}#koreMixDialog.kore-media-flow .picker-bottom{padding-top:8px;max-height:59dvh}#koreMixDialog.kore-media-flow .kore-model-sound>small,#koreMixDialog.kore-media-flow .scene-draft-status{display:none}#koreMixDialog.kore-media-flow .scene-slot>button{aspect-ratio:1!important}#koreMixDialog.kore-media-flow .picker-count{margin-bottom:5px}}
+/* The existing photo editor, with floating glass controls. */
+#korePhotoEditor.photo-immersive{--photo-bg:#100d14;--photo-surface:#221b2b88;--photo-text:#fff;--photo-muted:#e0cfdf;--photo-border:#ffffff30;display:block!important;inset:0!important;width:100vw!important;height:100dvh!important;max-height:none!important;background:#110e15!important;color:#fff!important;isolation:isolate}
+#korePhotoEditor.photo-immersive[open] .photo-stage{position:absolute!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;padding:0!important;margin:0!important;background:transparent!important;overflow:hidden!important;z-index:0;touch-action:none}
+#korePhotoEditor.photo-immersive .photo-ambient{position:absolute;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);object-fit:cover;filter:blur(30px) brightness(.5);opacity:.9;pointer-events:none;z-index:-1}
+#korePhotoEditor.photo-immersive #photoCanvas{display:block;max-width:100%!important;max-height:100%!important;width:auto!important;height:auto!important;border-radius:0!important;box-shadow:none!important;touch-action:none;will-change:transform;transform-origin:center}
+#korePhotoEditor.photo-immersive .photo-top{position:absolute!important;z-index:5!important;inset:calc(12px + env(safe-area-inset-top)) 18px auto!important;display:flex!important;gap:10px!important;align-items:center!important;padding:0!important;height:46px!important;min-height:0!important;background:transparent!important;border:0!important;pointer-events:none}
+#korePhotoEditor.photo-immersive .photo-top>*{pointer-events:auto}
+#korePhotoEditor.photo-immersive .photo-top h2{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#korePhotoEditor.photo-immersive .photo-top button{width:46px;min-width:46px;height:46px;min-height:46px!important;padding:0!important;border-radius:50%!important;background:#30243355!important;backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);border:1px solid #ffffff2b!important;color:#fff!important;font-size:25px!important;box-shadow:0 3px 16px #0002}
+#korePhotoEditor.photo-immersive #photoBack{margin-right:auto;font-size:31px!important}
+#korePhotoEditor.photo-immersive #photoSave{width:auto;min-width:90px;padding:0 19px!important;border-radius:30px!important;background:#ed579abf!important;color:white!important;font-size:14px!important;font-weight:700}
+#korePhotoEditor.photo-immersive button:disabled{opacity:.35}
+#korePhotoEditor.photo-immersive .photo-tools{position:absolute!important;z-index:4!important;inset:auto 18px calc(16px + env(safe-area-inset-bottom))!important;width:min(950px,calc(100% - 36px))!important;max-height:44dvh!important;height:auto!important;margin:0 auto!important;display:flex!important;flex-direction:column!important;gap:0!important;overflow:visible!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;color:#fff!important;pointer-events:none}
+#korePhotoEditor.photo-immersive .photo-tools>*{pointer-events:auto}
+#korePhotoEditor.photo-immersive .photo-glass-dock{display:flex;flex-direction:column;gap:8px;min-height:0;overflow:visible}
+#korePhotoEditor.photo-immersive .photo-tabs{display:flex!important;flex:0 0 auto!important;position:static!important;order:0;width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;gap:6px!important;grid-template-columns:none!important;flex-wrap:nowrap!important;padding:8px!important;margin:0!important;box-sizing:border-box;border-radius:24px!important;border:1px solid #ffffff1f;background:#2a202c6b!important;backdrop-filter:blur(24px) saturate(1.3);-webkit-backdrop-filter:blur(24px) saturate(1.3);scrollbar-width:none;mask-image:none!important;box-shadow:0 6px 28px #0002}
+#korePhotoEditor.photo-immersive .photo-tabs button{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:1 0 68px!important;min-width:68px!important;max-width:90px;min-height:64px!important;height:auto!important;margin:0!important;padding:7px 3px!important;border:1px solid transparent!important;border-radius:18px!important;background:transparent!important;color:#fff!important;font-size:12px!important;white-space:nowrap}
+#korePhotoEditor.photo-immersive .photo-tabs .photo-tool-icon{font-size:27px;line-height:1}
+#korePhotoEditor.photo-immersive .photo-tabs small{font-size:11px;color:inherit}
+#korePhotoEditor.photo-immersive .photo-tabs [aria-pressed=true]{background:#ef5ca42b!important;color:#ffa1ce!important;border-color:#fb83ba6b!important;box-shadow:inset 0 0 18px #e9579d18}
+#korePhotoEditor.photo-immersive #photoControls{min-height:0!important;max-height:27dvh!important;overflow:auto!important;overscroll-behavior:contain;padding:14px 18px!important;margin:0!important;border:1px solid #ffffff1c!important;border-radius:24px!important;background:#2c222f79!important;backdrop-filter:blur(26px) saturate(1.3);-webkit-backdrop-filter:blur(26px) saturate(1.3);box-sizing:border-box;scrollbar-width:thin;touch-action:pan-y}
+#korePhotoEditor.photo-immersive .photo-section{background:transparent!important;border:0!important;padding:0!important;margin:0!important;color:#fff!important}
+#korePhotoEditor.photo-immersive .photo-section+.photo-section{margin-top:12px!important}
+#korePhotoEditor.photo-immersive .photo-section h3{color:#fff!important;font-size:13px;margin:0 0 10px}
+#korePhotoEditor.photo-immersive .photo-section label{color:#f5eaf3!important;font-size:12px;margin:0 0 10px;line-height:1.5}
+#korePhotoEditor.photo-immersive :is(button,select,input[type=text],input[type=number]){background:#ffffff0e!important;border-color:#ffffff2d!important;color:#fff!important;border-radius:12px}
+#korePhotoEditor.photo-immersive select option{background:#28202e;color:#fff}
+#korePhotoEditor.photo-immersive .photo-hint{color:#d2bed0!important;font-size:11px;line-height:1.5}
+#korePhotoEditor.photo-immersive input[type=range]{accent-color:#f381bf!important;height:34px;min-height:34px;margin:6px 0 0;padding:0;width:100%;cursor:pointer;background:transparent!important}
+#korePhotoEditor.photo-immersive input[type=range]::-webkit-slider-thumb{background:#ffa4d1!important;border:2px solid #ffe3f2;box-shadow:0 2px 7px #0005}
+#korePhotoEditor.photo-immersive input[type=range]::-webkit-slider-runnable-track{background:linear-gradient(90deg,#ed6bb0aa,#e5dce552);border-radius:8px;height:5px}
+#korePhotoEditor.photo-immersive output{color:#ffb5dc!important;float:right;font-variant-numeric:tabular-nums}
+#korePhotoEditor.photo-immersive .photo-adjust-chips{display:flex;overflow:auto;gap:9px;margin:0 0 10px;scrollbar-width:none}
+#korePhotoEditor.photo-immersive .photo-adjust-chips button{flex:1 0 64px;min-width:64px;display:flex;flex-direction:column;align-items:center;gap:5px;min-height:65px;border:0!important;padding:7px 4px;background:transparent!important}
+#korePhotoEditor.photo-immersive .photo-adjust-chips button span{font-size:29px;line-height:1}
+#korePhotoEditor.photo-immersive .photo-adjust-chips button small{font-size:10px}
+#korePhotoEditor.photo-immersive .photo-adjust-chips button[aria-pressed=true]{background:#f36bb52c!important;color:#ffafd9!important}
+#korePhotoEditor.photo-immersive .photo-quick-slider{display:block;margin:0!important}
+#korePhotoEditor.photo-immersive .photo-advanced-adjust{font-size:11px;margin-top:8px;color:#d4bfd1}
+#korePhotoEditor.photo-immersive .photo-advanced-adjust summary{padding:6px 0;cursor:pointer}
+#korePhotoEditor.photo-immersive .photo-advanced-adjust[open]{margin-top:12px}
+#korePhotoEditor.photo-immersive .photo-workspace-menu{position:absolute;bottom:calc(100% + 9px);left:0;color:#f3e4ef;font-size:11px;max-width:100%;border:1px solid #ffffff22;border-radius:15px;background:#2d243a77;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);padding:0 10px}
+#korePhotoEditor.photo-immersive .photo-workspace-menu summary{padding:9px 4px;cursor:pointer;min-height:18px}
+#korePhotoEditor.photo-immersive .photo-workspace-menu[open]{padding-bottom:10px;max-height:45dvh;overflow:auto}
+#korePhotoEditor.photo-immersive .photo-toolbar{display:flex!important;gap:6px;flex-wrap:wrap;background:transparent!important;padding:3px 0!important;margin:0!important;border:0!important}
+#korePhotoEditor.photo-immersive .photo-workspace-menu button,#korePhotoEditor.photo-immersive .photo-workspace-menu label{font-size:11px;min-height:38px;padding:8px 10px}
+#korePhotoEditor.photo-immersive #photoStatus{position:absolute;bottom:calc(100% + 12px);right:0;max-width:57%;font-size:10px;line-height:1.3;text-align:right;margin:0!important;color:#fff!important;text-shadow:0 1px 7px #000;pointer-events:none}
+#korePhotoEditor.photo-immersive .photo-tools>p.photo-hint,#korePhotoEditor.photo-immersive #photoExpandTools{display:none!important}
+#korePhotoEditor.photo-immersive #photoFocusPreview{position:absolute!important;z-index:6;top:calc(74px + env(safe-area-inset-top))!important;bottom:auto!important;right:18px!important;left:auto!important;width:42px!important;height:42px!important;min-height:42px!important;padding:0!important;background:#35263966!important;border:1px solid #ffffff2a!important;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:50%!important;color:#fff;font-size:22px!important;transform:none!important}
+#korePhotoEditor.photo-immersive #photoEmpty{z-index:2;max-width:320px;text-align:center;background:#24192b66;backdrop-filter:blur(25px);padding:28px;border-radius:28px;border:1px solid #ffffff20}
+#korePhotoEditor.photo-immersive #photoEmpty label{display:block;background:#f475b4!important;border-radius:25px;margin:22px 0 10px;padding:14px;color:#261522!important;font-weight:700}
+#korePhotoEditor.photo-immersive:not(.photo-has-image) .photo-glass-dock{display:block}
+#korePhotoEditor.photo-immersive #photoResult:not([hidden]){position:absolute;bottom:0;left:0;right:0;padding:22px;background:#22152bea;backdrop-filter:blur(24px);border:1px solid #f2a1cf55;border-radius:22px;z-index:10;box-shadow:0 10px 60px #0009}
+#korePhotoEditor.photo-immersive #photoCompareBadge{position:absolute;top:calc(80px + env(safe-area-inset-top));left:20px;z-index:2;color:white;background:#15101788;padding:8px 14px;border-radius:20px;backdrop-filter:blur(20px);font-size:11px;letter-spacing:.1em}
+#korePhotoEditor.photo-immersive.photo-ui-hidden .photo-tools,#korePhotoEditor.photo-immersive.photo-ui-hidden .photo-top{opacity:0;visibility:hidden;pointer-events:none}
+#korePhotoEditor.photo-immersive :is(.photo-tools,.photo-top){transition:opacity .18s ease}
+#korePhotoEditor.photo-immersive [hidden]{display:none!important}
+@media(max-width:759px){#korePhotoEditor.photo-immersive .photo-tools{inset:auto 10px calc(10px + env(safe-area-inset-bottom))!important;width:calc(100% - 20px)!important;max-height:43dvh!important}#korePhotoEditor.photo-immersive .photo-top{left:12px!important;right:12px!important;gap:8px!important}#korePhotoEditor.photo-immersive .photo-top button{width:42px;min-width:42px;height:42px;min-height:42px!important}#korePhotoEditor.photo-immersive #photoControls{max-height:27dvh!important;padding:11px 13px!important;border-radius:22px!important}#korePhotoEditor.photo-immersive .photo-tabs{gap:3px!important;padding:6px!important;border-radius:22px!important}#korePhotoEditor.photo-immersive .photo-tabs button{min-height:57px!important;flex-basis:61px!important;min-width:61px!important;gap:5px}#korePhotoEditor.photo-immersive .photo-tabs .photo-tool-icon{font-size:24px}#korePhotoEditor.photo-immersive .photo-tabs small{font-size:10px}#korePhotoEditor.photo-immersive #photoStatus{font-size:9px;max-width:53%}#korePhotoEditor.photo-immersive .photo-adjust-chips button{min-height:57px}#korePhotoEditor.photo-immersive .photo-adjust-chips button span{font-size:25px}}
+@media(prefers-reduced-motion:reduce){#korePhotoEditor.photo-immersive :is(.photo-tools,.photo-top){transition:none}}
+
+/* Isolate the new floating layouts from older global editor rules. */
+#koreMixDialog.kore-media-flow .picker-head{position:static!important;width:auto!important;height:auto!important;min-height:58px!important;flex:0 0 auto!important;padding:calc(8px + env(safe-area-inset-top)) 12px 5px!important;border:0!important;box-shadow:none!important;transform:none!important}
+#koreMixDialog.kore-media-flow .picker-head strong{display:block!important;font-size:18px!important;letter-spacing:0!important}
+#koreMixDialog.kore-media-flow .kore-dialog-back{display:none!important}
+#koreMixDialog.kore-media-flow #sceneSlots{height:auto!important;min-height:0!important;align-items:flex-start!important;flex-direction:row!important;flex-wrap:nowrap!important;background:transparent!important;scrollbar-width:none}
+#koreMixDialog.kore-media-flow #sceneSlots:before,#koreMixDialog.kore-media-flow #sceneSlots:after{display:none!important;content:none!important}
+#koreMixDialog.kore-media-flow .scene-slot{height:auto!important;min-height:0!important;width:auto!important;align-self:flex-start!important;outline:none!important}
+#koreMixDialog.kore-media-flow .scene-slot>button:first-child:after{display:none!important;content:none!important}
+#koreMixDialog.kore-media-flow .scene-assigned-thumb{z-index:0!important;opacity:.9!important}
+#korePhotoEditor.photo-immersive .photo-top{width:auto!important;max-width:none!important;transform:none!important;box-shadow:none!important}
+@media(max-width:759px){#korePhotoEditor.photo-immersive .photo-tabs button{min-width:56px!important;flex-basis:56px!important}}

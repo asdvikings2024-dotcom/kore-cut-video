@@ -1,0 +1,21 @@
+.kore-brand-inline{vertical-align:middle;border-radius:8px;object-fit:contain}
+html.kore-booting body{background:radial-gradient(ellipse at 30% 25%,#ff2d9226,transparent 60%),#292a32!important}
+html.kore-booting body>:not(.kore-intro){visibility:hidden!important;pointer-events:none!important}
+.mobile-start-logo{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.kore-brand-home{border-radius:14px;object-fit:contain}
+.kore-brand-welcome{display:block;margin:0 auto 8px;border-radius:22px}
+.kore-intro{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:transparent!important;pointer-events:none;opacity:0}
+.kore-intro.is-ready{animation:kore-intro-away 2.9s ease forwards}
+.kore-intro-mark{position:relative;width:min(88vw,430px);aspect-ratio:1;display:grid;place-items:center}
+.kore-intro img{position:relative;z-index:2;display:block;width:100%;height:auto;filter:drop-shadow(0 0 5px #0b0815) drop-shadow(0 0 18px #ff2d9255);will-change:transform,opacity}
+.kore-intro.is-ready img{animation:kore-intro-mark 2.9s cubic-bezier(.18,.8,.25,1) forwards}
+.kore-intro-mark:before{content:'';position:absolute;inset:15%;border:2px solid #ff2d9299;border-top-color:transparent;border-bottom-color:transparent;border-radius:50%;opacity:0;box-shadow:0 0 25px #ff2d9233}
+.kore-intro.is-ready .kore-intro-mark:before{animation:kore-orbit 2.9s ease forwards}
+.kore-intro-mark:after{content:'';position:absolute;z-index:3;left:6%;right:6%;top:50%;height:2px;background:linear-gradient(90deg,transparent,#ff2d92,#ffe2f3,#ff2d92,transparent);box-shadow:0 0 14px #ff2d92;opacity:0;transform:rotate(-20deg)}
+.kore-intro.is-ready .kore-intro-mark:after{animation:kore-streak 2.9s ease forwards}
+@keyframes kore-intro-away{0%{opacity:0}9%,80%{opacity:1}100%{opacity:0;visibility:hidden}}
+@keyframes kore-intro-mark{0%{opacity:0;transform:translateY(35px) scale(.68) rotate(-9deg)}18%{opacity:1;transform:translateY(0) scale(1.05) rotate(1deg)}29%,75%{opacity:1;transform:translateY(0) scale(1) rotate(0)}100%{opacity:0;transform:translateY(-35px) scale(1.12) rotate(0)}}
+@keyframes kore-orbit{0%{opacity:0;transform:scale(.6) rotate(-80deg)}20%,62%{opacity:.85}84%{opacity:0;transform:scale(1.4) rotate(110deg)}100%{opacity:0}}
+@keyframes kore-streak{0%,17%{opacity:0;transform:translateX(-20%) rotate(-20deg) scaleX(.1)}27%{opacity:1;transform:translateX(0) rotate(-20deg) scaleX(1)}43%,100%{opacity:0;transform:translateX(20%) rotate(-20deg) scaleX(.1)}}
+@media(prefers-reduced-motion:reduce){.kore-intro{display:none!important;animation:none}.kore-intro img{animation:none}}
+@media(max-width:759px){.kore-brand-inline{width:26px;height:26px}.mobile-start-logo{font-size:18px!important;gap:5px}.kore-brand-home{width:44px;height:44px}.mobile-start-top>span{font-size:9px!important;letter-spacing:1px!important}}

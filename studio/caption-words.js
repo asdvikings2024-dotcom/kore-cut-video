@@ -1,0 +1,1 @@
+export function captionWords(text){const clean=String(text||'').normalize('NFC').replace(/(\p{L})[-\u00ad]\s*\n\s*(?=\p{L})/gu,'$1').replace(/\b(l|un|d|all|dall|nell|sull|dell|quest|quell|bell|sant)\s*['’]\s*(?=\p{L})/giu,'$1’');return clean.trim().split(/\s+/u).filter(Boolean)}

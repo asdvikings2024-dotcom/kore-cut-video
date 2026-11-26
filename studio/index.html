@@ -1,0 +1,572 @@
+<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#141218"><title>KORE Studio · Editor</title><style>
+:root{color-scheme:dark;--pink:#ff2d92;--bg:#09070d;--glass:#16121bdc}*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:white;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif}button,input,select{font:inherit}button{color:white;cursor:pointer;border:1px solid #ffffff22;background:#ffffff0d;border-radius:12px;padding:11px 13px;min-height:44px}button:disabled{opacity:.35}button.primary{background:var(--pink);border-color:var(--pink);font-weight:750}button.active{border-color:var(--pink);color:#ff91c6}input[type=range]{accent-color:var(--pink)}header{height:55px;display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:#110d15;border-bottom:1px solid #ffffff17;gap:8px}header strong{font-size:21px;letter-spacing:-1px}header strong b{color:var(--pink)}.small{font-size:12px;color:#d3c3ce}.layout{height:calc(100dvh - 55px);display:flex;flex-direction:column;overflow:hidden}.stage{position:relative;flex:1;min-height:130px;display:flex;justify-content:center;align-items:center;overflow:hidden;background:#030305}.stage canvas{height:100%;width:100%;object-fit:contain;touch-action:none}.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;pointer-events:none;color:#e5d5df}.empty strong{font-size:25px}.empty span{font-size:14px;max-width:250px}.stagebar{position:absolute;left:8px;right:8px;bottom:8px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}.stagebar>*{pointer-events:auto}.glass{background:#120e17d9;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}.bottom{background:var(--glass);border-top:1px solid #ffffff22;padding:9px 10px calc(10px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px;max-height:57dvh;overflow:auto}.toolbar,.editbar,.tracktop{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none}.toolbar button,.editbar button{white-space:nowrap;flex:0 0 auto}.transport{display:flex;align-items:center;gap:9px}.transport input{flex:1;min-width:0}.transport time{font-variant-numeric:tabular-nums;font-size:12px;color:#e5cfdc;min-width:89px;text-align:right}.timeline{border:1px solid #ffffff22;border-radius:12px;overflow:auto;max-height:210px;background:#0a0810;position:relative}.ruler{height:25px;position:sticky;top:0;z-index:4;background:#19131f;display:flex;align-items:center;font-size:11px;color:#baa7b5}.track{display:flex;min-height:53px;border-top:1px solid #ffffff17}.tracklabel{width:64px;flex:none;background:#1a1420;position:sticky;left:0;z-index:3;padding:8px 4px;font-size:11px;color:#e5c3d7}.trackbody{position:relative;min-height:53px;flex:none;background:repeating-linear-gradient(90deg,#ffffff09 0px,#ffffff09 1px,transparent 1px,transparent 100px)}.clip{touch-action:pan-y;user-select:none;-webkit-user-select:none;position:absolute;top:6px;height:41px;border:1px solid #ff8dc2;background:linear-gradient(120deg,#78315d,#33172f);border-radius:7px;padding:4px 6px;overflow:hidden;font-size:11px;white-space:nowrap;text-overflow:ellipsis;text-align:left;min-height:0}.clip.photo{background:linear-gradient(120deg,#65508b,#2b2144);border-color:#b6a2fa}.clip.selected{outline:2px solid #fff;outline-offset:1px}.clip small{display:block;font-size:10px;opacity:.8}.playhead{position:absolute;top:0;bottom:0;width:2px;background:var(--pink);z-index:2;pointer-events:none}.inspector{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.inspector label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:#dcc9d5}.inspector input,.inspector select{width:100%;min-width:0;background:#201825;border:1px solid #ffffff29;border-radius:8px;padding:8px;color:white;font-size:14px}.inspector input[type=range]{padding:0}.notice{font-size:12px;color:#e4bcd3;min-height:18px;line-height:1.4}.hidden{display:none!important}#import{position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;clip-path:inset(50%)}.modal{position:absolute;inset:0;background:#07060be8;z-index:10;display:flex;align-items:center;justify-content:center;padding:18px}.modal .sheet{max-width:420px;width:100%;background:#19121e;border:1px solid #ff2d9266;border-radius:20px;padding:22px}.modal h1{margin:0 0 8px;font-size:27px}.modal p{font-size:15px;line-height:1.5;color:#d9c9d2}.modal .options{display:grid;gap:10px}.modal .options button{text-align:left;padding:16px;font-size:17px;font-weight:700}.modal .options small{display:block;font-size:13px;font-weight:400;color:#d8cad2;margin-top:5px}#exportPanel{display:flex;gap:6px;align-items:center;flex-wrap:wrap}#exportPanel select{background:#201825;color:white;padding:9px;border:1px solid #ffffff33;border-radius:9px}.pill{font-size:11px;padding:4px 7px;border-radius:20px;border:1px solid #ff2d9266;color:#ff94c7}a{color:#ff8cc6}@media(min-width:760px){.layout{flex-direction:row}.stage{min-width:50%;}.bottom{width:430px;max-height:none;height:100%;overflow:auto}.timeline{max-height:310px}}@media(max-height:680px){.bottom{max-height:64dvh}.stage{min-height:105px}} 
+</style><style id="kore-desktop-workspace-v3">
+@media(min-width:760px){
+html,body{overflow:hidden}
+.layout{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(280px,1fr) minmax(290px,38vh)!important;height:calc(100dvh - 55px)!important;overflow:hidden}
+.stage{grid-row:1!important;grid-column:1!important;min-width:0!important;min-height:0!important;background:radial-gradient(ellipse at 50% 50%,#16101b 0%,#070609 64%)!important}
+.stage canvas{width:100%!important;height:100%!important;object-fit:contain!important}
+.bottom{grid-row:2!important;grid-column:1!important;width:100%!important;height:100%!important;max-height:none!important;overflow-y:auto!important;display:grid!important;grid-template-columns:minmax(0,1fr) 300px!important;grid-template-rows:auto auto minmax(110px,1fr) auto!important;gap:9px 14px!important;padding:12px 16px 14px!important;align-content:stretch!important;border-top:1px solid #ff2d924d!important;background:#130e19!important}
+.toolbar{grid-column:1!important;grid-row:1!important;min-height:45px!important}
+.transport{grid-column:1!important;grid-row:2!important}
+.tracktop{grid-column:1!important;grid-row:3!important;align-self:start!important;height:22px!important;position:relative!important;z-index:2!important;pointer-events:none!important}
+.timeline{grid-column:1!important;grid-row:3!important;align-self:stretch!important;min-height:130px!important;max-height:none!important;overflow:auto!important;margin-top:26px!important}
+.editbar{grid-column:1!important;grid-row:4!important}
+.inspector{grid-column:2!important;grid-row:2/4!important;align-self:start!important;overflow:auto!important;max-height:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;background:#1a1321!important;border:1px solid #ffffff19!important;border-radius:12px!important;padding:12px!important}
+#exportPanel{grid-column:2!important;grid-row:1!important;justify-content:flex-end!important}
+#status{grid-column:2!important;grid-row:4!important;align-self:center!important}
+#empty strong{font-size:28px!important}
+#empty span{font-size:16px!important}
+}
+@media(min-width:1200px){.layout{grid-template-rows:minmax(310px,1fr) minmax(330px,42vh)!important}.bottom{grid-template-columns:minmax(0,1fr) 340px!important}.timeline{min-height:170px!important}}
+@media(min-width:760px) and (max-height:700px){.layout{grid-template-rows:minmax(200px,1fr) minmax(270px,49vh)!important}}
+</style><style id="kore-workspace-polish-v4">
+.empty{display:none!important}
+.sectionTools{display:flex;gap:7px;flex-wrap:wrap;padding:9px;background:#211629;border:1px solid #ff2d9244;border-radius:12px}
+.sectionTools.hidden{display:none!important}
+.sectionTools button{font-size:14px}
+@media(min-width:760px){
+.layout{grid-template-rows:minmax(280px,1fr) minmax(290px,38vh)!important}
+.stage{background:#050408!important}
+.stage canvas{max-height:100%!important}
+.bottom{grid-template-rows:auto auto minmax(110px,1fr) auto!important}
+.sectionTools{grid-column:1/3!important;grid-row:2!important}
+.bottom:has(.sectionTools:not(.hidden)){grid-template-rows:auto auto auto minmax(110px,1fr) auto!important}
+.bottom:has(.sectionTools:not(.hidden)) .transport{grid-row:3!important}
+.bottom:has(.sectionTools:not(.hidden)) .tracktop,.bottom:has(.sectionTools:not(.hidden)) .timeline{grid-row:4!important}
+.bottom:has(.sectionTools:not(.hidden)) .editbar{grid-row:5!important}
+.bottom:has(.sectionTools:not(.hidden)) .inspector{grid-row:3/5!important}
+.bottom:has(.sectionTools:not(.hidden)) #status{grid-row:5!important}
+}
+@media(max-width:759px){.sectionTools{flex:0 0 auto}}
+</style><style id="kore-keyframe-ui-v1">.keyframe-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap;grid-column:1/-1}.keyframe-tools button{padding:9px 10px;font-size:13px}.keyframe-tools .small{font-size:12px;color:#e4b9d4}</style><style id="kore-precise-seek-v1">.precise-seek-label{display:flex;align-items:center;gap:5px;white-space:nowrap;font-size:13px}.precise-seek-label input{width:72px;min-width:60px;padding:7px;background:#1a1021;color:#fff;border:1px solid #ff2d9270;border-radius:8px;font-size:15px}.keyframe-tools label{display:flex;align-items:center;gap:5px}.keyframe-tools select{min-width:95px}@media(max-width:759px){.precise-seek-label{font-size:11px}.precise-seek-label input{width:55px;min-width:55px}}</style><style id="kore-asset-dock-v1">
+.asset-dock{position:absolute;left:12px;top:12px;bottom:54px;width:290px;max-width:calc(100% - 24px);z-index:5;display:flex;flex-direction:column;border:1px solid #ff2d9259;border-radius:14px;background:#17101eea;box-shadow:0 15px 40px #0009;backdrop-filter:blur(16px);overflow:hidden}
+.asset-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #ffffff19;font-size:13px;letter-spacing:.5px}.asset-head button{min-height:30px;padding:3px 9px}
+.asset-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:8px}.asset-tabs button{padding:8px 2px;min-height:37px;font-size:12px}.asset-tabs button.active{background:#ff2d922c;border-color:#ff2d92;color:#fff}
+.asset-content{flex:1;overflow-y:auto;padding:8px 11px 14px}.asset-hint{font-size:12px;color:#d8bdce;line-height:1.45;margin-bottom:10px}.asset-content #dockImport{width:100%;min-height:37px;padding:8px}
+.asset-content #effectSearch{width:100%;padding:9px;background:#241a2b;color:white;border:1px solid #ffffff3b;border-radius:9px;margin-bottom:9px}
+.asset-list{display:grid;gap:7px;margin-top:10px}.asset-card{display:flex;align-items:center;gap:9px;width:100%;text-align:left;padding:8px;min-height:54px;border-radius:9px;background:#24192e;border:1px solid #ffffff22;font-size:12px}.asset-card:hover{border-color:#ff2d92}.asset-card .asset-thumb{width:54px;height:42px;flex:none;border-radius:6px;background:#0d0912;object-fit:cover}.asset-card .asset-label{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.asset-card small{display:block;color:#d7aec7;font-size:10px;margin-top:3px}.asset-card .asset-icon{font-size:22px;width:40px;text-align:center;flex:none;color:#ff8fc7}
+.asset-dock.hidden{display:none!important}
+@media(max-width:759px){.asset-dock{top:7px;left:7px;bottom:46px;width:min(260px,calc(100% - 14px))}.asset-tabs button{font-size:11px}.asset-card{min-height:46px}}
+</style><style id="kore-personalized-workspace-v1">
+:root{--pink:#ff2d92;--surface:#140f1c;--border:#ff6aaf32}
+header{height:58px!important;padding:7px 18px!important;background:linear-gradient(100deg,#140c1a,#0b0810 60%,#190b18)!important;box-shadow:0 3px 20px #0006;position:relative;z-index:8}
+header strong{font-size:23px!important;letter-spacing:-1.3px!important}header strong .small{font-size:11px;letter-spacing:2px;margin-left:3px}
+.header-actions{display:flex;align-items:center;gap:7px}.header-actions button{min-height:36px;padding:7px 12px;font-size:12px;border-radius:9px}
+header .pill{font-size:10px;letter-spacing:1.6px;border-color:#ff2d9270;background:#ff2d9212}
+.layout{height:calc(100dvh - 58px)!important}
+.stage{isolation:isolate;background:radial-gradient(ellipse at 52% 40%,#180d1e 0%,#08060c 60%,#050408 100%)!important}
+.stage-grid{position:absolute;inset:0;pointer-events:none;opacity:.28;background-image:linear-gradient(#ff78b50b 1px,transparent 1px),linear-gradient(90deg,#ff78b50b 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(90deg,#000 0%,transparent 44%,transparent 70%,#000 100%)}
+.preview-caption{position:absolute;right:18px;top:17px;z-index:2;font-size:10px;letter-spacing:1.6px;color:#d5a5c2;display:flex;align-items:center;gap:7px;pointer-events:none}
+.preview-caption small{font-size:9px;color:#866b82;letter-spacing:1px}.live-dot{width:6px;height:6px;background:#ff2d92;border-radius:50%;box-shadow:0 0 12px #ff2d92}
+.stage canvas{position:relative;z-index:1;filter:drop-shadow(0 0 26px #ff2d9214)}
+.kore-welcome{position:absolute;z-index:3;left:50%;top:48%;transform:translate(-50%,-50%);width:min(360px,42%);text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;pointer-events:none}
+.kore-welcome button{pointer-events:auto;background:linear-gradient(110deg,#ff2d92,#ec3eab);border:0;font-weight:750;box-shadow:0 8px 25px #ff2d9244;padding:12px 22px}
+.welcome-emblem{font-size:64px;font-weight:900;line-height:1;letter-spacing:-9px;color:#fff;text-shadow:0 0 40px #ff2d9240}.welcome-emblem span{font-size:29px;color:#ff2d92;vertical-align:top;letter-spacing:0}
+.welcome-title{font-size:clamp(16px,2vw,24px);font-weight:750;letter-spacing:-.5px}.kore-welcome p{font-size:12px;color:#c5a9c0;line-height:1.6;margin:0}.kore-welcome small{font-size:10px;color:#8f7589}
+.asset-dock{width:300px;border:1px solid #ff5ca45c!important;background:linear-gradient(160deg,#1c1225f2,#120d1af4)!important;box-shadow:0 12px 35px #0009,0 0 0 1px #ffffff07 inset!important}
+.asset-head{font-size:12px!important;letter-spacing:1.5px!important;color:#ffb3d5;border-bottom:1px solid #ff2d922b!important}
+.asset-tabs button{border-radius:8px!important}.asset-card{transition:border-color .15s,transform .15s}.asset-card:hover{transform:translateX(2px)}
+.bottom{background:linear-gradient(145deg,#17101f,#100b17)!important;border-top:1px solid #ff2d9250!important}
+.toolbar{padding:3px 0}.toolbar button{transition:background .15s,transform .15s}.toolbar button:hover:not(:disabled){background:#ff2d9220;transform:translateY(-1px)}
+.timeline{background:#090610!important;border-color:#ff2d9229!important;box-shadow:0 0 0 1px #ffffff05 inset}
+.ruler{background:#211329!important;color:#d9b1ca!important}.tracklabel{background:#1c1024!important;color:#ffabd0!important;font-weight:650}
+.clip{box-shadow:0 3px 10px #0006}.clip.selected{outline-color:#ffcae3!important;box-shadow:0 0 0 2px #ff2d9260,0 0 16px #ff2d9230}
+.inspector{background:linear-gradient(145deg,#1d1426,#140e1c)!important;border-color:#ff2d9238!important}
+.inspector label{color:#f1cce1!important}
+#export{box-shadow:0 4px 17px #ff2d9230}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #ff9bca;outline-offset:2px}
+.shortcut-modal{position:fixed;inset:0;background:#050308cf;z-index:99;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
+.shortcut-card{background:linear-gradient(145deg,#24152c,#120d19);border:1px solid #ff2d9266;border-radius:17px;padding:20px;width:min(420px,100%);box-shadow:0 25px 90px #000b}
+.shortcut-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;letter-spacing:1px}.shortcut-card>div:not(.shortcut-top){display:flex;align-items:center;gap:16px;padding:10px 0;border-bottom:1px solid #ffffff12;font-size:13px;color:#dfc7d8}.shortcut-card kbd{background:#ff2d9219;border:1px solid #ff2d9255;border-radius:6px;padding:5px 8px;min-width:95px;color:#ffadd0;font-family:inherit}
+body.kore-focus .asset-dock{display:none!important}
+@media(min-width:760px){body.kore-focus .layout{grid-template-rows:minmax(300px,1fr) minmax(220px,27vh)!important}body.kore-focus .bottom{grid-template-columns:minmax(0,1fr) 250px!important}}
+@media(max-width:900px){.preview-caption small{display:none}.kore-welcome{width:min(300px,45%)}}
+@media(max-width:759px){header{padding:6px 9px!important}.header-actions{gap:3px}.header-actions button{font-size:11px;padding:6px 8px}.header-actions #workspaceHelp{display:none}.kore-welcome{width:65%;left:60%;top:45%}.welcome-emblem{font-size:43px}.kore-welcome p{display:none}.welcome-title{font-size:15px}.preview-caption{right:10px;top:9px}.asset-dock{width:min(260px,calc(100% - 14px))}}
+</style><style>.kore-welcome{display:none!important}.stage-grid{display:none!important}.stage{background:#050407!important}.stage canvas{filter:none!important}</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@700&family=Oswald:wght@600;700&family=Montserrat:wght@700;800;900&family=Righteous&display=swap" rel="stylesheet"><style id="kore-typography-v1">body,button,input,select,textarea{font-family:'Outfit',system-ui,sans-serif!important}header>strong{font-family:'Space Grotesk','Outfit',sans-serif!important;font-weight:800!important;letter-spacing:-1.5px!important}header .pill,.asset-head strong,.preview-caption{font-family:'Space Mono',monospace!important}#titleFont{min-width:165px}</style><style id="kore-templates-v1">.asset-tabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}.asset-tabs button{font-size:11px!important}.template-library{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.template-card{border:1px solid #ff70ae45;background:#201427;border-radius:11px;padding:6px;text-align:left;cursor:pointer;min-width:0}.template-card:hover,.template-card:focus-visible{border-color:#ff2d92;box-shadow:0 0 0 1px #ff2d9250}.template-preview{aspect-ratio:9/12;background:linear-gradient(155deg,#16101e,#050407);border-radius:7px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.template-preview::before{content:'';position:absolute;width:120%;height:2px;transform:rotate(-22deg);background:var(--accent,#ff2d92);box-shadow:0 0 22px var(--accent,#ff2d92)}.template-preview span{z-index:1;color:white;font:800 19px 'Bebas Neue',Impact,sans-serif;letter-spacing:1px;text-align:center;text-shadow:0 2px 9px #000}.template-card strong{display:block;font-size:11px;margin:7px 2px 1px;color:#ffe1ef}.template-card small{display:block;font-size:10px;color:#b99aad;margin:0 2px 5px}.template-card[data-style="lower"] .template-preview span{position:absolute;bottom:14%;left:10%;background:var(--accent);padding:3px 10px}.template-card[data-style="badge"] .template-preview::before{width:80px;height:80px;border:3px solid var(--accent);background:none;transform:rotate(45deg)}.template-card[data-style="cinema"] .template-preview::before{height:22px;background:#050407;border-top:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:none}.template-card[data-style="neon"] .template-preview span{text-shadow:0 0 5px var(--accent),0 0 22px var(--accent)}.template-card[data-style="minimal"] .template-preview::before{height:1px;top:68%;transform:none;width:65%}</style><style id="kore-social-mix-v1">.social-template-card .template-preview{background:radial-gradient(ellipse at 30% 20%,color-mix(in srgb,var(--accent),transparent 65%),transparent 75%),linear-gradient(145deg,#2a1735,#08050d)}.social-template-card .template-preview::before{height:12px;transform:rotate(-24deg);box-shadow:0 0 20px var(--accent)}.social-template-card strong{color:#fff}.social-template-card small{color:#f2b5d3}</style><style id="kore-captions-v1">.kore-caption-dialog{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:99999;padding:18px}.kore-caption-panel{width:min(540px,96vw);background:#1c1125;color:#fff;border:1px solid #ff2d9288;border-radius:15px;padding:22px;box-shadow:0 15px 65px #000a}.kore-caption-panel textarea{width:100%;min-height:150px;background:#100a16;border:1px solid #ffffff44;color:#fff;border-radius:8px;padding:12px;resize:vertical}.kore-caption-panel input{background:#100a16;color:#fff;border:1px solid #ffffff44;border-radius:7px;padding:8px;width:95px}.kore-caption-panel .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}.kore-caption-panel button{padding:10px 14px;border:1px solid #ffffff44;border-radius:8px;background:#332039;color:#fff;cursor:pointer}.kore-caption-panel button.primary{background:#ff2d92;color:#130812;border-color:#ff2d92}</style><style id="kore-social-picker-v2">.kore-mix-list{max-height:40vh;overflow:auto;display:grid;gap:7px;margin:12px 0}.kore-mix-row{display:flex;align-items:center;gap:9px;background:#291b34;padding:8px;border-radius:8px;border:1px solid #ffffff22}.kore-mix-row img{width:42px;height:42px;object-fit:cover;border-radius:5px}.kore-mix-row .kore-mix-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}.kore-mix-row button{padding:6px 9px}.kore-mix-row input{width:18px;height:18px;accent-color:#ff2d92}.kore-caption-panel .kore-mix-row button{padding:5px 9px}.kore-mix-options{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#f4d2e4}.kore-mix-options input{width:18px;vertical-align:middle}</style><style id="kore-karaoke-v1">.kore-speech-status{font-size:12px;color:#ffadd2;margin:10px 0}.kore-speech-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.kore-speech-actions button{flex:1}.kore-caption-panel select{background:#100a16;color:#fff;border:1px solid #ffffff44;border-radius:7px;padding:8px}.kore-speech-live{min-height:100px;width:100%;border:1px solid #ffffff33;border-radius:8px;padding:12px;background:#0e0915;color:#fff;white-space:pre-wrap;max-height:180px;overflow:auto;font-size:13px}</style><style id="kore-mobile-shell-v1">
+#mediaSources{position:absolute;inset:0;opacity:.001;pointer-events:none;overflow:hidden}#mediaSources video{position:absolute;width:100%;height:100%;object-fit:cover}.native-preview{position:absolute;inset:0;z-index:1;pointer-events:none}.kore-native-video{width:100%;height:100%;object-fit:cover;display:block}.native-preview~.stagebar{z-index:3}#mobileHome,#mobileStart,#mobileHomeButton,#mobileEditorBar,#mobileExportTop,.mobile-empty,.mobile-preview-badge,.mobile-import-progress{display:none}
+@media(max-width:759px){
+ body.mobile-home-open #mobileHome,body.mobile-home-open #mobileStart:not(.hidden){display:flex}body.mobile-home-open>header,body.mobile-home-open>.layout,body.mobile-home-open>#welcome{display:none!important}
+ #mobileHome,#mobileStart{position:fixed;inset:0;z-index:1000;background:#0b080e;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+ .mobile-home-head{position:absolute;z-index:2;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 14px);display:flex;gap:10px;align-items:center}.mobile-home-brand{font-weight:900;letter-spacing:-1px;font-size:19px}.mobile-home-brand b{color:#ff2d92}.mobile-search{height:46px;min-width:0;flex:1;border:1px solid #ffffff33;background:#ffffff24;backdrop-filter:blur(16px);border-radius:24px;color:white;padding:0 17px;font-size:15px}.mobile-search::placeholder{color:#fff9}
+ .mobile-feature{position:relative;flex:1;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 22% 18%,var(--mobile-accent,#ff2d92) -80%,transparent 65%),linear-gradient(155deg,#322035,#0a080f 58%,#180c1a);touch-action:pan-y}.mobile-feature:before{content:'';position:absolute;inset:-20%;background:linear-gradient(130deg,transparent 30%,var(--mobile-accent,#ff2d92) 50%,transparent 70%);opacity:.16;transform:rotate(-15deg)}.mobile-feature-text{position:relative;text-align:center;padding:20px;max-width:90%;text-shadow:0 5px 22px #000}.mobile-feature-text strong{font-size:clamp(44px,13vw,78px);font-weight:900;line-height:1;letter-spacing:-2px;display:block;overflow-wrap:anywhere}.mobile-feature-text span{display:block;margin-top:16px;font-size:11px;text-transform:uppercase;letter-spacing:3px;color:#fff9}
+ .mobile-arrows{position:absolute;right:14px;top:36%;display:grid;gap:8px}.mobile-arrows button{width:44px;height:44px;padding:0;border-radius:50%;background:#1119;font-size:21px}.mobile-meta{position:absolute;bottom:18px;left:18px;right:18px;display:grid;gap:7px;text-shadow:0 2px 10px #000}.mobile-meta small{color:#eee;font-size:12px}.mobile-meta h2{margin:0;font-size:22px}.mobile-meta p{margin:0;color:#eadde8;font-size:13px}.mobile-meta button{width:100%;border:0;border-radius:11px;background:#ff2d92;color:#fff;font-weight:800;font-size:16px;margin-top:8px}
+ .mobile-nav{height:72px;flex:none;display:flex;justify-content:space-around;align-items:center;background:#0b0a0e;border-top:1px solid #ffffff20}.mobile-nav button{border:0;background:transparent;color:#a69da9;display:grid;gap:2px;justify-items:center;padding:5px 20px;font-size:12px}.mobile-nav button strong{font-size:22px;line-height:1}.mobile-nav button[aria-current=page]{color:#fff}
+ .mobile-start{justify-content:space-between;padding:calc(env(safe-area-inset-top) + 32px) 22px calc(env(safe-area-inset-bottom) + 20px)!important;background:radial-gradient(ellipse at 15% 12%,#7d174c 0%,transparent 45%),radial-gradient(ellipse at 100% 62%,#39142f 0%,transparent 48%),#08070b!important}.mobile-start-top{display:flex;align-items:center;justify-content:space-between}.mobile-start-logo{font-size:23px;font-weight:900;letter-spacing:-1px}.mobile-start-logo b{color:#ff2d92}.mobile-start-top span{font-size:11px;color:#f5aacd;letter-spacing:2px}.mobile-start-content{width:100%;max-width:460px;margin:auto}.mobile-start-content .eyebrow{font-size:11px;letter-spacing:3px;color:#ff87bf;font-weight:700}.mobile-start-content h1{font-size:clamp(38px,11vw,58px);line-height:1.02;letter-spacing:-2px;margin:14px 0}.mobile-start-content p{color:#d8c9d3;line-height:1.5;font-size:15px;max-width:330px;margin:0 0 28px}.mobile-start-actions{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 -22px;padding:2px 22px 14px;-webkit-overflow-scrolling:touch}.mobile-start-actions::-webkit-scrollbar{display:none}.mobile-start-actions :is(button,label){flex:0 0 min(76vw,285px);scroll-snap-align:start}.mobile-start-actions :is(button,label){display:flex;align-items:center;gap:15px;min-height:76px;text-align:left;padding:14px 17px;background:#ffffff10;border:1px solid #ffffff28;border-radius:16px}.mobile-start-actions .primary{background:#ff2d92;border-color:#ff2d92}.mobile-start-actions .mobile-action-icon{font-size:25px;width:36px;text-align:center}.mobile-start-actions strong{display:block;font-size:17px}.mobile-start-actions small{display:block;font-size:12px;font-weight:400;opacity:.8;margin-top:3px}.mobile-start-foot{font-size:12px;color:#b9a7b5;text-align:center}.mobile-model-back{min-width:44px;border-radius:50%;background:#ffffff24;padding:8px;font-size:19px}
+
+ .mobile-models-content{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;padding:72px 0 16px}.mobile-models-heading{padding:0 20px}.mobile-models-heading h1{margin:0 0 5px;font-size:27px;letter-spacing:-.8px}.mobile-models-heading p{margin:0;color:#cbbbc8;font-size:13px}.mobile-model-strip{display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:18px 20px 20px;-webkit-overflow-scrolling:touch}.mobile-model-strip::-webkit-scrollbar{display:none}.mobile-model-card{flex:0 0 min(75vw,300px);min-height:270px;scroll-snap-align:center;display:flex;flex-direction:column;justify-content:flex-end;gap:7px;text-align:left;padding:18px;border-radius:18px;border:1px solid #ffffff28;background:radial-gradient(ellipse at 25% 10%,var(--accent),transparent 65%),linear-gradient(150deg,#27192c,#0a080f 70%);box-shadow:0 10px 30px #0007}.mobile-model-card .card-preview{font-size:clamp(30px,9vw,48px);font-weight:900;letter-spacing:-1px;margin:auto;text-align:center;text-shadow:0 2px 20px #0009}.mobile-model-card strong{font-size:19px}.mobile-model-card small{color:#e4d1dd;line-height:1.35}.mobile-model-card .card-action{color:#ffafd1;font-size:12px;font-weight:700}.mobile-model-empty{color:#d9c6d4;padding:16px 2px;font-size:14px}
+ /* Editor mobile: anteprima ampia, timeline compatta e strumenti touch. */
+ body:not(.mobile-home-open) header{height:52px!important;gap:6px;padding:5px 10px!important}body:not(.mobile-home-open) header strong{font-size:18px!important}body:not(.mobile-home-open) .header-actions #workspaceFocus,body:not(.mobile-home-open) .header-actions #save{display:none}#mobileExportTop{display:inline-flex;align-items:center;background:#ff2d92;border-color:#ff2d92;font-weight:800;padding:7px 12px}
+ body:not(.mobile-home-open) .layout{height:calc(100dvh - 52px);display:flex;flex-direction:column}body:not(.mobile-home-open) .stage{flex:1 1 46%;min-height:150px;background:#000!important}body:not(.mobile-home-open) .stage canvas{width:100%;height:100%;object-fit:contain}.preview-caption{display:none}.stagebar button{font-size:11px;padding:5px 9px;min-height:34px}
+ body:not(.mobile-home-open) .bottom{flex:0 1 auto;max-height:49dvh;min-height:0;gap:7px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));overflow:auto;background:#100e14}.bottom>.toolbar,.bottom>.tracktop,.bottom>.editbar,.bottom>#inspector,.bottom>#exportPanel,.bottom>#sectionTools,.precise-seek-label{display:none!important}.transport{gap:8px}.transport time{font-size:11px}.timeline{min-height:95px;max-height:130px;border-radius:8px}.track{min-height:43px}.tracklabel{font-size:10px}.trackbody{min-height:43px}.clip{height:33px;top:5px}.clip small{font-size:9px}.bottom .notice{min-height:0;font-size:11px}
+ #mobileEditorBar{display:flex;flex:none;gap:5px;overflow-x:auto;scrollbar-width:none;margin:0 -4px;padding:2px 4px}#mobileEditorBar :is(button,label){border:0;background:transparent;flex:0 0 auto;min-width:60px;min-height:52px;padding:4px 5px;font-size:10px;display:grid;justify-items:center;align-content:center;gap:3px;color:#eee}#mobileEditorBar :is(button,label) span{font-size:20px;line-height:1}#mobileEditorBar button[aria-pressed=true]{color:#ff74b4}
+ body.mobile-advanced .bottom{max-height:68dvh}body.mobile-advanced .bottom>.toolbar,body.mobile-advanced .bottom>.editbar{display:flex!important}body.mobile-advanced .bottom>#inspector:not(.hidden){display:grid!important}body.mobile-advanced .bottom>#exportPanel{display:flex!important}body.mobile-advanced .precise-seek-label{display:flex!important}body.mobile-advanced .bottom>#sectionTools:not(.hidden){display:flex!important}
+ body:not(.mobile-home-open) .asset-dock{top:8px;bottom:8px;left:8px;width:calc(100% - 16px)!important;max-width:none}.kore-caption-dialog{padding:12px}.kore-caption-panel{max-height:calc(100dvh - 24px);overflow:auto;padding:16px}
+
+ /* Anteprima mobile a tutto schermo, con controlli sovrapposti. */
+ body:not(.mobile-home-open) header{position:fixed;z-index:30;top:0;left:0;right:0;height:calc(48px + env(safe-area-inset-top))!important;padding:calc(5px + env(safe-area-inset-top)) 10px 5px!important;background:linear-gradient(#000b,transparent)!important;border:0!important}body:not(.mobile-home-open) header strong{font-size:16px!important;text-shadow:0 1px 6px #000}body:not(.mobile-home-open) #mobileHomeButton{background:#18121a99;border-color:#ffffff35}body:not(.mobile-home-open) #mobileExportTop{background:#ff2d92df}
+ body:not(.mobile-home-open) .mobile-empty:not(.hidden){display:block;position:absolute;top:42%;left:0;right:0;text-align:center;color:#fff9;font-weight:650;font-size:15px;pointer-events:none}.mobile-empty small{font-weight:400;font-size:12px;color:#fff7}
+ body:not(.mobile-home-open) .layout{position:fixed;inset:0;height:100dvh!important;display:block!important;overflow:hidden}body:not(.mobile-home-open) .stage{position:absolute;inset:0;width:100%;height:100%;min-height:0!important;display:flex}body:not(.mobile-home-open) .stage canvas{height:100%;width:100%;object-fit:contain}body:not(.mobile-home-open) .stagebar{bottom:calc(140px + env(safe-area-inset-bottom))}body:not(.mobile-home-open) .stagebar #full{display:none}
+ body:not(.mobile-home-open) .bottom{position:absolute;z-index:20;left:0;right:0;bottom:0;max-height:min(70dvh,520px);padding:28px 10px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(transparent,#09060cc9 27%,#09060ce8);border:0;overflow-y:auto;backdrop-filter:none;-webkit-backdrop-filter:none}body:not(.mobile-home-open) .timeline{display:none}body.mobile-timeline-open:not(.mobile-home-open) .timeline,body.mobile-advanced:not(.mobile-home-open) .timeline{display:block;background:#130d1bbb;border-color:#ffffff30}body:not(.mobile-home-open) .transport{padding:0 5px}body:not(.mobile-home-open) .notice{color:#f2dce9;text-shadow:0 1px 4px #000;max-height:2.8em;overflow:hidden}body:not(.mobile-home-open) #mobileEditorBar{background:#1a142080;border:1px solid #ffffff20;border-radius:18px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:4px;margin:0}body:not(.mobile-home-open) #mobileEditorBar :is(button,label){background:transparent;text-shadow:0 1px 5px #000}body.mobile-timeline-open #mobileTimeline{color:#ff74b4}
+ body:not(.mobile-home-open) .asset-dock{position:fixed;z-index:40;top:calc(58px + env(safe-area-inset-top));bottom:calc(120px + env(safe-area-inset-bottom));left:8px;right:8px;width:auto!important;max-width:none}
+
+ /* Pulsanti trasparenti, leggibili sopra video chiari e scuri. */
+ body:not(.mobile-home-open) header{background:linear-gradient(#0009,transparent)!important}body:not(.mobile-home-open) #mobileHomeButton,body:not(.mobile-home-open) #mobileExportTop{color:#fff;background:#170d1a99;border:1px solid #ffffff80;border-radius:12px;box-shadow:0 2px 12px #0008;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}body:not(.mobile-home-open) #mobileExportTop{border-color:#ff75b7;background:#6c124899}
+ body:not(.mobile-home-open) .bottom{background:linear-gradient(transparent,#08040a80 45%,#08040ab8);padding-top:22px}body:not(.mobile-home-open) #mobileEditorBar{background:#100a1490;border:1px solid #ffffff55;gap:6px;padding:6px;box-shadow:0 5px 24px #0009}body:not(.mobile-home-open) #mobileEditorBar :is(button,label){min-width:66px;min-height:58px;padding:5px 7px;border:1px solid #ffffff55;border-radius:13px;background:#ffffff1c;color:#fff;font-size:11px;font-weight:650;text-shadow:0 1px 5px #000,0 0 8px #000}body:not(.mobile-home-open) #mobileEditorBar :is(button,label) span{font-size:21px;filter:drop-shadow(0 1px 3px #000)}body:not(.mobile-home-open) #mobileEditorBar button[aria-pressed=true]{color:#fff;border-color:#ff80c0;background:#a31d6599}body:not(.mobile-home-open) #mobileEditorBar button:focus-visible{outline:2px solid #ff8cc6;outline-offset:2px}
+
+ .mobile-pick-label{display:block;text-align:center;padding:14px;margin:15px 0 10px;border-radius:10px;background:#ff2d92;color:#fff;font-weight:800;cursor:pointer}
+ /* Solo video nell'area del browser: comandi direttamente sovrapposti. */
+ body:not(.mobile-home-open) header{background:transparent!important;pointer-events:none}body:not(.mobile-home-open) header>strong{display:none!important}body:not(.mobile-home-open) .header-actions{margin-left:auto;pointer-events:auto}body:not(.mobile-home-open) .stage canvas{object-fit:cover!important}body:not(.mobile-home-open) .stagebar{display:none!important}
+ body:not(.mobile-home-open) .bottom{background:transparent!important;padding:0 8px calc(8px + env(safe-area-inset-bottom));box-shadow:none}body:not(.mobile-home-open) .bottom>.transport{display:none}body.mobile-timeline-open:not(.mobile-home-open) .bottom>.transport,body.mobile-advanced:not(.mobile-home-open) .bottom>.transport{display:flex;background:#100a14a8;border:1px solid #ffffff55;border-radius:13px;padding:6px 9px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+ body:not(.mobile-home-open) #mobileEditorBar{background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:3px 0}body:not(.mobile-home-open) #mobileEditorBar :is(button,label){background:#120c1880;border:1px solid #ffffff75;box-shadow:0 2px 12px #0009;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}body:not(.mobile-home-open) .notice:not(:empty){align-self:flex-start;max-width:95%;padding:3px 8px;border-radius:8px;background:#100a14a8;color:#fff}body.mobile-timeline-open:not(.mobile-home-open) .timeline,body.mobile-advanced:not(.mobile-home-open) .timeline{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+ body:not(.mobile-home-open) .mobile-preview-badge{display:block;position:absolute;z-index:5;top:calc(58px + env(safe-area-inset-top));left:12px;right:12px;width:fit-content;max-width:calc(100% - 24px);padding:6px 10px;border-radius:8px;background:#110b17c9;color:#fff;font-size:12px;letter-spacing:0;overflow-wrap:anywhere;pointer-events:none}body:not(.mobile-home-open) .mobile-import-progress:not(.hidden){display:block;position:absolute;z-index:35;top:45%;left:50%;transform:translate(-50%,-50%);max-width:85%;padding:12px 16px;border-radius:12px;background:#120b1be0;color:#fff;text-align:center;font-size:14px;white-space:pre-line;box-shadow:0 4px 18px #0008;pointer-events:none}
+ #mobileHomeButton{display:inline-flex;font-size:11px;align-items:center;padding:6px 8px}header .pill{display:none}.asset-dock{width:min(300px,calc(100% - 20px))!important}.modal .sheet{max-height:85dvh;overflow:auto}
+}
+
+@media(max-width:759px){
+body:not(.mobile-home-open) .stage{max-height:none!important;max-width:none!important;border:0!important;border-radius:0!important;padding:0!important;margin:0!important}
+body:not(.mobile-home-open) .stage canvas{max-width:none!important;max-height:none!important;position:absolute;inset:0;width:100%!important;height:100%!important}
+body:not(.mobile-home-open) .bottom{max-height:48dvh!important;overflow:visible!important}
+body:not(.mobile-home-open) .timeline{max-height:22dvh;overflow:auto}
+body:not(.mobile-home-open) #mobileEditorBar :is(button,label){min-width:62px;padding:7px 8px;font-size:11px;min-height:52px;background:#100a145c}
+body:not(.mobile-home-open) .notice{display:none}
+body:not(.mobile-home-open) .mobile-preview-badge{max-width:65%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px;opacity:.85}
+}
+#mobileTools{position:fixed;z-index:1500;background:#07060b88;align-items:flex-end;padding:8px 8px calc(8px + env(safe-area-inset-bottom));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.mobile-tools-sheet{width:min(680px,100%);max-height:82dvh;overflow:auto;padding:16px!important}.mobile-tools-head{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-16px;background:#160f1f;z-index:2}.mobile-tools-head h2{font-size:19px}.mobile-tools-sheet p{font-size:12px;color:#d8c3d3}.mobile-tool-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.mobile-tool-actions button{min-height:44px}#mobileToolProperties .inspector{display:flex!important;flex-wrap:wrap!important;padding:12px 0!important;gap:12px!important}#mobileToolProperties .inspector.hidden{display:none!important}#mobileToolProperties label{flex:1 1 130px;display:grid;gap:6px;min-width:0}#mobileToolProperties :is(input,select,textarea){max-width:100%;min-height:40px}#mobileToolProperties .keyframe-tools{flex-basis:100%;display:flex;flex-wrap:wrap}
+
+@media(min-width:760px){
+.bottom{min-height:0!important;grid-template-rows:auto auto minmax(0,1fr) auto!important}
+.bottom:has(.sectionTools:not(.hidden)){grid-template-rows:auto auto auto minmax(0,1fr) auto!important}
+.timeline{min-height:0!important;height:calc(100% - 26px)!important;max-height:calc(100% - 26px)!important;min-width:0}
+.editbar{position:relative;z-index:5;min-height:44px;align-self:stretch}
+.inspector{min-height:0!important;min-width:0}
+}
+</style><style id="kore-black-surfaces">
+:root{--bg:#080808;--surface:#111;--border:#ffffff20;--kore-panel:#101010;--kore-raised:#191919;--kore-line:#ffffff20;--kore-muted:#a8a8ad;--kore-text:#f4f4f5}
+body[data-look="graphite"]{--bg:#121314;--kore-panel:#1a1c1e;--kore-raised:#24272a;--kore-line:#ffffff24;--kore-muted:#b1b5ba}
+body[data-look="glass"]{--bg:#08090a;--kore-panel:#111315d9;--kore-raised:#202326b3;--kore-line:#ffffff2b;--kore-muted:#acb1b8}
+html,body{background:var(--bg);color:var(--kore-text)}
+header,.bottom,.asset-dock,.inspector,.shortcut-card,.modal .sheet,.kore-caption-panel,.sectionTools{background:var(--kore-panel)!important;border-color:var(--kore-line)!important;box-shadow:none!important}
+header{box-shadow:none!important;border-bottom:1px solid var(--kore-line)}
+button,.asset-card,.template-card,.inspector input,.inspector select,#exportPanel select,.precise-seek-label input,.kore-caption-panel select,.kore-caption-panel textarea{background:var(--kore-raised);border-color:var(--kore-line);box-shadow:none!important;color:var(--kore-text)}
+button.primary,#export,.mobile-pick-label{background:#ff2d92!important;border-color:#ff2d92!important;color:#fff!important}
+#add{background:var(--kore-raised)!important;border-color:#ff2d9280!important;color:#ff83bd!important}
+#moreSections{background:var(--kore-raised)!important;border-color:var(--kore-line)!important}
+button.active,.asset-tabs button.active{background:#ff2d9214!important;border-color:#ff2d9280!important;color:#ff91c6!important}
+.asset-head{border-color:var(--kore-line)!important;color:#ececef!important}
+.asset-hint,.small,.notice,.inspector label,.modal p,.mobile-tools-sheet p{color:var(--kore-muted)!important}
+.inspector label{color:#d9d9df!important}.timeline{background:#08090a!important;border-color:var(--kore-line)!important;box-shadow:none!important}.ruler,.tracklabel{background:var(--kore-raised)!important;color:#c7c7ce!important}
+.clip,.clip.photo{background:#26262c;border-color:#55555f;box-shadow:none!important}.clip.selected{background:#34222c;border-color:#ff77b6;outline:1px solid #ff77b6!important;box-shadow:none!important}
+.trackbody{background:repeating-linear-gradient(90deg,#ffffff06 0,#ffffff06 1px,transparent 1px,transparent 70px)}
+.asset-card:hover,.template-card:hover{border-color:#ff2d9290!important;transform:none}.toolbar button:hover:not(:disabled){background:#ffffff0f;transform:none}
+header .pill{background:transparent;border-color:var(--kore-line);color:#a8a8b0;letter-spacing:1px}.live-dot{box-shadow:none}.preview-caption{color:#92929b}.mobile-tools-head{background:var(--kore-panel)}
+#mobileStart,#mobileHome{background:var(--bg)!important}.mobile-start{background:radial-gradient(ellipse at 20% 0,#ff2d920d,transparent 55%),#080808!important}.mobile-start-card{background:var(--kore-raised)!important;border-color:var(--kore-line)!important;box-shadow:none!important}
+body[data-look="glass"] :is(.asset-dock,.shortcut-card,.modal .sheet){backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+@media(max-width:759px){body:not(.mobile-home-open) header,body:not(.mobile-home-open) .bottom{background:transparent!important}body:not(.mobile-home-open) #mobileEditorBar :is(button,label){background:#080a0c80!important;border-color:#ffffff45!important;box-shadow:none!important;color:#f5f5f7!important}body:not(.mobile-home-open) #mobileTimeline[aria-pressed=true]{color:#ff83bd!important;border-color:#ff2d9290!important}body.mobile-timeline-open:not(.mobile-home-open) .timeline{background:#08090ab8!important}.mobile-preview-badge{background:#08090ab8!important}}
+</style><style>
+#mobileApplyToast{display:none}
+@media(max-width:759px){
+#mobileApplyToast:not(.hidden){position:fixed;z-index:1600;left:12px;right:12px;top:calc(68px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border:1px solid #ff2d9270;border-radius:12px;background:#191c1ef0;box-shadow:0 6px 20px #0006;color:#fff;font-size:13px}#mobileApplyUndo{padding:6px 9px;min-height:36px;color:#ff94c7;background:transparent;border-color:#ffffff30}
+body:not(.mobile-home-open) .asset-dock{top:auto!important;bottom:calc(88px + env(safe-area-inset-bottom))!important;left:8px!important;right:8px!important;width:auto!important;max-width:none!important;max-height:43dvh;border-radius:16px!important;background:#1a1c1ef2!important}
+.asset-head{padding:7px 12px!important}.asset-tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important;padding:6px;gap:4px}.asset-tabs button{min-height:36px;font-size:10px!important}.asset-content{padding:8px 10px 12px}.asset-hint{font-size:11px}
+#assetEffects>.asset-hint{display:none}#assetEffects #effectSearch{padding:7px;font-size:12px;margin-bottom:4px}
+#effectLibrary,#transitionLibrary{display:grid;grid-auto-flow:column;grid-auto-columns:132px;grid-template-rows:1fr;overflow-x:auto;gap:8px;scroll-snap-type:x proximity;padding-bottom:4px}.asset-list .asset-card{min-height:66px;scroll-snap-align:start;white-space:normal}.asset-list .asset-label{white-space:normal;line-height:1.2}.asset-list .asset-icon{width:22px;font-size:17px}
+}
+</style><style>.start-import-action{display:block;text-align:left;padding:16px;font-size:17px;font-weight:700;border:1px solid #ff2d9280;border-radius:12px;background:#ff2d9214;cursor:pointer}.start-import-action small{display:block;font-size:13px;font-weight:400;color:#b1b5ba;margin-top:5px}</style><style>
+.track.with-assets,.track.with-assets .trackbody{min-height:110px}.clip-assets{position:absolute;top:52px;display:grid;gap:3px;overflow:hidden}.clip-asset-badge{display:block;min-height:22px;height:23px;padding:2px 6px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:5px;font-size:10px;line-height:16px;background:#ff2d9215!important;border:1px solid #ff2d9255;color:#ffb0d4!important}.clip-asset-badge.transition{background:#70caff12!important;border-color:#70caff55;color:#b1dcff!important}.asset-drop-target{outline:2px solid #ff2d92!important;box-shadow:0 0 0 5px #ff2d9228!important}.asset-drag-active{border-color:#ff2d92!important}.asset-card[draggable=true]{cursor:grab}.asset-card[draggable=true]:active{cursor:grabbing}
+</style><style>@media(min-width:760px){.layout{grid-template-rows:minmax(200px,1fr) minmax(380px,46dvh)!important}}@media(min-width:760px) and (max-height:700px){.layout{grid-template-rows:minmax(120px,1fr) minmax(330px,60dvh)!important}}</style><style>
+#mobileDragHint{display:none}
+@media(max-width:759px){#mobileDragHint:not(.hidden){display:block;position:fixed;left:50%;top:calc(68px + env(safe-area-inset-top));transform:translateX(-50%);z-index:1700;padding:9px 14px;border:1px solid #ff2d9270;border-radius:20px;background:#181b1ef5;color:white;font-size:13px;white-space:nowrap;pointer-events:none}.asset-card[draggable=true]{-webkit-touch-callout:none}body.mobile-timeline-open .timeline{scroll-padding-bottom:30px}}
+</style><style>.mobile-touch-tip{display:none}@media(max-width:759px){.mobile-touch-tip{display:block;margin:2px 0 7px;color:#d7d8dd;font-size:11px;line-height:1.3}}</style><style>@media(max-width:759px){#mobileModelStrip{display:flex!important;flex-direction:column!important;overflow-y:auto!important;overflow-x:hidden!important;scroll-snap-type:y proximity!important}.mobile-model-card{width:100%!important;min-width:0!important;min-height:190px!important;flex:0 0 auto!important}.mobile-start-actions{flex-direction:column!important;overflow-x:hidden!important}#effectLibrary,#transitionLibrary{display:grid!important;grid-auto-flow:row!important;grid-auto-columns:auto!important;grid-template-columns:1fr!important;overflow-x:hidden!important;overflow-y:auto!important}.mobile-model-strip{overflow-x:hidden!important}.kore-mix-list{max-height:42dvh!important}.kore-mix-row{min-height:64px}.kore-mix-row button{min-width:42px;min-height:42px}.kore-caption-panel{max-height:88dvh!important;overflow-y:auto!important}}</style><style>@media(max-width:759px){#mobileHome{height:100dvh;max-height:100dvh}.mobile-models-content{flex:1 1 0!important;min-height:0!important;overflow:hidden;justify-content:flex-start!important}.mobile-models-heading{flex:0 0 auto}#mobileModelStrip{flex:1 1 0!important;min-height:0!important;max-height:100%;overflow-y:auto!important;touch-action:pan-y;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:none!important}#mobileStart{overflow-y:auto!important;touch-action:pan-y}.mobile-start-content{flex:0 0 auto;margin:24px auto!important}.mobile-start-actions{overflow:visible!important;margin:0!important;padding:0!important;scroll-snap-type:none!important}.mobile-start-actions :is(button,label){flex:0 0 auto!important;width:100%;min-height:76px}.asset-content{min-height:0;overflow-y:auto!important;touch-action:pan-y}.mobile-nav{flex-shrink:0}}</style><style>.model-preview-dialog{position:fixed;inset:0;z-index:2200;background:#000c;display:flex;align-items:center;justify-content:center;padding:12px}.model-preview-panel{width:min(400px,100%);max-height:96dvh;overflow:auto;background:#1a1c1e;border:1px solid #ffffff30;border-radius:18px;padding:14px}.model-preview-panel h2{margin:0 0 10px;font-size:20px}.model-preview-panel iframe{display:block;border:0;width:100%;height:min(58dvh,480px);background:#050407;border-radius:10px}.model-preview-panel p{font-size:12px;color:#b9bdc4}.model-preview-panel>div{display:flex;gap:8px}.model-preview-panel>div button{flex:1}.model-demo-mode>*{display:none!important}.model-demo-mode .layout{display:block!important;position:fixed!important;inset:0!important;width:100%!important;height:100%!important}.model-demo-mode .stage{display:flex!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important}.model-demo-mode .stage>*:not(canvas):not(#mediaSources):not(#nativePreview){display:none!important}.model-demo-mode .bottom{display:none!important}.model-demo-mode .demo-error{display:block!important;position:fixed;inset:20px;color:white;z-index:99}</style><style>body.model-demo-mode .layout .stage #preview{display:block!important;visibility:visible!important;width:100%!important;height:100%!important;object-fit:cover!important}</style><style>.template-preview{background-size:cover!important;background-position:center!important}.template-preview:before{opacity:.25}.mobile-model-card .card-preview{display:flex;align-items:center;justify-content:center;min-height:145px;width:100%;border-radius:12px;background-size:cover;background-position:center;padding:18px;margin:0 0 4px;font-size:36px;text-shadow:0 2px 8px #000}.mobile-model-card{background:#1a1c1e!important;padding:12px!important}.model-preview-panel iframe{aspect-ratio:9/16;height:min(58dvh,480px);object-fit:contain}body.model-demo-mode .layout .stage #preview{object-fit:contain!important}</style><style>.creative-tools{grid-column:1/-1;flex:1 0 100%;min-width:0;box-sizing:border-box;display:grid;gap:10px;padding:14px;border:1px solid #ffffff24;border-radius:14px;background:#ffffff06;margin-bottom:14px}.creative-tools strong{color:#f3eaf0;font-size:13px}.creative-tools label{margin:0}.look-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.creative-tools button{min-height:44px}.creative-tools .small{line-height:1.45}</style><style>.clip-asset-badge.motion{background:#233b35!important;border-color:#7ce2c36b!important;color:#bdffeb!important}</style><style>@media(min-width:760px){.toolbar,.editbar{flex-wrap:wrap!important;overflow:visible!important;scrollbar-width:auto;min-width:0}.toolbar{align-content:start}.toolbar button,.editbar button{min-height:36px!important;padding:8px 11px!important;border-radius:9px!important;font-size:12px!important}.editbar{gap:7px!important}.bottom{grid-template-rows:auto auto minmax(140px,1fr) auto!important;overflow-y:auto!important}.toolbar{gap:7px!important}.toolbar #addCaptions{border-color:#ff2d9280!important}.toolbar button:disabled,.editbar button:disabled{opacity:.4}}.kore-caption-panel textarea{min-height:140px;width:100%;box-sizing:border-box}.kore-caption-panel .caption-error{color:#ffb7d8;min-height:1.4em}</style><style>@media(max-width:759px){#mobileHome{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);box-sizing:border-box}.mobile-home-head{position:static!important;flex:0 0 auto;gap:8px;padding:12px!important}.mobile-search{min-width:0!important;flex:1;font-size:16px!important}.mobile-models-heading h1{font-size:25px!important;margin:8px 0}.mobile-models-heading p{font-size:13px!important;line-height:1.45}.model-new-pill{display:inline-block;margin-left:9px;border:1px solid #ff2d9255;color:#ff95c5;background:#ff2d9215;padding:4px 8px;border-radius:20px;font-size:10px;vertical-align:middle}.model-category-label{display:block;font-size:12px;color:#bcbfc4;margin:10px 0 6px}#mobileModelCategory{width:100%;min-height:46px;background:#24272b;color:white;border:1px solid #ffffff30;border-radius:12px;padding:10px;font-size:16px}.model-result-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;font-size:11px;color:#b9bec4}.model-result-row button{font-size:11px;min-height:40px;padding:8px;background:transparent}.mobile-models-content{padding:0 14px!important}.mobile-models-heading{padding:0!important}.mobile-model-card{display:grid!important;grid-template-columns:82px minmax(0,1fr)!important;grid-template-rows:auto auto auto!important;gap:4px 12px!important;min-height:116px!important;text-align:left!important;border:1px solid #ffffff20!important;border-radius:16px!important;content-visibility:auto;contain-intrinsic-size:auto 116px}.mobile-model-card .card-preview{grid-column:1;grid-row:1/4;min-height:90px!important;height:90px;width:82px!important;margin:0!important;padding:6px!important;font-size:15px!important;box-sizing:border-box;overflow:hidden;overflow-wrap:anywhere}.mobile-model-card strong{grid-column:2;font-size:16px!important;align-self:end}.mobile-model-card small{grid-column:2;font-size:11px!important;color:#c2c4cb!important;line-height:1.5}.mobile-model-card .card-action{grid-column:2;font-size:11px!important;color:#ff8bc0!important;align-self:start}.mobile-nav{padding-bottom:8px!important}.mobile-models-heading{flex-shrink:0}#mobileModelStrip{padding-bottom:20px!important;gap:10px!important}.mobile-model-card:focus-visible{outline:2px solid #ff2d92;outline-offset:2px}} </style><link rel="stylesheet" href="./mobile-polish.css?v=objects-5"><link rel="manifest" href="./app.webmanifest"><link rel="icon" type="image/png" sizes="32x32" href="./brand/icon-32.png"><link rel="icon" href="./brand/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="./brand/icon-180.png"><meta name="apple-mobile-web-app-title" content="KORE Studio"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="./branding.css"><script>if(!new URLSearchParams(location.search).has("previewModel")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("kore-booting");setTimeout(()=>document.documentElement.classList.remove("kore-booting"),6500)}</script><script defer src="./branding.js"></script><style>
+.kore-theme-select{
+ min-height:36px;padding:6px 9px;border:1px solid var(--kore-line);border-radius:9px;
+ background:var(--kore-raised);color:var(--kore-text);font:inherit;font-size:12px;cursor:pointer
+}
+.kore-theme-select:focus-visible{outline:2px solid #e31579;outline-offset:2px}
+body[data-look="light"]{
+ color-scheme:light;
+ --bg:#f6f1f5;
+ --surface:#fff;
+ --border:#2c14262e;
+ --kore-panel:#ffffffd9;
+ --kore-raised:#fffffff2;
+ --kore-line:#2c14262e;
+ --kore-muted:#564b55;
+ --kore-text:#20171e;
+ --kore-accent:#a90052;
+ color:var(--kore-text);
+ background:radial-gradient(ellipse at 8% 0,#f6d9e9,transparent 45%),var(--bg)
+}
+body[data-look="light"] :is(header,.bottom,.asset-dock,.inspector,.sheet,.shortcut-card,.kore-caption-panel,.sectionTools,.mobile-nav,.mobile-tools-head){
+ background:var(--kore-panel)!important;border-color:var(--kore-line)!important;
+ backdrop-filter:blur(14px)
+}
+body[data-look="light"] :is(.asset-head,.inspector label,.tracklabel,.ruler,.mobile-start-logo,.mobile-home-brand,.model-result-row,.mobile-models-heading,.mobile-start-actions button,.mobile-tool-actions button,.template-card,.asset-card,.asset-label){
+ color:var(--kore-text)!important
+}
+body[data-look="light"] :is(.asset-hint,.small,.notice,.start-import-action small,.options small,.asset-meta,.mobile-start-foot,.mobile-start-content p,.mobile-start-actions small,.mobile-start-top>span,.mobile-models-heading p,.model-category-label,.mobile-touch-tip,header .pill){
+ color:var(--kore-muted)!important
+}
+body[data-look="light"] :is(input:not([type=file],[type=range],[type=checkbox]),select,textarea,.options button,.mobile-start-actions button,.mobile-start-actions label,.mobile-model-back,.mobile-nav button,.scene-slot,.kore-model-sound){
+ color:var(--kore-text)!important;background:var(--kore-raised)!important;border-color:var(--kore-line)!important
+}
+body[data-look="light"] :is(#add,button.active,.asset-tabs button.active,#mobileTimeline[aria-pressed=true]){
+ color:var(--kore-accent)!important;background:#ffe5f1!important;border-color:#d9307e88!important
+}
+body[data-look="light"] :is(#export,#mobileExportTop,button.primary,.mobile-pick-label){
+ color:#21101a!important;background:#ff4b9d!important;border-color:#df297b!important
+}
+body[data-look="light"] :is(.timeline,.track,.trackbody){border-color:var(--kore-line)!important}
+body[data-look="light"] .timeline{background:#fff9fded!important}
+body[data-look="light"] .trackbody{background:repeating-linear-gradient(90deg,#6b4e6216 0 1px,transparent 1px 70px)!important}
+body[data-look="light"] :is(.clip,.clip.photo){color:#211521;background:#eadde8;border-color:#967c91}
+body[data-look="light"] .clip.selected{background:#ffd2e7;border-color:#b70d61;outline-color:#b70d61!important}
+body[data-look="light"] .clip-asset-badge{color:var(--kore-accent)!important}
+body[data-look="light"] .clip-asset-badge.transition{color:#174f78!important}
+body[data-look="light"] :is(#mobileStart,#mobileHome){color:var(--kore-text);background:radial-gradient(ellipse at 12% 8%,#f8d9eb,transparent 55%),var(--bg)!important}
+body[data-look="light"] :is(.eyebrow,.model-new-pill){color:var(--kore-accent)!important}
+body[data-look="light"] :is(#mobileDragHint,#mobileApplyToast){background:var(--kore-panel);color:var(--kore-text)}
+
+body[data-look="light"] :is(.toolbar,.editbar,.transport){background:transparent!important}
+body[data-look="light"] .transport time{color:var(--kore-muted)!important}
+body[data-look="light"] :is(.stagebar button,#audioMenuButton){color:var(--kore-text)!important;background:var(--kore-raised)!important;border-color:var(--kore-line)!important}
+@media(max-width:759px){
+ .kore-theme-select{max-width:112px;font-size:11px}
+ body[data-look="light"]:not(.mobile-home-open) :is(header,.bottom){background:transparent!important;backdrop-filter:none}
+ body[data-look="light"]:not(.mobile-home-open) .asset-dock{background:#fffffff2!important}
+ body[data-look="light"]:not(.mobile-home-open) #mobileEditorBar :is(button,label){
+  background:var(--kore-panel)!important;border-color:var(--kore-line)!important;color:var(--kore-text)!important
+ }
+}
+</style><script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const params=new URLSearchParams(location.search);
+ const legacyLook=params.get('look');
+ const darkLook=['onyx','glass'].includes(legacyLook)?legacyLook:'graphite';
+ const themeKey='kore-studio-theme';
+ const selectors=[...document.querySelectorAll('[data-kore-theme]')];
+ function applyTheme(theme){
+  const light=theme==='light';
+  document.body.dataset.look=light?'light':darkLook;
+  document.querySelector('meta[name="theme-color"]').content=light?'#f6f1f5':'#141218';
+  document.dispatchEvent(new Event('kore-theme-change'));
+  selectors.forEach(select=>{select.value=light?'light':'dark'});
+ }
+ let savedTheme;
+ try{savedTheme=localStorage.getItem(themeKey)}catch{}
+ applyTheme(savedTheme);
+ selectors.forEach(select=>select.addEventListener('change',()=>{
+  applyTheme(select.value);
+  try{localStorage.setItem(themeKey,select.value)}catch{}
+ }));
+});
+</script><style>
+body[data-look="light"] .stage{
+ background:radial-gradient(ellipse at 48% 30%,#d4ced4c9,#a4a0a8cc)!important
+}
+body[data-look="light"] .stage #assetDock{
+ background:#fcfafcf2!important;border-color:#54434f42!important
+}
+body[data-look="light"] .stage .preview-caption,
+body[data-look="light"] .stage .preview-caption small{color:#463b45!important}
+body[data-look="light"] .stage .mobile-empty{color:#211821!important;text-shadow:none!important}
+body[data-look="light"] .stage .mobile-empty small{color:#493d47!important}
+.effect-modes{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.effect-modes button{font-size:12px;line-height:1.2;min-height:38px;padding:6px}
+.effect-modes button[aria-pressed="true"]{color:#ff9bcd;border-color:#ff2d9280;background:#ff2d9224}
+body[data-look="light"] .effect-modes button[aria-pressed="true"]{color:#a90052;background:#ffe5f1}
+#effectLibrary .palette-swatch{width:40px;height:32px;flex:0 0 40px;overflow:hidden;border-radius:6px}
+#effectLibrary .palette-swatch img{display:block;width:100%;height:100%;object-fit:cover}
+</style><style id="kore-light-contrast">
+/* Light theme surfaces and text in editor overlays and media tools. */
+body[data-look="light"]{
+ --kore-grey-base:#f2edf1;
+ --kore-grey-panel:#fffafd;
+ --kore-bg:#f2edf1;
+ --kore-muted:#51444f;
+}
+body[data-look="light"] :is(.kore-brand-inline,.kore-brand-home){
+ background:transparent!important;border-radius:0!important;box-shadow:none!important
+}
+body[data-look="light"] .kore-brand-inline{width:36px;height:36px;margin-right:4px}
+body[data-look="light"] #welcome>div,
+body[data-look="light"] :is(.kore-caption-dialog,.model-preview-dialog,.shortcut-modal,#mobileTools){
+ color:var(--kore-text)
+}
+body[data-look="light"] :is(#welcome,.kore-caption-dialog,.model-preview-dialog,.shortcut-modal,#mobileTools){
+ background:#241a285c!important
+}
+body[data-look="light"] #welcome>div,
+body[data-look="light"] :is(.kore-caption-panel,.model-preview-panel,.shortcut-card,.mobile-tools-sheet,.phone-media-picker .kore-caption-panel){
+ background:#fffbfe!important;color:var(--kore-text)!important;border-color:var(--kore-line)!important
+}
+body[data-look="light"] :is(#welcome,.kore-caption-panel,.model-preview-panel,.shortcut-card) :is(h1,h2,h3,strong,legend){
+ color:var(--kore-text)!important
+}
+body[data-look="light"] #welcome .start-import-action{
+ background:#ffe5f1!important;color:#67103f!important;border-color:#d8438a!important;
+ box-shadow:none!important
+}
+body[data-look="light"] :is(.kore-caption-panel,.model-preview-panel,.shortcut-card,#welcome) :is(p,small,label:not(.primary),summary){
+ color:var(--kore-muted)!important
+}
+body[data-look="light"] :is(.asset-card,.template-card,.draft-row,.model-feed-info) small{
+ color:var(--kore-muted)!important
+}
+body[data-look="light"] :is(.draft-row,.caption-choice,.native-gallery-controls,.kore-sound-listen,.model-personal-audio,.phone-picker-tabs,.phone-picker-head,.phone-media-picker .scene-actions,.phone-media-picker #sceneMessage,.phone-media-picker .scene-slots){
+ background:#f8eff6!important;color:var(--kore-text)!important;border-color:var(--kore-line)!important
+}
+body[data-look="light"] :is(.kore-model-sound,.phone-media-picker .scene-slot,.phone-media-picker .scene-media,.native-gallery-controls input[type=file],.model-feed-info,.mobile-model-empty){
+ background:#fffbfe!important;color:var(--kore-text)!important;border-color:var(--kore-line)!important
+}
+body[data-look="light"] :is(.phone-media-picker .phone-picker-head>button,.phone-media-picker .scene-slot .scene-number,.phone-media-picker .scene-slot .scene-filename,.phone-media-picker .scene-slot .scene-duration,.native-gallery-controls label,.native-gallery-controls p,.native-gallery-controls small,.kore-model-sound small){
+ color:var(--kore-text)!important
+}
+body[data-look="light"] .phone-media-picker .scene-slot :is(.scene-filename,.scene-duration,.scene-number){
+ background:#fffbfef0!important;border-radius:6px;padding:3px 6px
+}
+body[data-look="light"] .phone-media-picker .scene-slot .scene-plus{color:#a90052!important}
+body[data-look="light"] .phone-media-picker .scene-slot .scene-plus::before,
+body[data-look="light"] .phone-media-picker .scene-slot .scene-plus::after{background:#a90052}
+body[data-look="light"] :is(.bottom button:not(.primary):not(.active),.bottom summary,.stagebar button):not(:disabled){
+ color:var(--kore-text)
+}
+body[data-look="light"] .bottom button:disabled{
+ opacity:1;color:#665b65!important;background:#eee6ed!important;border-color:#c7bbc5!important
+}
+body[data-look="light"] :is(.kore-caption-panel,.model-preview-panel,.shortcut-card) button:not(.primary){
+ color:var(--kore-text);background:#fff!important;border-color:var(--kore-line)!important
+}
+body[data-look="light"] :is(.kore-caption-panel,.model-preview-panel) button.primary{
+ color:#21101a!important;background:#ff4b9d!important;border-color:#c92570!important
+}
+body[data-look="light"] :is(.shortcut-card kbd,.mobile-preview-badge,.mobile-import-progress,#mobileDragHint,#mobileApplyToast){
+ color:var(--kore-text)!important;background:#fffbfef0!important;border-color:var(--kore-line)!important
+}
+body[data-look="light"] :is(.mobile-start-actions,.mobile-models-content,.model-result-row,.asset-content,.inspector,.sectionTools) :is(input,select,textarea)::placeholder{
+ color:#5d505b;opacity:1
+}
+body[data-look="light"] :is(.template-preview,.model-feed-number){color:#fff}
+</style><style id="kore-mobile-catalog">
+@media(max-width:759px){
+ body.mobile-home-open #mobileHome:not(.hidden){
+  position:fixed;inset:0;width:100%;height:auto;max-height:none;
+  overflow:hidden;background:#211b23!important;color:#fff
+ }
+ body[data-look] #mobileHome .mobile-home-head{
+  position:absolute!important;inset:0 0 auto;box-sizing:border-box;
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;
+  padding:calc(10px + env(safe-area-inset-top)) 14px 48px;
+  background:linear-gradient(180deg,#17121ae8 0%,#17121a94 54%,transparent);
+ }
+ #mobileHome .mobile-home-brand{display:none}
+ body[data-look] #mobileHome .mobile-models-content{
+  position:absolute;top:calc(58px + env(safe-area-inset-top));left:14px;right:14px;
+  overflow:visible
+ }
+ body[data-look] #mobileHome :is(#mobileModelBack,#mobileSearch,#mobileModelCategory){
+  min-height:42px;background:#211a25f5!important;border:1px solid #ffffff60!important;
+  color:#fff!important;color-scheme:dark;border-radius:13px!important;
+  font-size:16px!important
+ }
+ body[data-look] #mobileHome #mobileSearch{width:100%;min-width:0;padding-inline:12px}
+ #mobileHome #mobileSearch::placeholder{color:#e8dce6;opacity:1}
+ body[data-look] #mobileHome #mobileModelCategory{min-height:38px;max-width:100%;padding:5px 12px}
+ body[data-look] #mobileHome #mobileModelStrip{inset:0;padding:0!important}
+ body[data-look] #mobileHome .model-feed-card::after{
+  background:linear-gradient(180deg,#120d163d 0%,transparent 30%,transparent 47%,#120d16a8 100%)
+ }
+ body[data-look] #mobileHome .model-feed-info{
+  left:14px;right:14px;bottom:calc(65px + env(safe-area-inset-bottom));
+  display:grid;gap:6px;padding:14px 15px 12px;
+  background:#231b28ed!important;color:#fff!important;border:1px solid #ffffff40!important;
+  border-radius:20px;box-shadow:0 8px 26px #11091650;
+ }
+ body[data-look] #mobileHome .model-feed-info h2{
+  margin:0;font-size:clamp(22px,6vw,28px);line-height:1.12;color:#fff;text-shadow:none
+ }
+ body[data-look] #mobileHome .model-feed-info :is(p,small,.model-feed-hint){
+  color:#f0e5ee!important;line-height:1.35
+ }
+ #mobileHome .model-feed-info p{font-size:14px}
+ #mobileHome .model-feed-info small{font-size:12px}
+ #mobileHome .model-feed-number{color:#ffb9db;font-size:11px}
+ #mobileHome .model-feed-info .model-feed-hint{font-size:11px;text-align:center}
+ body[data-look] #mobileHome .model-feed-info .kore-sound-listen{
+  justify-self:start;min-height:36px;padding:5px 10px;
+  background:#44334a!important;color:#fff!important;border:1px solid #ffffff66!important;
+  border-radius:10px;font-size:13px
+ }
+ body[data-look] #mobileHome .model-feed-info .primary{
+  min-height:46px;margin:2px 0 0;background:#ff4b9d!important;
+  color:#21101a!important;border-color:#ff82ba!important;font-size:16px
+ }
+ body[data-look] #mobileHome .mobile-nav{
+  height:calc(54px + env(safe-area-inset-bottom));padding:3px 14px env(safe-area-inset-bottom)!important;
+  justify-content:flex-end;background:#211a25f2!important;border-top:1px solid #ffffff36!important;
+  box-sizing:border-box
+ }
+ body[data-look] #mobileHome #mobileEdit{
+  display:flex;align-items:center;gap:7px;min-height:42px;padding:5px 12px;
+  background:#44334a!important;color:#fff!important;border:1px solid #ffffff66!important;
+  font-size:14px
+ }
+ #mobileHome #mobileEdit strong{font-size:17px}
+ body[data-look] #mobileHome .mobile-model-empty{
+  position:absolute;top:calc(120px + env(safe-area-inset-top));left:14px;right:14px;
+  padding:14px;border-radius:12px;background:#231b28!important;color:#fff!important
+ }
+}
+</style><style id="kore-desktop-timeline">
+.desktop-project-media,#timelineZoomControls,.clip-trim,.desktop-audio-drop{display:none}
+@media(min-width:760px){
+ body:not(.kore-focus) .stage canvas{position:absolute;inset:0 300px 0 304px;width:calc(100% - 604px)!important}
+ body:not(.kore-focus) .stagebar{left:310px;right:306px}
+ body:not(.kore-focus) .preview-caption{right:310px}
+ .stage .asset-dock{inset:8px auto 8px 10px;width:282px;border-radius:12px}
+ .stage #inspector{position:absolute;z-index:5;right:10px;top:8px;bottom:8px;width:280px;max-height:none!important;align-content:start;overflow:auto}
+ .stage #inspector.hidden{display:grid!important}
+ .stage #inspector.hidden>*:not(.desktop-inspector-empty),.stage #inspector:not(.hidden) .desktop-inspector-empty{display:none}
+ .desktop-inspector-empty{grid-column:1/-1;padding:6px}
+ .desktop-inspector-empty h3,.desktop-project-media h3{font-size:13px;margin:6px 0 8px}
+ .desktop-project-media{display:block;margin-top:14px;padding-top:9px;border-top:1px solid var(--kore-line)}
+ .desktop-project-media .asset-card{min-height:34px}
+ .asset-card[data-media-id]{cursor:grab}
+ .asset-card[data-media-id] img{pointer-events:none}
+ .bottom{grid-template-columns:minmax(0,1fr) auto!important}
+ .bottom .toolbar,.bottom .editbar{flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden;align-items:center;min-width:0;scrollbar-width:thin}
+ .bottom .toolbar{min-height:45px!important}
+ .bottom .editbar{grid-column:1/-1!important;padding-bottom:3px}
+ .bottom #status{grid-column:1/-1!important;grid-row:5!important;min-height:16px;padding-block:0}
+ .bottom #exportPanel{align-self:start}
+ .bottom .timeline{margin-bottom:0!important}
+ .bottom .toolbar button,.bottom .editbar button{flex:none;white-space:nowrap}
+ .stage #assetMedia{display:flex;flex-direction:column;gap:6px}
+ .stage #assetMedia.hidden{display:none}
+ .stage .desktop-project-media{order:2}
+ .stage #mediaLibrary{order:3}
+ .stage #assetMedia .audio-import-button{align-self:start;min-height:36px}
+ 
+ .bottom :is(.transport,.tracktop,.timeline){grid-column:1/-1!important}
+ .bottom .tracktop{height:36px!important;pointer-events:auto!important;justify-content:space-between}
+ .bottom .timeline{margin-top:40px!important;min-height:118px!important}
+ #timelineZoomControls{display:flex;align-items:center;gap:6px}
+ #timelineZoomControls button{min-height:29px;padding:2px 8px;border-radius:7px;font-size:13px}
+ #timelineZoom{width:clamp(75px,10vw,148px)}
+ .timeline .ruler{position:sticky;top:0;z-index:3}
+ .timeline .tracklabel{position:sticky;left:0;z-index:2}
+ .timeline .trackbody{flex:none;background-size:var(--timeline-grid) 100%;background-image:linear-gradient(90deg,#82758329 1px,transparent 1px)!important}
+ .timeline .clip{padding-inline:12px;text-align:left;overflow:hidden}
+ .clip[data-kind="audio"]{background:#19463e;color:#fff;border-color:#438f7e}
+ body[data-look="light"] .clip[data-kind="audio"]{background:#d6f1e9;color:#123d32;border-color:#4e9685}
+ .clip-trim{display:block;position:absolute;top:0;bottom:0;width:10px;cursor:ew-resize;touch-action:none}
+ .clip-trim[data-edge="start"]{left:0}.clip-trim[data-edge="end"]{right:0}
+ .clip:is(:hover,.selected,.trimming) .clip-trim{background:#ff87bd66;border-inline:1px solid #ff8bc5}
+ .clip-trim::after{content:"";position:absolute;inset:34% 4px;border-left:2px solid #ffe3f0}
+ body[data-look="light"] .clip-trim::after{border-color:#7e154c}
+ .desktop-audio-drop{display:flex;align-items:center;gap:10px;width:max-content;min-width:100%;height:36px;padding:0 12px;color:var(--kore-muted);border-top:1px dashed var(--kore-line);font-size:12px}
+ .desktop-audio-drop.active,.trackbody.media-drop-active{background-color:#ff2d9230!important;outline:1px solid #e64b99}
+ .desktop-audio-drop button{min-height:27px;padding:2px 8px;font-size:12px}
+}
+@media(min-width:760px) and (max-width:1050px){
+ body:not(.kore-focus) .stage canvas{left:231px;right:230px;width:calc(100% - 461px)!important}
+ .stage .asset-dock,.stage #inspector{width:212px}
+ body:not(.kore-focus) .stagebar{left:228px;right:228px}
+ body:not(.kore-focus) .preview-caption{right:228px}
+}
+</style><style>
+.video-assist{padding:8px;margin:8px 0;border:1px solid var(--kore-line);border-radius:10px;background:var(--kore-panel);color:var(--kore-text)}
+.video-assist button{width:100%;min-height:36px;padding:6px 8px;font-size:12px}
+.video-assist p{margin:8px 0;font-size:12px;line-height:1.45;color:var(--kore-text)}
+</style><style>.advanced-video{display:grid;gap:7px;margin:8px 0;padding:9px;border:1px solid var(--kore-line);border-radius:10px;background:var(--kore-panel);color:var(--kore-text);font-size:12px}
+.advanced-video summary{cursor:pointer;font-weight:700;padding:5px 0}
+.advanced-video label{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:5px 0}
+.advanced-video :is(select,input[type=number]){max-width:68%;min-width:0;padding:5px;color:var(--kore-text);background:var(--kore-raised);border:1px solid var(--kore-line);border-radius:6px}
+.advanced-video input[type=range]{width:48%}
+.advanced-video button{min-height:34px;padding:5px 8px;font-size:12px}
+.advanced-video-actions{display:flex;flex-wrap:wrap;gap:5px}
+.advanced-video p{margin:5px 0;line-height:1.4}
+.fx-track .trackbody{height:auto;min-height:39px;flex:none}
+.fx-segment{position:absolute;height:26px;min-height:0;padding:2px 5px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;border-color:#b76df1;background:#532c71;color:#fff}
+body[data-look="light"] .fx-segment{background:#f0ddff;color:#441967;border-color:#9861bf}
+.fx-segment[aria-pressed=true]{outline:2px solid #ff4b9d;outline-offset:-2px}
+.fx-segment.fx-disabled{opacity:.55}
+.smart-marker{position:absolute;top:0;z-index:4;min-height:0;width:14px;height:16px;padding:0;transform:translateX(-50%);border:0;border-radius:3px;background:#ffe077!important;color:#24202b!important;font-size:9px}
+.smart-marker.beat{top:10px;background:#78e7dc!important}
+</style><style>
+#highlightsDialog{width:min(720px,calc(100% - 24px));max-height:calc(100dvh - 24px);overflow:auto;padding:16px;border:1px solid var(--kore-line);border-radius:16px;background:var(--kore-panel);color:var(--kore-text);box-shadow:0 20px 65px #0006}
+#highlightsDialog::backdrop{background:#150e20a6}
+#highlightsDialog .highlight-header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#highlightsDialog h2{font-size:20px;margin:0}
+#highlightsDialog :is(.highlight-settings,.highlight-entry){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#highlightsDialog :is(label,legend,p){font-size:13px;line-height:1.4}
+#highlightsDialog label{display:grid;gap:4px;align-content:center}
+#highlightsDialog label:has(input[type=checkbox]){display:flex;align-items:center}
+#highlightsDialog :is(select,input:not([type=checkbox])){width:100%;min-width:0;padding:7px;border:1px solid var(--kore-line);border-radius:8px;background:var(--kore-raised);color:var(--kore-text)}
+#highlightsDialog button{min-height:36px;padding:6px 9px;font-size:13px}
+#highlightsDialog #highlightAnalyze{margin-top:10px}
+#highlightsDialog video{display:block;width:100%;max-height:25dvh;background:#09070b;border-radius:10px}
+#highlightsDialog .highlight-entry{margin:8px 0;padding:8px;border:1px solid var(--kore-line);border-radius:10px}
+#highlightsDialog .highlight-actions{display:flex;flex-wrap:wrap;align-items:end;gap:8px;margin-top:10px}
+#highlightsDialog :is(.hidden,[hidden]){display:none!important}
+@media(max-width:759px){#openHighlights{display:none!important}#highlightsDialog :is(input,select){font-size:16px}}
+</style><style>
+#highlightsDialog.reel-mode .highlight-entry{grid-template-columns:1fr auto;align-items:center}
+#highlightsDialog .reel-stage{position:relative;width:min(100%,290px,calc(52dvh * 9 / 16));margin:10px auto;background:#100d14;border-radius:18px;overflow:hidden;aspect-ratio:9/16}
+#highlightsDialog .reel-stage video{height:100%;max-height:none;object-fit:cover;border-radius:0}
+.reel-stage #reelOverlay{position:absolute;left:9%;right:9%;top:15%;text-align:center;color:white;font-weight:800;font-size:clamp(16px,4vw,24px);line-height:1.15;text-shadow:0 2px 5px #000;overflow-wrap:anywhere;pointer-events:none}
+#highlightsDialog .reel-guide{position:absolute;inset:10% 12% 19% 8%;border:1px dashed #ff94c8;pointer-events:none}
+#highlightsDialog .reel-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+#highlightsDialog .reel-tabs button[aria-pressed=true]{background:#ff3b96;color:#21101a;border-color:#ff3b96}
+#highlightsDialog .reel-review{display:grid;gap:7px}
+@media(max-width:759px){
+ #highlightsDialog.reel-mode{box-sizing:border-box;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;border:0;border-radius:0;padding:calc(12px + env(safe-area-inset-top)) 14px calc(12px + env(safe-area-inset-bottom))}
+ #highlightsDialog .reel-stage{width:min(100%,calc(56dvh * 9 / 16));touch-action:pan-y}
+}
+</style><link rel="stylesheet" href="./phone-4.css?v=phone-4"><link rel="stylesheet" href="./immersive.css?v=immersive-7"><link rel="stylesheet" href="./entry-menu.css?v=entry-8"><link rel="stylesheet" href="./asr-mobile.css?v=beta-9"><link rel="stylesheet" href="./phone-timeline.css?v=phone-2"><link rel="stylesheet" href="./phone-overlay.css?v=overlay-2"><link rel="stylesheet" href="./work-indicator.css?v=safe-1"><link rel="stylesheet" href="./phone-simple.css?v=simple-1"><link rel="stylesheet" href="./phone-capcut.css?v=cap-36"><link rel="stylesheet" href="./transcript-editor.css?v=kt-1"><link rel="stylesheet" href="./phone-handles.css?v=h-3"><link rel="stylesheet" href="./phone-fx.css?v=fx-7"><link rel="stylesheet" href="./kore-theme.css?v=t-16"><link rel="stylesheet" href="./import-choice.css?v=ic-1"><style>.backup-tools{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.backup-tools button{min-height:44px;flex:1;min-width:150px}</style></head><body>
+<header><strong><img class="kore-brand-inline" src="./brand/kore-logo-transparent.webp" alt="" width="32" height="32"> KORE<b>.</b> <span class="small">STUDIO</span></strong><span class="pill">✦ CREATIVE WORKSPACE</span><div class="header-actions"><select class="kore-theme-select" data-kore-theme aria-label="Tema dell’editor"><option value="dark">Nero / Rosa</option><option value="light">Bianco / Rosa</option></select><button id="mobileHomeButton" type="button" aria-label="Torna alla schermata iniziale">⌂ Home</button><button id="mobileExportTop" type="button">Esporta ↑</button><button type="button" id="openHighlights">✦ Momenti migliori</button><button id="workspaceFocus" title="Ingrandisci anteprima e nascondi pannelli">◩ Focus</button><button id="workspaceHelp" title="Scorciatoie da tastiera">⌨ Tasti</button><button id="save" title="Salva progetto">◈ Salva</button></div></header>
+<div id="mobileTools" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="mobileToolsTitle"><section class="sheet mobile-tools-sheet"><div class="mobile-tools-head"><h2 id="mobileToolsTitle">Modifica clip</h2><button id="mobileToolsClose" type="button" aria-label="Chiudi strumenti">✕</button></div><p>Seleziona una clip nella timeline. Le modifiche si salvano nel progetto; puoi annullarle.</p><div class="mobile-tool-actions"><button data-edit-action="trimStart">Inizio qui</button><button data-edit-action="trimEnd">Fine qui</button><button data-edit-action="duplicate">Duplica</button><button data-edit-action="freezeFrame">Fermo immagine</button><button data-edit-action="crossfade">Dissolvenza</button><button data-edit-action="addKeyframe">◆ Keyframe</button><button data-edit-action="remove">Elimina</button><button data-edit-action="ripple">Elimina e chiudi spazio</button><button data-edit-action="undo">Annulla</button><button data-edit-action="redo">Ripeti</button></div><div id="mobileToolProperties"></div></section></div>
+<div id="mobileDragHint" class="hidden" role="status" aria-live="polite"></div><div id="mobileApplyToast" class="hidden" role="status" aria-live="polite"><span id="mobileApplyMessage"></span><button id="mobileApplyUndo" type="button">Annulla</button></div><main class="layout"><section class="stage"><div class="stage-grid" aria-hidden="true"></div><div class="preview-caption" aria-hidden="true"><span class="live-dot"></span> KORE MONITOR <small>PREVIEW · REAL TIME</small></div><canvas id="preview" width="540" height="960"></canvas><div id="mediaSources" aria-hidden="true"></div><div id="nativePreview" class="native-preview hidden" aria-hidden="true"></div><div id="mobilePreviewBadge" class="mobile-preview-badge" role="status" aria-live="polite">ANTEPRIMA</div><div id="mobileImportProgress" class="mobile-import-progress hidden" role="status"></div><div id="mobileEmpty" class="mobile-empty" aria-hidden="true">Aggiungi un video o una foto<br><small>Usa Media per iniziare</small></div><div id="koreWelcome" class="kore-welcome hidden"><div class="welcome-emblem">K<span>✦</span></div><div class="welcome-title">La tua storia. Il tuo stile.</div><p>Uno spazio creativo per montare, colorare e dare ritmo alle tue idee.</p><button id="welcomeImport" type="button">＋ Inizia con un video</button><small>Oppure aggiungi un titolo dalla timeline</small></div><aside id="assetDock" class="asset-dock"><div class="asset-head"><strong>LIBRERIA KORE</strong><button id="dockClose" aria-label="Chiudi libreria">✕</button></div><div class="asset-tabs"><button data-asset-tab="media" class="active">▣ Media</button><button data-asset-tab="effects">✦ Effetti</button><button data-asset-tab="transitions">⇄ Transizioni</button><button data-asset-tab="templates" type="button" aria-label="Apri modelli grafici e social">▧ Modelli</button></div><div class="asset-content"><div id="assetMedia"><div class="asset-hint">Qui trovi foto e video importati, pronti da riutilizzare.</div><button id="dockImport" class="primary">＋ Importa media</button><button id="youtubeHelp" style="width:100%;margin-top:8px">▶ Video da YouTube (propri)</button><div id="youtubePanel" class="asset-hint hidden" style="margin-top:8px">Per i video che possiedi, scarica il file originale da YouTube Studio e poi importalo in KORE. I link YouTube non sono file video direttamente importabili.<p><a href="https://studio.youtube.com/" target="_blank" rel="noopener noreferrer">Apri YouTube Studio</a></p><button id="youtubeImport" type="button">Importa file scaricato</button></div><div id="mediaLibrary" class="asset-list"></div><section class="desktop-project-media" aria-label="Media in uso"><h3>Media in uso</h3><div id="projectMedia" class="asset-list"></div></section></div><div id="assetEffects" class="hidden"><p class="mobile-touch-tip">Tocca per applicare · tieni premuto per trascinare sulla clip</p><div class="asset-hint">Seleziona una clip e scegli cosa applicare, oppure trascina la scheda sulla timeline.</div><div class="effect-modes" role="group" aria-label="Tipo di effetto"><button type="button" data-effect-mode="palette" aria-pressed="true">Palette e filtri</button><button type="button" data-effect-mode="animated" aria-pressed="false">Effetti animati</button></div><section class="video-assist" aria-label="Analisi video"><button id="analyzeVideo" type="button">✦ Analizza clip video</button><div id="videoAdvice" class="hidden"><p id="videoAdviceStatus" role="status" aria-live="polite"></p><button id="applyVideoAdvice" type="button" class="hidden">Applica suggerimento</button></div></section><details class="advanced-video" id="advancedVideo">
+ <summary>Montaggio assistito</summary>
+ <div class="advanced-video-actions">
+  <button id="detectScenes" type="button">Rileva cambi scena</button>
+  <button id="detectBeats" type="button">Rileva battiti</button>
+  <button id="autoReframe" type="button">Segui volto in 9:16</button>
+  <button id="followTitle" type="button">Aggiungi titolo che segue</button>
+  <button id="toggleFaceBlur" type="button">Sfoca volto</button>
+ </div>
+ <label>Sfondo video <select id="backgroundMode"><option value="off">Originale</option><option value="remove">Rimuovi · mostra traccia inferiore</option><option value="solid">Colore</option><option value="blur">Sfocato</option></select></label>
+ <label>Colore <input id="backgroundColor" type="color" value="#221829"></label>
+ <label>Bordi <input id="backgroundEdge" type="range" min="-25" max="25" value="0"></label>
+ <p id="advancedVideoStatus" role="status" aria-live="polite"></p>
+ <div id="markerReview" class="hidden">
+  <label>Marcatore <select id="markerChoice"></select></label>
+  <div class="advanced-video-actions"><button id="seekMarker" type="button">Vai al punto</button><button id="splitMarker" type="button">Taglia clip selezionata</button><button id="clearMarkers" type="button">Rimuovi marcatori</button></div>
+ </div>
+</details>
+<section id="effectStack" class="advanced-video">
+ <strong>Traccia effetti</strong>
+ <label>Effetto <select id="stackEffectType"></select></label>
+ <button id="addStackEffect" type="button">Aggiungi alla clip</button>
+ <label>Livello <select id="stackEffectItem"></select></label>
+ <div id="stackEffectControls" class="hidden">
+  <label><input id="stackEnabled" type="checkbox" checked> Effetto attivo</label>
+  <label>Inizio (s) <input id="stackStart" type="number" step=".1" min="0"></label>
+  <label>Fine (s) <input id="stackEnd" type="number" step=".1" min="0"></label>
+  <label>Intensità <input id="stackStrength" type="range" min="0" max="100"> <output id="stackStrengthValue"></output></label>
+  <div class="advanced-video-actions"><button id="stackKeyframe" type="button">Keyframe alla testina</button><button id="clearStackKeys" type="button">Rimuovi keyframe</button><button id="removeStackEffect" type="button">Rimuovi effetto</button></div>
+  <p id="stackKeyList"></p>
+ </div>
+ <button id="compareEffects" type="button" aria-pressed="false">Mostra originale</button>
+</section>
+<input id="effectSearch" placeholder="Cerca un effetto…" aria-label="Cerca effetti"><div id="effectLibrary" class="asset-list"></div></div><div id="assetTransitions" class="hidden"><p class="mobile-touch-tip">Tocca per applicare · tieni premuto per trascinare sulla clip</p><div class="asset-hint">Per una dissolvenza vera fra due clip, seleziona la seconda clip e premi <strong>⇄ Unisci con dissolvenza</strong>. Le altre transizioni agiscono su entrata/uscita.</div><div id="transitionLibrary" class="asset-list"></div></div><div id="assetTemplates" class="hidden"><div class="asset-hint">Modelli grafici originali KORE. Tocca un modello per inserirlo sulla timeline, poi modifica testo e colori.</div><div class="asset-hint" style="margin:14px 0 7px;color:#ff9fcb;font-weight:700">✦ SOCIAL MIX · FOTO + VIDEO</div><div class="asset-hint">Seleziona un modello: KORE usa le foto/video che hai importato, applica tagli, transizioni, effetti e movimenti in automatico. Consigliati almeno 4 media diversi.</div><div id="socialTemplateLibrary" class="template-library"></div><div class="asset-hint" style="margin:15px 0 7px;color:#ff9fcb;font-weight:700">▧ GRAFICHE E TITOLI</div><div id="templateLibrary" class="template-library"></div></div></div></aside><div id="empty" class="empty hidden" aria-hidden="true"></div><div class="stagebar"><button id="fit" class="glass" title="Formato video">9:16</button><button id="full" class="glass" title="Schermo intero">⛶ Schermo intero</button></div></section>
+<section class="bottom"><div class="toolbar"><button id="add" class="primary">＋ Importa</button><button id="showMedia" class="active">▣ Media</button><button id="showEffects">✦ Effetti</button><button id="showTransitions">⇄ Transizioni</button><button id="showTemplates" type="button" title="Apri modelli grafici e Social Mix">▧ Modelli</button><button id="play">▶</button><button id="undo" title="Annulla">↶</button><button id="redo" title="Ripristina">↷</button><button id="addtrack">＋ Traccia</button><button id="moreSections" class="primary" aria-expanded="false" aria-controls="sectionTools">＋ Sezioni</button><button id="addText">T＋ Titolo</button><button id="addCaptions" title="Genera sottotitoli temporizzati dal testo incollato">▤ Testo / Karaoke</button><button id="captionStyles" type="button" title="Stili testo e karaoke per sottotitoli esistenti">✦ Stili sottotitoli</button><button id="videoTranscribe" title="Trascrivi la voce dal video selezionato senza microfono">✦ Video → Testo AI</button><button id="speechKaraoke" title="Riconosci la voce dal microfono e crea sottotitoli karaoke">🎤 Microfono</button><button id="importSrt" title="Importa sottotitoli SRT o VTT con sincronizzazione temporale">↑ SRT/VTT</button><button id="exportSrt" title="Esporta i titoli temporizzati in formato SRT">↓ SRT</button><input id="subtitleFile" type="file" accept=".srt,.vtt,text/vtt,text/plain" style="display:none"><button id="new">Nuovo</button></div>
+<div id="sectionTools" class="sectionTools hidden"><button id="addOverlay">▣ Sovrapposizione</button><button id="addImageLayer">▧ Foto / video su livello</button><button id="addTitleLayer">T Titolo su livello</button><button id="addVideoTrack">＋ Livello video</button></div><div class="transport"><input id="seek" type="range" min="0" max="1000" value="0"><label class="precise-seek-label">Secondi <input id="preciseSeek" type="number" min="0" step="0.1" value="0" aria-label="Vai al secondo"></label><time id="clock">00:00 / 00:00</time></div>
+<div class="tracktop"><strong>Timeline</strong><div id="timelineZoomControls" role="group" aria-label="Zoom timeline"><button id="timelineZoomOut" type="button" aria-label="Riduci zoom timeline">−</button><input id="timelineZoom" type="range" min="0" max="100" value="50" aria-label="Zoom timeline"><button id="timelineZoomIn" type="button" aria-label="Aumenta zoom timeline">+</button><button id="timelineFit" type="button">Adatta</button></div></div>
+<div class="timeline" id="timeline"><div class="ruler" id="ruler"></div><div id="tracks"></div></div>
+<nav id="mobileEditorBar" aria-label="Strumenti di montaggio"><button id="mobilePlay" type="button" aria-label="Riproduci"><span>▶</span>Riproduci</button><label id="mobileAdd" for="import"><span>＋</span>Media</label><button id="mobileRelink" type="button" class="hidden"><span>↻</span>Ricollega</button><button id="mobileTimeline" type="button" aria-pressed="false"><span>▥</span>Timeline</button><button id="mobileSplit" type="button"><span>✂</span>Dividi</button><button id="mobileText" type="button"><span>T</span>Testo</button><button id="mobileEffects" type="button"><span>✦</span>Effetti</button><button id="mobileSubtitles" type="button"><span>▤</span>Sottotitoli</button><button id="mobileModels" type="button"><span>▧</span>Modelli</button><button id="mobileAdvanced" type="button" aria-pressed="false"><span>☷</span>Modifica</button></nav><div class="editbar"><button id="relinkMedia" type="button" class="hidden">↻ Ricollega media</button><button id="split">✂ Dividi</button><button id="trimStart">Inizio qui</button><button id="trimEnd">Fine qui</button><button id="duplicate">Duplica</button><button id="freezeFrame" title="Crea un fermo immagine di 1,5 secondi">▣ Freeze frame</button><button id="reverseClip" title="Inverti il movimento della clip tramite fotogrammi (foto/titoli)">↶ Reverse motion</button><button id="speedRamp" title="Applica un cambio velocità con keyframe di movimento">⌁ Zoom dinamico</button><button id="crossfade" title="Sovrapponi questa clip alla precedente sulla stessa traccia">⇄ Unisci con dissolvenza</button><button id="remove">Elimina</button><button id="moveBack">← Sposta</button><button id="moveForward">Sposta →</button></div>
+<div id="inspector" class="inspector hidden"><div class="creative-tools"><strong>✦ Movimenti pronti</strong><label>Scegli un movimento<select id="motionPreset"><option value="push">Zoom lento in avanti</option><option value="pull">Zoom lento indietro</option><option value="panLeft">Panoramica a sinistra</option><option value="panRight">Panoramica a destra</option><option value="punch">Zoom a impulso</option><option value="none">Rimuovi movimento keyframe</option></select></label><button id="applyMotion" type="button">Applica movimento</button><span class="small">Sostituisce i keyframe della clip. Puoi annullare.</span><strong>Look tra clip</strong><div class="look-actions"><button id="copyLook" type="button">Copia look</button><button id="pasteLook" type="button" disabled>Incolla look</button></div><span id="lookClipboardInfo" class="small" role="status">Copia colori ed effetto, poi seleziona un’altra clip.</span></div><label>Velocità<select id="speed"><option value=".5">0,5×</option><option value="1">1×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label><div class="keyframe-tools"><button id="addKeyframe" type="button">◆ Keyframe qui</button><button id="removeKeyframe" type="button">− Keyframe</button><button id="prevKeyframe" type="button" title="Keyframe precedente">◆◀</button><button id="nextKeyframe" type="button" title="Keyframe successivo">▶◆</button><label>Movimento<select id="keyframeEasing"><option value="linear">Lineare</option><option value="ease">Morbido</option><option value="easeIn">Accelera</option><option value="easeOut">Rallenta</option></select></label><span id="keyframeInfo" class="small">Nessun keyframe</span></div><label>Opacità <input id="opacity" type="range" min="0" max="100" value="100"></label><label>Zoom <input id="zoom" type="range" min="50" max="250" value="100"></label><label id="fitModeWrap">Inquadratura<select id="fitMode"><option value="cover">Riempi lo schermo</option><option value="contain">Mostra tutto</option><option value="blur">Tutto il video + sfondo sfocato</option></select></label><label>Specchia orizzontale<select id="mirror"><option value="off">No</option><option value="on">Sì</option></select></label><label>Rotazione <input id="rotation" type="range" min="-180" max="180" value="0"></label><label>Posizione X <input id="posX" type="range" min="-100" max="100" value="0"></label><label>Posizione Y <input id="posY" type="range" min="-100" max="100" value="0"></label><label id="brightnessWrap">Luminosità <input id="brightness" type="range" min="20" max="200" value="100"></label><label id="contrastWrap">Contrasto <input id="contrast" type="range" min="20" max="200" value="100"></label><label id="saturationWrap">Saturazione <input id="saturation" type="range" min="0" max="300" value="100"></label><label>Look / filtro (clip selezionata)<select id="effect"><optgroup label="KORE Colour Club"><option value="koreFuchsia">Fuchsia Crush</option><option value="koreRose">Rose Glass</option><option value="korePeach">Peach Soda</option><option value="koreLilac">Lilac Haze</option><option value="koreChrome">Chrome Night</option><option value="koreMint">Mint Fresh</option><option value="koreAmber">Amber Hour</option><option value="koreIce">Ice Pop</option><option value="koreVelvet">Velvet Noir</option><option value="koreCandy">Candy Club</option></optgroup><option value="original">Originale</option><option value="warm">Cinema caldo</option><option value="cool">Cinema freddo</option><option value="mono">Bianco e nero</option><option value="vintage">Vintage</option><option value="sepia">Seppia</option><option value="neon">Neon</option><option value="dream">Dreamy Glow</option><option value="contrast">Contrasto</option><option value="desat">Desaturato</option><option value="night">Notturno</option><option value="soft">Soft</option><option value="retro">Retro</option><option value="bright">Alta luminosità</option><option value="filmGold">Film oro</option><option value="filmBlue">Film blu</option><option value="filmGreen">Film verde</option><option value="filmRose">Film rosa</option><option value="filmAmber">Film ambra</option><option value="filmTeal">Film teal</option><option value="filmViolet">Film viola</option><option value="filmCopper">Film rame</option><option value="filmIce">Film ghiaccio</option><option value="filmDusk">Tramonto</option><option value="filmDawn">Alba</option><option value="filmNoir">Noir intenso</option><option value="filmSilver">Argento</option><option value="filmFade">Pellicola sbiadita</option><option value="filmPunch">Pop cinema</option><option value="filmMatte">Matte</option><option value="filmGrainTone">Pellicola soft</option><option value="filmNightBlue">Notte blu</option><option value="filmNightRed">Notte rossa</option><option value="filmHighKey">High key</option><option value="filmLowKey">Low key</option><option value="filmPastel">Pastello</option><option value="filmCandy">Candy</option><option value="filmCyber">Cyber</option><option value="filmAcid">Acid</option><option value="filmInfra">Infrarosso stilizzato</option><option value="filmNegative">Negativo</option><option value="filmXray">Raggi X stilizzati</option><option value="filmDuotone">Duotone</option><option value="filmAqua">Acqua</option><option value="filmLime">Lime</option><option value="filmCherry">Ciliegia</option><option value="filmPeach">Pesca</option><option value="filmSand">Sabbia</option><option value="filmForest">Foresta</option><option value="filmOcean">Oceano</option><option value="filmStorm">Tempesta</option><option value="filmFog">Nebbia</option><option value="filmGlow">Glow</option><option value="filmSharp">Nitido</option><option value="filmSunset">Golden hour</option><option value="filmPolaroid">Polaroid</option><option value="filmBleach">Bleach bypass</option><option value="filmAnalog">Analogico</option><option value="filmPurpleHaze">Purple haze</option><option value="filmRedAlert">Red alert</option><option value="motionShake">✦ Camera shake</option><option value="motionPulse">✦ Pulse zoom</option><option value="motionSpin">✦ Rotazione continua</option><option value="motionFloat">✦ Fluttuazione</option><option value="motionFlicker">✦ Flicker luce</option><option value="motionSway">✦ Oscillazione</option><option value="motionBounce">✦ Bounce</option><option value="motionHeartbeat">✦ Heartbeat</option><option value="motionDrift">✦ Drift</option><option value="motionTilt">✦ Tilt</option><option value="motionTremor">✦ Tremor</option><option value="motionZoomOut">✦ Zoom out animato</option><option value="fxVHS">◆ VHS scanlines</option><option value="fxGrain">◆ Grana cinematografica</option><option value="fxGlitch">◆ Glitch digitale</option><option value="fxGlitchPro">◆ Glitch forte (strisce)</option><option value="fxChroma">◆ Aberrazione cromatica</option><option value="fxShake">◆ Tremolio</option><option value="fxWave">◆ Onda liquida</option><option value="fxPulse">◆ Pulsazione a ritmo</option><option value="fxFlash">◆ Lampi bianchi</option><option value="fxInvert">◆ Negativo lampeggiante</option><option value="fxMosaic">◆ Mosaico a scatti</option><option value="fxZoomBurst">◆ Zoom esplosivo</option><option value="fxRGB">◆ RGB split</option><option value="fxPixel">◆ Pixel art</option><option value="fxVignette">◆ Vignetta scura</option><option value="fxLeak">◆ Light leak</option><option value="fxStrobe">◆ Strobo neon</option><option value="fxScan">◆ Scanner laser</option><option value="fxHolo">◆ Ologramma</option><option value="fxFilm">◆ Pellicola vintage</option><option value="fxSpot">◆ Spotlight</option></select></label><label id="titleTextWrap" class="hidden">Testo titolo<input id="titleText" type="text" maxlength="120" placeholder="Scrivi un titolo"></label><label id="titleFontWrap" class="hidden">Font titolo<select id="titleFont"><option value="bebas">Bebas Neue · Bold</option><option value="outfit">Outfit · Modern</option><option value="anton">Anton · Impact</option><option value="space">Space Grotesk · Tech</option><option value="playfair">Playfair Display · Editorial</option><option value="mono">Space Mono · Digital</option><option value="oswald">Oswald · Condensed</option><option value="montserrat">Montserrat · Bold</option><option value="righteous">Righteous · Pop</option></select></label><label id="titleAccentWrap" class="hidden">Colore grafica<input id="titleAccent" type="color" value="#ff2d92" style="height:38px;min-width:70px;cursor:pointer"></label><label id="titleColorWrap" class="hidden">Colore testo<input id="titleColor" type="color" value="#ffffff" style="height:38px;min-width:70px;cursor:pointer"></label><label id="titleStrokeWrap" class="hidden">Contorno testo<input id="titleStroke" type="color" value="#000000" style="height:38px;min-width:70px;cursor:pointer"></label><label id="titleAnimationWrap" class="hidden">Animazione testo<select id="titleAnimation"><option value="none">Nessuna</option><option value="typewriter">Macchina da scrivere</option><option value="pop">Pop / Bounce</option><option value="slide">Slide dal basso</option><option value="fade">Fade cinematografico</option><option value="pulse">Pulse neon</option><option value="rotate">Rotazione</option></select></label><label id="titleShadowWrap" class="hidden">Bagliore / ombra<select id="titleShadow"><option value="none">Nessuno</option><option value="soft">Ombra morbida</option><option value="neon">Neon rosa</option><option value="cyan">Neon azzurro</option><option value="gold">Bagliore oro</option></select></label><label id="titleSizeWrap" class="hidden">Dimensione titolo<input id="titleSize" type="range" min="24" max="120" value="56"></label><label>Transizione<select id="transitionPreset"><option value="none">Nessuna</option><option value="fade">Dissolvenza (0,5 s)</option><option value="soft">Dissolvenza lenta (1,2 s)</option><option value="flash">Flash luminoso</option><option value="wipeLeft">Tendina da sinistra</option><option value="wipeRight">Tendina da destra</option><option value="wipeUp">Tendina dal basso</option><option value="wipeDown">Tendina dall’alto</option><option value="slideLeft">Scorrimento da sinistra</option><option value="slideRight">Scorrimento da destra</option><option value="slideUp">Scorrimento dal basso</option><option value="slideDown">Scorrimento dall’alto</option><option value="zoomIn">Zoom in ingresso</option><option value="zoomOut">Zoom in uscita</option><option value="iris">Iris circolare</option><option value="crossfade">Dissolvenza tra due clip (overlap)</option><option value="irisDiamond">✧ Diamante cinematografico</option><option value="irisSquare">✧ Riquadro zoom</option><option value="curtain">✧ Sipario centrale</option><option value="bars">✧ Barre verticali</option><option value="blinds">✧ Persiane orizzontali</option><option value="diagonal">✧ Taglio diagonale</option><option value="circleZoom">✧ Cerchio espansione</option><option value="spinReveal">✧ Rotazione reveal</option><option value="flipX">✧ Flip orizzontale</option><option value="flipY">✧ Flip verticale</option><option value="pop">✧ Pop elastico</option><option value="sweep">✧ Sweep diagonale</option></select></label><label>Durata transizione (s)<input id="transitionDuration" type="range" min="0.1" max="2" step="0.1" value="0.7"><input id="transitionDurationNumber" type="number" min="0.1" max="2" step="0.1" value="0.7" aria-label="Durata transizione in secondi" style="width:76px;max-width:100%;margin-top:6px"></label><button id="previewTransition" type="button" title="Riproduci la transizione dall’inizio della clip">▶ Anteprima transizione</button><label>Entrata morbida (s)<input id="fadeIn" type="range" min="0" max="3" step=".1" value="0"></label><label>Uscita morbida (s)<input id="fadeOut" type="range" min="0" max="3" step=".1" value="0"></label><label id="audioFadeInWrap">Entrata audio (secondi)<input id="audioFadeIn" type="number" min="0" max="5" step="0.1" value="0"></label><label id="audioFadeOutWrap">Uscita audio (secondi)<input id="audioFadeOut" type="number" min="0" max="5" step="0.1" value="0"></label><label id="volumeWrap">Volume video <input id="volume" type="range" min="0" max="100" value="100"></label><label>Traccia <select id="layer"></select></label><label>Durata / fine <span id="clipInfo" class="small">—</span></label></div>
+<div id="exportPanel"><select id="ratio"><option value="9:16">Verticale 9:16</option><option value="16:9">Orizzontale 16:9</option><option value="1:1">Quadrato 1:1</option><option value="4:5">Instagram 4:5</option></select><select id="resolution"><option value="540">540p</option><option value="720">720p</option><option value="1080" selected>Full HD 1080p</option></select><button id="export" class="primary">↥ Esporta video + audio</button></div><div id="status" class="notice" role="status">Importa i tuoi media. I file restano sul dispositivo.</div>
+<input id="relinkFile" type="file" accept="video/*,image/*,audio/*,.mp3,.m4a,.wav,.aac" style="display:none"><input id="import" type="file" accept="video/*,image/*,audio/*,.mp3,.m4a,.wav,.aac" multiple></section></main><div id="shortcutModal" class="shortcut-modal hidden"><div class="shortcut-card"><div class="shortcut-top"><strong>⌨ SCORCIATOIE KORE</strong><button id="closeShortcuts" aria-label="Chiudi scorciatoie">✕</button></div><div><kbd>Spazio</kbd> Riproduci / pausa</div><div><kbd>S</kbd> Dividi la clip</div><div><kbd>← / →</kbd> Avanza di 0,1 s</div><div><kbd>Shift + ← / →</kbd> Avanza di 1 s</div><div><kbd>Canc</kbd> Elimina la clip selezionata</div></div></div>
+<div id="welcome" class="modal"><div class="sheet"><h1>KORE<span style="color:#ff2d92">.</span> STUDIO</h1><p>Da dove vuoi iniziare?</p><div class="options"><label class="start-import-action" for="import">Carica video o foto<small>Scegli i file e inizia a montare.</small></label><button id="desktopStartModels" type="button">Scegli modello<small>Scopri i 82 modelli grafici e Social Mix.</small></button><button id="startPhotoEditor" type="button">Modifica le tue foto<small>Foto prodotto, effetti e AI per oggetti e persone.</small></button><button id="startHighlights" type="button">Trova i momenti migliori<small>Ricava estratti da un video lungo.</small></button><button id="desktopOpenEditor" type="button">Apri editor<small>Apri la timeline per iniziare a montare.</small></button></div></div></div>
+<div id="mobilePickDialog" class="kore-caption-dialog hidden" role="dialog" aria-modal="true" aria-labelledby="mobilePickTitle"><div class="kore-caption-panel"><h3 id="mobilePickTitle">Scegli i tuoi media</h3><p>Seleziona foto o video per creare il montaggio.</p><label for="import" class="mobile-pick-label">＋ Scegli foto o video</label><button id="mobilePickCancel" type="button">Annulla</button></div></div><section id="mobileStart" class="mobile-start hidden" aria-label="Schermata iniziale KORE"><div class="mobile-start-top"><div class="mobile-start-logo"><img class="kore-brand-home" src="./brand/kore-logo-transparent.webp" alt="" width="54" height="54">KORE<b>.</b> STUDIO</div><select class="kore-theme-select" data-kore-theme aria-label="Tema dell’editor"><option value="dark">Nero / Rosa</option><option value="light">Bianco / Rosa</option></select></div><div class="mobile-start-content"><div class="eyebrow">IL TUO SPAZIO CREATIVO</div><h1>La tua storia,<br>il tuo stile<span style="color:#ff2d92">.</span></h1><p>Inizia con i tuoi video oppure scegli un modello e personalizzalo.</p><div class="mobile-start-actions"><label id="mobileStartImport" for="import" class="primary"><span class="mobile-action-icon">＋</span><span><strong>Carica video o foto</strong><small>Aggiungi media al progetto</small></span></label><button id="mobileStartModels" type="button"><span class="mobile-action-icon">▧</span><span><strong>Studio modelli</strong><small>82 stili · 44 nuovi montaggi social</small></span></button><button id="mobilePhotoEditor" type="button" class="primary"><span class="mobile-action-icon">✎</span><span><strong>Modifica le tue foto</strong><small>AI oggetti e persone · Qualità originale</small></span></button><button id="mobileHighlights" type="button"><span class="mobile-action-icon">✦</span><span><strong>Momenti migliori</strong><small>Ricava estratti da un video lungo</small></span></button><button id="mobileStartEditor" type="button"><span class="mobile-action-icon">✂</span><span><strong>Apri editor</strong><small>Apri la timeline per iniziare a montare</small></span></button></div></div><div class="mobile-start-foot">I tuoi media restano sul dispositivo</div></section><section id="mobileHome" aria-label="Modelli KORE"><div class="mobile-home-head"><button id="mobileModelBack" class="mobile-model-back" aria-label="Torna alla schermata iniziale" type="button">‹</button><div class="mobile-home-brand">KORE<b>.</b></div><input id="mobileSearch" class="mobile-search" type="search" placeholder="Cerca un modello" aria-label="Cerca un modello"></div><div class="mobile-models-content"><div class="mobile-models-heading"><h1>Studio modelli<span class="model-new-pill">44 novità</span></h1><p>Trova il tuo stile. Guarda l’anteprima, scegli i media e crea.</p><label class="model-category-label" for="mobileModelCategory">Esplora per stile</label><select id="mobileModelCategory" aria-label="Categoria modelli"></select><div class="model-result-row"><span id="mobileModelCount" role="status" aria-live="polite"></span><button id="mobileModelClear" type="button">Mostra tutti</button></div></div><div id="mobileModelStrip" class="mobile-model-strip" aria-label="Modelli disponibili"></div></div><nav class="mobile-nav" aria-label="Navigazione mobile"><button id="mobileEdit" type="button"><strong>✂</strong>Apri editor</button></nav></section><script src="./music-lib.js?v=m-1"></script><script type="module" src="./studio.js?v=cap-25"></script><script type="module" src="./phone-timeline.js?v=phone-2"></script><script type="module" src="./phone-overlay.js?v=overlay-4"></script><script type="module" src="./work-indicator.js?v=safe-2"></script><script type="module" src="./phone-simple.js?v=simple-1"></script><script type="module" src="./phone-capcut.js?v=cap-37"></script><script type="module" src="./transcript-editor.js?v=kt-3"></script><script type="module" src="./phone-fx.js?v=fx-8"></script><script type="module" src="./phone-music.js?v=m-3"></script><script type="module" src="./phone-handles.js?v=h-7"></script><script type="module" src="./import-choice.js?v=ic-1"></script><script type="module" src="./aurea.js?v=au-12"></script></body></html>
